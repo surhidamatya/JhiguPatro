@@ -1,0 +1,11 @@
+name: jhigu_patro_utils
+description: Bikram Sambat (Nepali) calendar utilities — zero dependencies, offline-first, works in any Dart/Flutter environment.
+version: 1.0.0
+homepage: https://github.com/your-org/jhigu_patro_utils
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dev_dependencies:
+  test: ^1.24.0
+  lints: ^3.0.0
