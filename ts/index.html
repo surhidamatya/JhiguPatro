@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>झिगु पात्रो</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f0f2f5;
+      min-height: 100vh;
+      font-family: 'Noto Sans Devanagari', system-ui, sans-serif;
+    }
+
+    /* ── Top bar ── */
+    #top-bar {
+      background: #1565c0;
+      padding: 14px 24px;
+    }
+    #top-bar h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: .5px;
+    }
+
+    /* ── Split layout ── */
+    #app {
+      display: flex;
+      justify-content: center;
+      padding: 20px 16px;
+      min-height: calc(100vh - 52px);
+    }
+
+    /* centred wrapper: total = 60 + 5% gap + 35 = 100% of its own width */
+    #app-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 5%;
+      width: 100%;
+      max-width: 1280px;
+    }
+
+    /* 60% calendar */
+    #calendar-root { flex: 0 0 60%; }
+
+    /* 35% list */
+    #day-list-root { flex: 1 1 0; }
+  </style>
+</head>
+<body>
+  <div id="top-bar"><h1>झिगु पात्रो</h1></div>
+
+  <div id="app">
+    <div id="app-inner">
+      <div id="calendar-root"></div>
+      <div id="day-list-root"></div>
+    </div>
+  </div>
+
+  <script type="module" src="./dist/calendar_demo.js"></script>
+</body>
+</html>

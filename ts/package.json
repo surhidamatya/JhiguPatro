@@ -16,7 +16,8 @@
   "scripts": {
     "build": "tsc",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "serve": "npx serve ."
   },
   "devDependencies": {
     "typescript": "^5.0.0",

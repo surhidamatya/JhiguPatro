@@ -5,11 +5,16 @@ export type {
   EnglishDate,
   NepaliCalendarDataSource,
   CalendarJson,
+  TithiSegment,
+  PanchangDay,
+  PanchangMonth,
+  PanchangJson,
 } from './types.js';
 
 // Data sources
 export { InlineCalendarDataSource } from './data_sources/InlineCalendarDataSource.js';
 export { JsonCalendarDataSource } from './data_sources/JsonCalendarDataSource.js';
+export { PanchangDataSource } from './data_sources/PanchangDataSource.js';
 
 // Calendar engine
 export {
