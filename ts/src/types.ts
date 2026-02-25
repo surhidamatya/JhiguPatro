@@ -51,3 +51,39 @@ export interface CalendarJson {
   };
   years: Record<string, number[]>;
 }
+
+// ============================================================================
+// PANCHANG / TITHI TYPES
+// ============================================================================
+
+export interface TithiSegment {
+  /** 1–30 */
+  tithiNumber: number;
+  /** Nepali name e.g. "प्रतिपदा" */
+  tithiName: string;
+  /** "शुक्ल" or "कृष्ण" */
+  paksha: 'शुक्ल' | 'कृष्ण';
+  /** Minutes from 00:00 Nepal time. Canonical source of truth. */
+  startMinute: number;
+  /** Minutes from 00:00 Nepal time. 1440 = end of day. */
+  endMinute: number;
+}
+
+export interface PanchangDay {
+  bsDay: number;
+  /** "YYYY-MM-DD" Gregorian date — matches convertBSToAD output. */
+  adDate: string;
+  tithiSegments: TithiSegment[];
+}
+
+export interface PanchangMonth {
+  month: number;
+  name: string;
+  days: PanchangDay[];
+}
+
+/** Shape of a panchang_YYYY.json file (e.g. 2081_tithi.json). */
+export interface PanchangJson {
+  year: number;
+  months: PanchangMonth[];
+}
