@@ -9,6 +9,7 @@
 /// ```
 library;
 
+import 'generated/strings.dart';
 import 'types.dart';
 
 // ============================================================================
@@ -26,31 +27,37 @@ const Duration _nepalOffset = Duration(hours: 5, minutes: 45);
 // NAMES
 // ============================================================================
 
-const List<String> nepaliMonthsEn = [
-  'Baisakh', 'Jestha', 'Asar', 'Shrawan', 'Bhadra', 'Ashwin',
-  'Kartik', 'Mangsir', 'Poush', 'Magh', 'Falgun', 'Chaitra',
-];
+// These tables are views over the string tables (data/strings.{en,ne}.json), the
+// single source for names. English month and weekday names are the standard
+// transliterations used there ("Ashadh", "Sunday").
 
-const List<String> nepaliMonthsNe = [
-  'बैशाख', 'जेठ', 'असार', 'साउन', 'भदौ', 'असोज',
-  'कार्तिक', 'मंसिर', 'पौष', 'माघ', 'फागुन', 'चैत्र',
-];
+/// BS month names, English transliteration.
+final List<String> nepaliMonthsEn = jhiguStringsEn.months;
 
-const List<String> englishMonths = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
+/// BS month names, Nepali.
+final List<String> nepaliMonthsNe = jhiguStringsNe.months;
 
-/// Sunday = index 0 (matches DateTime.sunday = 7, handled below).
-const List<String> nepaliDaysEn = [
-  'Aaitabar', 'Sombar', 'Mangalbar', 'Budhabar', 'Bihibar', 'Shukrabar', 'Shanibar',
-];
+/// AD month names, English.
+final List<String> englishMonths = jhiguStringsEn.adMonths;
 
-const List<String> nepaliDaysNe = [
-  'आइतबार', 'सोमबार', 'मंगलबार', 'बुधबार', 'बिहिबार', 'शुक्रबार', 'शनिबार',
-];
+/// Weekday names (Sunday first), English.
+final List<String> nepaliDaysEn = jhiguStringsEn.weekdays;
 
-const List<String> nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+/// Weekday names (Sunday first), Nepali.
+final List<String> nepaliDaysNe = jhiguStringsNe.weekdays;
+
+const List<String> nepaliDigits = [
+  '०',
+  '१',
+  '२',
+  '३',
+  '४',
+  '५',
+  '६',
+  '७',
+  '८',
+  '९'
+];
 
 // ============================================================================
 // DATA SOURCE INJECTION
@@ -73,6 +80,29 @@ class NepaliCalendar {
       );
     }
     return _source!;
+  }
+
+  // ============================================================================
+  // ACCURACY
+  // ============================================================================
+
+  /// True if [year] is at or before the data source's `verifiedThrough` watermark.
+  static bool isVerifiedYear(int year) {
+    final v = _ds.verifiedThrough;
+    return v != null && year <= v;
+  }
+
+  /// Accuracy of a BS date. Never throws for unverified years; returns a warning.
+  /// Unverified years still convert, but published sources disagree on them.
+  static DateAccuracy getDateAccuracy(NepaliDate date) {
+    if (isVerifiedYear(date.year)) return const DateAccuracy(verified: true);
+    final v = _ds.verifiedThrough;
+    final through = v == null ? 'any year' : 'through $v';
+    return DateAccuracy(
+      verified: false,
+      warning: 'BS ${date.year} is not in the verified range ($through). '
+          'Confirm it against the Nepal Panchang Nirnayak Samiti calendar before relying on it.',
+    );
   }
 
   // ============================================================================
@@ -99,6 +129,12 @@ class NepaliCalendar {
     final data = _ds.getYearData(year);
     if (data == null) return false;
     return day <= data[month - 1];
+  }
+
+  /// First and last BS year the loaded data source supports.
+  static ({int start, int end}) getSupportedBSRange() {
+    final src = _ds;
+    return (start: src.supportedStartYear, end: src.supportedEndYear);
   }
 
   /// All supported BS years.
@@ -167,7 +203,8 @@ class NepaliCalendar {
   static DateTime toNepalTime(DateTime utc) => utc.toUtc().add(_nepalOffset);
 
   /// Reverse of [toNepalTime].
-  static DateTime fromNepalTime(DateTime nepDate) => nepDate.subtract(_nepalOffset);
+  static DateTime fromNepalTime(DateTime nepDate) =>
+      nepDate.subtract(_nepalOffset);
 
   /// Current Nepal local date as a [NepaliDate].
   static NepaliDate getCurrentNepaliDate() {
@@ -192,14 +229,12 @@ class NepaliCalendar {
 
   /// Weekday name for [date].
   static String getNepaliDayName(DateTime date, {bool nepali = false}) {
-    final days = nepali ? nepaliDaysNe : nepaliDaysEn;
-    return days[_dayIndex(date)];
+    return getStrings(nepali ? 'ne' : 'en').weekdays[_dayIndex(date)];
   }
 
   /// Nepali month name (1-indexed).
   static String getNepaliMonthName(int month, {bool nepali = false}) {
-    final months = nepali ? nepaliMonthsNe : nepaliMonthsEn;
-    return months[month - 1];
+    return getStrings(nepali ? 'ne' : 'en').months[month - 1];
   }
 
   /// Format a [NepaliDate] as a readable string.
@@ -211,17 +246,22 @@ class NepaliCalendar {
 
   /// Format a Gregorian [DateTime] as "April 14, 2024".
   static String formatEnglishDate(DateTime date) =>
-      '${englishMonths[date.month - 1]} ${date.day}, ${date.year}';
+      '${getStrings('en').adMonths[date.month - 1]} ${date.day}, ${date.year}';
 
   /// Format a BS date with weekday name.
   /// Example: "८ फागुन २०८२, शुक्रबार"
-  static String formatNepaliDateWithDay(NepaliDate nepaliDate, {DateTime? adDate}) {
-    final ad = adDate ?? convertBSToAD(nepaliDate.year, nepaliDate.month, nepaliDate.day);
+  ///
+  /// [adDate] is only a hint kept for compatibility; the weekday is the same
+  /// either way because Dart dates here are UTC.
+  static String formatNepaliDateWithDay(NepaliDate nepaliDate,
+      {DateTime? adDate}) {
+    final ad = adDate ??
+        convertBSToAD(nepaliDate.year, nepaliDate.month, nepaliDate.day);
+    final ne = getStrings('ne');
     final day = toNepaliDigits(nepaliDate.day);
-    final month = nepaliMonthsNe[nepaliDate.month - 1];
+    final month = ne.months[nepaliDate.month - 1];
     final year = toNepaliDigits(nepaliDate.year);
-    final weekday = getNepaliDayName(ad, nepali: true);
-    return '$day $month $year, $weekday';
+    return '$day $month $year, ${ne.weekdays[_dayIndex(ad)]}';
   }
 
   /// Current Nepali date formatted with day name in Nepal time.
@@ -245,10 +285,15 @@ class NepaliCalendar {
 
   /// Relative time string in Nepali (e.g. "१५ मिनेट अगाडि").
   /// Past midnight Nepal time → shows the BS date string.
-  static String getRelativeTimeInNepali(DateTime? date) {
-    if (date == null) return 'हालै';
+  ///
+  /// [now] overrides the clock (for tests).
+  static String getRelativeTimeInNepali(DateTime? date, {DateTime? now}) {
+    final rel = getStrings('ne').relative;
+    String fill(String template, int n) =>
+        template.replaceAll('{n}', toNepaliDigits(n));
+    if (date == null) return rel.justNow;
 
-    final nowNep = toNepalTime(DateTime.now().toUtc());
+    final nowNep = toNepalTime((now ?? DateTime.now()).toUtc());
     final dateNep = toNepalTime(date.toUtc());
 
     final todayMidnight = DateTime.utc(nowNep.year, nowNep.month, nowNep.day);
@@ -258,14 +303,14 @@ class NepaliCalendar {
     }
 
     final diff = nowNep.difference(dateNep);
-    if (diff.inSeconds < 1) return 'हालै';
+    if (diff.inSeconds < 1) return rel.justNow;
 
-    if (diff.inSeconds < 60) return '${toNepaliDigits(diff.inSeconds)} सेकेण्ड अगाडि';
-    if (diff.inMinutes < 60) return '${toNepaliDigits(diff.inMinutes)} मिनेट अगाडि';
-    if (diff.inHours < 24)   return '${toNepaliDigits(diff.inHours)} घण्टा अगाडि';
+    if (diff.inSeconds < 60) return fill(rel.secondsAgo, diff.inSeconds);
+    if (diff.inMinutes < 60) return fill(rel.minutesAgo, diff.inMinutes);
+    if (diff.inHours < 24) return fill(rel.hoursAgo, diff.inHours);
     return _bsDateString(convertADToBS(dateNep));
   }
 
   static String _bsDateString(NepaliDate nd) =>
-      '${toNepaliDigits(nd.day)} ${nepaliMonthsNe[nd.month - 1]} ${toNepaliDigits(nd.year)}';
+      '${toNepaliDigits(nd.day)} ${getStrings('ne').months[nd.month - 1]} ${toNepaliDigits(nd.year)}';
 }

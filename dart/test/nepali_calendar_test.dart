@@ -1,17 +1,27 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:jhigu_patro_utils/jhigu_patro_utils.dart';
 import 'package:test/test.dart';
 
-const Map<int, List<int>> _years = {
-  2079: [31, 32, 31, 32, 31, 30, 30, 29, 30, 29, 30, 30],
-  2080: [31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 30],
-  2081: [31, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],
-  2082: [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
-};
+// Load the full shared calendar (BS 2000–2100). The conversion engine counts
+// days from BS 2000, so every intermediate year is required.
+final Map<String, dynamic> _json =
+    jsonDecode(File('../data/nepali_calendar_data.json').readAsStringSync())
+        as Map<String, dynamic>;
+final Map<int, List<int>> _years = (_json['years'] as Map<String, dynamic>).map(
+  (k, v) => MapEntry(int.parse(k), List<int>.from(v as List)),
+);
 
 void main() {
   setUpAll(() {
     NepaliCalendar.initialize(
-      InlineCalendarDataSource(years: _years, supportedStartYear: 2079, supportedEndYear: 2082),
+      InlineCalendarDataSource(
+        years: _years,
+        supportedStartYear: _json['supportedRange']['start'] as int,
+        supportedEndYear: _json['supportedRange']['end'] as int,
+        verifiedThrough: _json['verifiedThrough'] as int,
+      ),
     );
   });
 
@@ -43,7 +53,7 @@ void main() {
       final result = NepaliCalendar.convertBSToAD(2081, 1, 1);
       expect(result.year, 2024);
       expect(result.month, 4);
-      expect(result.day, 12);
+      expect(result.day, 13);
     });
 
     test('BS 2080/12/30 → AD 2024-04-12', () {
@@ -63,40 +73,53 @@ void main() {
     });
 
     test('throws on invalid date', () {
-      expect(() => NepaliCalendar.convertBSToAD(2082, 13, 1), throwsArgumentError);
-      expect(() => NepaliCalendar.convertBSToAD(2082, 1, 32), throwsArgumentError);
+      expect(
+          () => NepaliCalendar.convertBSToAD(2082, 13, 1), throwsArgumentError);
+      expect(
+          () => NepaliCalendar.convertBSToAD(2082, 1, 32), throwsArgumentError);
     });
   });
 
   group('isValidBSDate', () {
-    test('accepts valid date', () => expect(NepaliCalendar.isValidBSDate(2082, 1, 1), isTrue));
-    test('rejects month 0',    () => expect(NepaliCalendar.isValidBSDate(2082, 0, 1), isFalse));
-    test('rejects month 13',   () => expect(NepaliCalendar.isValidBSDate(2082, 13, 1), isFalse));
-    test('rejects day > month length', () => expect(NepaliCalendar.isValidBSDate(2082, 1, 32), isFalse));
-    test('rejects unknown year',       () => expect(NepaliCalendar.isValidBSDate(1999, 1, 1), isFalse));
+    test('accepts valid date',
+        () => expect(NepaliCalendar.isValidBSDate(2082, 1, 1), isTrue));
+    test('rejects month 0',
+        () => expect(NepaliCalendar.isValidBSDate(2082, 0, 1), isFalse));
+    test('rejects month 13',
+        () => expect(NepaliCalendar.isValidBSDate(2082, 13, 1), isFalse));
+    test('rejects day > month length',
+        () => expect(NepaliCalendar.isValidBSDate(2082, 1, 32), isFalse));
+    test('rejects unknown year',
+        () => expect(NepaliCalendar.isValidBSDate(1999, 1, 1), isFalse));
   });
 
   group('getDaysInBSMonth', () {
-    test('2082 Baisakh = 31 days', () => expect(NepaliCalendar.getDaysInBSMonth(2082, 1), 31));
-    test('2082 Falgun = 30 days',  () => expect(NepaliCalendar.getDaysInBSMonth(2082, 11), 30));
+    test('2082 Baisakh = 31 days',
+        () => expect(NepaliCalendar.getDaysInBSMonth(2082, 1), 31));
+    test('2082 Falgun = 30 days',
+        () => expect(NepaliCalendar.getDaysInBSMonth(2082, 11), 30));
   });
 
   group('toNepaliDigits', () {
-    test('0 → ०',       () => expect(NepaliCalendar.toNepaliDigits(0), '०'));
-    test('2082 → २०८२', () => expect(NepaliCalendar.toNepaliDigits(2082), '२०८२'));
-    test('15 → १५',     () => expect(NepaliCalendar.toNepaliDigits(15), '१५'));
+    test('0 → ०', () => expect(NepaliCalendar.toNepaliDigits(0), '०'));
+    test('2082 → २०८२',
+        () => expect(NepaliCalendar.toNepaliDigits(2082), '२०८२'));
+    test('15 → १५', () => expect(NepaliCalendar.toNepaliDigits(15), '१५'));
   });
 
   group('formatNepaliDate', () {
     test('English format', () {
       expect(
-        NepaliCalendar.formatNepaliDate(NepaliDate(year: 2082, month: 11, day: 8)),
+        NepaliCalendar.formatNepaliDate(
+            NepaliDate(year: 2082, month: 11, day: 8)),
         'Falgun 8, 2082',
       );
     });
     test('Nepali format', () {
       expect(
-        NepaliCalendar.formatNepaliDate(NepaliDate(year: 2082, month: 11, day: 8), nepali: true),
+        NepaliCalendar.formatNepaliDate(
+            NepaliDate(year: 2082, month: 11, day: 8),
+            nepali: true),
         'फागुन 8, 2082',
       );
     });
@@ -112,21 +135,59 @@ void main() {
 
     test('round-trips', () {
       final utc = DateTime.utc(2025, 6, 15, 10, 30);
-      expect(NepaliCalendar.fromNepalTime(NepaliCalendar.toNepalTime(utc)), equals(utc));
+      expect(NepaliCalendar.fromNepalTime(NepaliCalendar.toNepalTime(utc)),
+          equals(utc));
+    });
+  });
+
+  group('getStrings', () {
+    test('English and Nepali tables have matching shape', () {
+      final en = getStrings('en');
+      final ne = getStrings('ne');
+      expect(en.months, hasLength(12));
+      expect(ne.months, hasLength(12));
+      expect(ne.receipt.invoice, 'बिजक');
+      expect(getStrings('xx'), same(en));
+    });
+
+    test('Nepali month names match the engine', () {
+      expect(getStrings('ne').months, nepaliMonthsNe);
+    });
+  });
+
+  group('accuracy', () {
+    test('years through verifiedThrough are verified', () {
+      expect(NepaliCalendar.isVerifiedYear(2083), isTrue);
+      expect(
+        NepaliCalendar.getDateAccuracy(
+            NepaliDate(year: 2080, month: 1, day: 1)),
+        equals(const DateAccuracy(verified: true)),
+      );
+    });
+
+    test('later years warn without throwing', () {
+      expect(NepaliCalendar.isVerifiedYear(2084), isFalse);
+      final a = NepaliCalendar.getDateAccuracy(
+          NepaliDate(year: 2090, month: 1, day: 1));
+      expect(a.verified, isFalse);
+      expect(a.warning, allOf(contains('2090'), contains('2083')));
     });
   });
 
   group('getRelativeTimeInNepali', () {
-    test('null → हालै', () => expect(NepaliCalendar.getRelativeTimeInNepali(null), 'हालै'));
+    test('null → हालै',
+        () => expect(NepaliCalendar.getRelativeTimeInNepali(null), 'हालै'));
 
     test('30 seconds ago → सेकेण्ड अगाडि', () {
       final recent = DateTime.now().subtract(const Duration(seconds: 30));
-      expect(NepaliCalendar.getRelativeTimeInNepali(recent), contains('सेकेण्ड अगाडि'));
+      expect(NepaliCalendar.getRelativeTimeInNepali(recent),
+          contains('सेकेण्ड अगाडि'));
     });
 
     test('10 minutes ago → मिनेट अगाडि', () {
       final past = DateTime.now().subtract(const Duration(minutes: 10));
-      expect(NepaliCalendar.getRelativeTimeInNepali(past), contains('मिनेट अगाडि'));
+      expect(NepaliCalendar.getRelativeTimeInNepali(past),
+          contains('मिनेट अगाडि'));
     });
   });
 }

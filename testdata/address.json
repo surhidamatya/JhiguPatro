@@ -1,0 +1,320 @@
+{
+ "_note": "Format cases hand-derived from data/address.json; search cases hand-derived from name listings of the data. Child counts computed from the data file. Not from an official source. Shared by TS and Dart tests.",
+ "counts": {
+  "provinces": 7,
+  "districts": 77,
+  "localLevels": 753,
+  "districtsOfProvince": {
+   "1": 14,
+   "2": 8,
+   "3": 13,
+   "4": 11,
+   "5": 12,
+   "6": 10,
+   "7": 9
+  },
+  "localLevelsOfDistrict": {
+   "1": 9,
+   "27": 11,
+   "29": 6,
+   "38": 5
+  }
+ },
+ "unknownParent": {
+  "districtsOf": 999,
+  "localLevelsOf": 999
+ },
+ "format": {
+  "valid": [
+   {
+    "parts": {
+     "localLevelId": 307,
+     "ward": 4
+    },
+    "language": "en",
+    "out": "Ward 4, Kathmandu Metropolitan City, Kathmandu, Bagmati"
+   },
+   {
+    "parts": {
+     "localLevelId": 307,
+     "ward": 4
+    },
+    "language": "ne",
+    "out": "वडा नं. ४, काठमाण्डौं महानगरपालिका, काठमाडौँ, बाग्मती"
+   },
+   {
+    "parts": {
+     "localLevelId": 307,
+     "ward": 32
+    },
+    "language": "ne",
+    "out": "वडा नं. ३२, काठमाण्डौं महानगरपालिका, काठमाडौँ, बाग्मती"
+   },
+   {
+    "parts": {
+     "localLevelId": 307,
+     "ward": 26,
+     "tole": "Thamel",
+     "street": "Kantipath"
+    },
+    "language": "en",
+    "out": "Kantipath, Thamel, Ward 26, Kathmandu Metropolitan City, Kathmandu, Bagmati"
+   },
+   {
+    "parts": {
+     "localLevelId": 414,
+     "ward": 6,
+     "tole": "  Lakeside  "
+    },
+    "language": "en",
+    "out": "Lakeside, Ward 6, Pokhara Metropolitan City, Kaski, Gandaki"
+   },
+   {
+    "parts": {
+     "localLevelId": 414,
+     "ward": 6,
+     "tole": "   ",
+     "street": ""
+    },
+    "language": "en",
+    "out": "Ward 6, Pokhara Metropolitan City, Kaski, Gandaki"
+   },
+   {
+    "parts": {
+     "localLevelId": 1,
+     "ward": 1
+    },
+    "language": "en",
+    "out": "Ward 1, Shadanand Municipality, Bhojpur, Koshi Province"
+   },
+   {
+    "parts": {
+     "localLevelId": 1,
+     "ward": 14
+    },
+    "language": "ne",
+    "out": "वडा नं. १४, षडानन्द नगरपालिका, भोजपुर, प्रदेश न. १"
+   }
+  ],
+  "invalid": [
+   {
+    "parts": {
+     "localLevelId": 307,
+     "ward": 33
+    },
+    "code": "BAD_WARD"
+   },
+   {
+    "parts": {
+     "localLevelId": 307,
+     "ward": 0
+    },
+    "code": "BAD_WARD"
+   },
+   {
+    "parts": {
+     "localLevelId": 307,
+     "ward": -1
+    },
+    "code": "BAD_WARD"
+   },
+   {
+    "parts": {
+     "localLevelId": 307,
+     "ward": 1.5
+    },
+    "code": "BAD_WARD"
+   },
+   {
+    "parts": {
+     "localLevelId": 999999,
+     "ward": 1
+    },
+    "code": "UNKNOWN_LOCAL_LEVEL"
+   },
+   {
+    "parts": {
+     "localLevelId": 0,
+     "ward": 1
+    },
+    "code": "UNKNOWN_LOCAL_LEVEL"
+   }
+  ]
+ },
+ "search": [
+  {
+   "query": "kathmandu",
+   "expect": [
+    [
+     "district",
+     27,
+     "en",
+     "exact"
+    ],
+    [
+     "localLevel",
+     307,
+     "en",
+     "prefix"
+    ]
+   ]
+  },
+  {
+   "query": "  KATHMANDU ",
+   "expect": [
+    [
+     "district",
+     27,
+     "en",
+     "exact"
+    ],
+    [
+     "localLevel",
+     307,
+     "en",
+     "prefix"
+    ]
+   ]
+  },
+  {
+   "query": "pokhara",
+   "language": "en",
+   "expect": [
+    [
+     "localLevel",
+     414,
+     "en",
+     "prefix"
+    ]
+   ]
+  },
+  {
+   "query": "पोखरा",
+   "language": "ne",
+   "expect": [
+    [
+     "localLevel",
+     414,
+     "ne",
+     "prefix"
+    ]
+   ]
+  },
+  {
+   "query": "पोखरा",
+   "expect": [
+    [
+     "localLevel",
+     414,
+     "ne",
+     "prefix"
+    ]
+   ]
+  },
+  {
+   "query": "bagmati",
+   "language": "en",
+   "limit": 3,
+   "expect": [
+    [
+     "province",
+     3,
+     "en",
+     "exact"
+    ],
+    [
+     "localLevel",
+     186,
+     "en",
+     "prefix"
+    ],
+    [
+     "localLevel",
+     335,
+     "en",
+     "prefix"
+    ]
+   ]
+  },
+  {
+   "query": "bagmati",
+   "expect": [
+    [
+     "province",
+     3,
+     "en",
+     "exact"
+    ],
+    [
+     "localLevel",
+     186,
+     "en",
+     "prefix"
+    ],
+    [
+     "localLevel",
+     335,
+     "en",
+     "prefix"
+    ],
+    [
+     "localLevel",
+     344,
+     "en",
+     "prefix"
+    ]
+   ]
+  },
+  {
+   "query": "lalit",
+   "language": "en",
+   "expect": [
+    [
+     "district",
+     29,
+     "en",
+     "prefix"
+    ],
+    [
+     "localLevel",
+     331,
+     "en",
+     "prefix"
+    ]
+   ]
+  },
+  {
+   "query": "kathmandu",
+   "language": "ne",
+   "expect": []
+  },
+  {
+   "query": "काठमाडौँ",
+   "expect": [
+    [
+     "district",
+     27,
+     "ne",
+     "exact"
+    ]
+   ]
+  },
+  {
+   "query": "",
+   "expect": []
+  },
+  {
+   "query": "   ",
+   "expect": []
+  },
+  {
+   "query": "zzzz",
+   "expect": []
+  },
+  {
+   "query": "kathmandu",
+   "limit": 0,
+   "expect": []
+  }
+ ]
+}

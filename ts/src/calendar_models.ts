@@ -1,9 +1,9 @@
-import type { NepaliDate, TithiSegment } from './types.js';
+import type { NepaliDateFields, TithiSegment } from './types.js';
 
 // ── Event ─────────────────────────────────────────────────────────────────────
 
 export interface CalendarEvent {
-  readonly date: NepaliDate;
+  readonly date: NepaliDateFields;
   readonly title: string;
   /** When true the event is rendered in red (public holiday / special day). */
   readonly isSpecial: boolean;
@@ -19,7 +19,7 @@ export interface CalendarDay {
   /** BS day number (1-based). null for empty padding cells. */
   readonly bsDay: number | null;
   /** The full BS date, or null for padding cells. */
-  readonly bsDate: NepaliDate | null;
+  readonly bsDate: NepaliDateFields | null;
   /** The corresponding AD date, or null for padding cells. */
   readonly adDate: Date | null;
   /** Day-of-week index: 0 = Sunday … 6 = Saturday. */

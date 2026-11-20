@@ -16,6 +16,11 @@ import {
   getRelativeTimeInNepali,
   toNepalTime,
   fromNepalTime,
+  isVerifiedYear,
+  getDateAccuracy,
+  getStrings,
+  NEPALI_MONTHS_NE,
+  NEPALI_DAYS_NE,
 } from '../src/index.js';
 import { InlineCalendarDataSource } from '../src/index.js';
 import type { CalendarJson } from '../src/index.js';
@@ -31,8 +36,40 @@ beforeAll(() => {
     calendarJson.years,
     calendarJson.supportedRange.start,
     calendarJson.supportedRange.end,
+    calendarJson.verifiedThrough,
   );
   initializeCalendar(source);
+});
+
+describe('getStrings', () => {
+  it('returns English and Nepali tables of equal shape', () => {
+    const en = getStrings('en');
+    const ne = getStrings('ne');
+    expect(en.months).toHaveLength(12);
+    expect(ne.months).toHaveLength(12);
+    expect(Object.keys(en)).toEqual(Object.keys(ne));
+    expect(ne.receipt.invoice).toBe('बिजक');
+  });
+
+  it('month names match the engine constants', () => {
+    expect([...getStrings('ne').months]).toEqual([...NEPALI_MONTHS_NE]);
+    expect([...getStrings('ne').weekdays]).toEqual([...NEPALI_DAYS_NE]);
+  });
+});
+
+describe('accuracy', () => {
+  it('marks years through verifiedThrough as verified', () => {
+    expect(isVerifiedYear(2083)).toBe(true);
+    expect(getDateAccuracy({ year: 2082, month: 1, day: 1 })).toEqual({ verified: true });
+  });
+
+  it('warns, without throwing, for years after verifiedThrough', () => {
+    expect(isVerifiedYear(2084)).toBe(false);
+    const a = getDateAccuracy({ year: 2090, month: 1, day: 1 });
+    expect(a.verified).toBe(false);
+    expect(a.warning).toContain('2090');
+    expect(a.warning).toContain('2083');
+  });
 });
 
 describe('convertADToBS', () => {

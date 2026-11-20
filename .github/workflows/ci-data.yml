@@ -1,0 +1,31 @@
+name: ci-data
+on:
+  pull_request:
+    paths: ['data/**', 'tools/**', 'testdata/**']
+  push:
+    branches: [main, dev]
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate calendar
+        run: node tools/check-calendar/validate.mjs
+      - name: Strings key parity (en/ne)
+        run: node tools/check-strings/check.mjs
+      - name: Phone data
+        run: node tools/check-phone/validate.mjs
+      - name: Address data
+        run: |
+          node tools/check-address/validate.mjs
+          node tools/gen-address/gen.mjs --check
+      - name: Generated files up to date
+        run: node tools/gen-data/gen.mjs --check
+      - name: Demo copies match data/
+        run: |
+          cmp data/nepali_calendar_data.json ts/nepali_calendar_data.json
+          cmp data/2081_tithi.json ts/2081_tithi.json
+          cmp data/2081_tithi.json ts/src/data_sources/2081_tithi.json

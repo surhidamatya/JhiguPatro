@@ -1,0 +1,895 @@
+{
+ "_note": "Hand-derived from ts/src/phoneInput.ts rules, data/phone-prefixes.json and the parser rules in guide section 10. 'events' is the cumulative number of subscriber notifications. Shared by TS and Dart tests.",
+ "scenarios": [
+  {
+   "name": "mobile as it is typed",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "9",
+     "caret": 1,
+     "expect": {
+      "text": "9",
+      "caret": 1,
+      "valid": false,
+      "error": null,
+      "carrier": null,
+      "type": null
+     }
+    },
+    {
+     "action": "input",
+     "text": "98",
+     "caret": 2,
+     "expect": {
+      "text": "98",
+      "caret": 2,
+      "type": null
+     }
+    },
+    {
+     "action": "input",
+     "text": "984",
+     "caret": 3,
+     "expect": {
+      "text": "984",
+      "caret": 3,
+      "carrier": "NTC",
+      "type": "mobile",
+      "error": null
+     }
+    },
+    {
+     "action": "input",
+     "text": "9841",
+     "caret": 4,
+     "expect": {
+      "text": "984-1",
+      "caret": 5
+     }
+    },
+    {
+     "action": "input",
+     "text": "98412",
+     "caret": 5,
+     "expect": {
+      "text": "984-12",
+      "caret": 6
+     }
+    }
+   ]
+  },
+  {
+   "name": "complete mobile is valid",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "9841234567",
+     "caret": 10,
+     "expect": {
+      "text": "984-1234567",
+      "caret": 11,
+      "valid": true,
+      "error": null,
+      "carrier": "NTC",
+      "type": "mobile",
+      "e164": "+9779841234567",
+      "national": "984-1234567",
+      "message": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "extra digits are kept and reported as too long",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "98412345678",
+     "caret": 11,
+     "expect": {
+      "text": "984-12345678",
+      "caret": 12,
+      "valid": false,
+      "error": "TOO_LONG",
+      "message": "Phone number is too long",
+      "e164": null
+     }
+    },
+    {
+     "action": "input",
+     "text": "9841234567",
+     "caret": 10,
+     "expect": {
+      "text": "984-1234567",
+      "caret": 11,
+      "valid": true,
+      "error": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "spaces and dashes in the input",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "984-123 4567",
+     "caret": 12,
+     "expect": {
+      "text": "984-1234567",
+      "caret": 11,
+      "valid": true
+     }
+    }
+   ]
+  },
+  {
+   "name": "Devanagari digits",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "९८४१२३४५६७",
+     "caret": 10,
+     "expect": {
+      "text": "984-1234567",
+      "caret": 11,
+      "valid": true,
+      "e164": "+9779841234567"
+     }
+    }
+   ]
+  },
+  {
+   "name": "letters are dropped",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "98a41",
+     "caret": 5,
+     "expect": {
+      "text": "984-1",
+      "caret": 5
+     }
+    }
+   ]
+  },
+  {
+   "name": "caret follows the digits",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "9841",
+     "caret": 2,
+     "expect": {
+      "text": "984-1",
+      "caret": 2
+     }
+    },
+    {
+     "action": "input",
+     "text": "9841",
+     "caret": 4,
+     "expect": {
+      "text": "984-1",
+      "caret": 5
+     }
+    }
+   ]
+  },
+  {
+   "name": "deleting a digit in the middle",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "984-124567",
+     "caret": 6,
+     "expect": {
+      "text": "984-124567",
+      "caret": 6,
+      "valid": false,
+      "error": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "international prefix",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "+9779841234567",
+     "caret": 14,
+     "expect": {
+      "text": "+977 984-1234567",
+      "caret": 16,
+      "valid": true,
+      "e164": "+9779841234567"
+     }
+    }
+   ]
+  },
+  {
+   "name": "international prefix typed digit by digit",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "+",
+     "caret": 1,
+     "expect": {
+      "text": "+",
+      "caret": 1,
+      "error": null
+     }
+    },
+    {
+     "action": "input",
+     "text": "+9",
+     "caret": 2,
+     "expect": {
+      "text": "+9",
+      "caret": 2,
+      "error": null
+     }
+    },
+    {
+     "action": "input",
+     "text": "+97",
+     "caret": 3,
+     "expect": {
+      "text": "+97",
+      "caret": 3,
+      "error": null
+     }
+    },
+    {
+     "action": "input",
+     "text": "+977",
+     "caret": 4,
+     "expect": {
+      "text": "+977",
+      "caret": 4,
+      "error": null
+     }
+    },
+    {
+     "action": "input",
+     "text": "+9779",
+     "caret": 5,
+     "expect": {
+      "text": "+977 9",
+      "caret": 6,
+      "error": null
+     }
+    },
+    {
+     "action": "input",
+     "text": "+97798",
+     "caret": 6,
+     "expect": {
+      "text": "+977 98",
+      "caret": 7
+     }
+    }
+   ]
+  },
+  {
+   "name": "00977 prefix",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "009779841234567",
+     "caret": 15,
+     "expect": {
+      "text": "+977 984-1234567",
+      "caret": 16,
+      "valid": true,
+      "e164": "+9779841234567"
+     }
+    }
+   ]
+  },
+  {
+   "name": "a foreign country code is kept as typed",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "+1",
+     "caret": 2,
+     "expect": {
+      "text": "+1",
+      "caret": 2,
+      "error": "BAD_PREFIX",
+      "valid": false
+     }
+    },
+    {
+     "action": "input",
+     "text": "+1234",
+     "caret": 5,
+     "expect": {
+      "text": "+1234",
+      "caret": 5,
+      "error": "BAD_PREFIX"
+     }
+    }
+   ]
+  },
+  {
+   "name": "trunk 0 before a mobile is dropped",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "0",
+     "caret": 1,
+     "expect": {
+      "text": "0",
+      "caret": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "09",
+     "caret": 2,
+     "expect": {
+      "text": "9",
+      "caret": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "09841234567",
+     "caret": 11,
+     "expect": {
+      "text": "984-1234567",
+      "caret": 11,
+      "valid": true
+     }
+    }
+   ]
+  },
+  {
+   "name": "Kathmandu landline",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "0",
+     "caret": 1,
+     "expect": {
+      "text": "0",
+      "caret": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "01",
+     "caret": 2,
+     "expect": {
+      "text": "01",
+      "caret": 2,
+      "type": null
+     }
+    },
+    {
+     "action": "input",
+     "text": "014",
+     "caret": 3,
+     "expect": {
+      "text": "01-4",
+      "caret": 4,
+      "type": "landline",
+      "areaCode": "1"
+     }
+    },
+    {
+     "action": "input",
+     "text": "01-4123456",
+     "caret": 10,
+     "expect": {
+      "text": "01-4123456",
+      "caret": 10,
+      "valid": true,
+      "type": "landline",
+      "areaCode": "1",
+      "e164": "+97714123456",
+      "national": "01-4123456",
+      "carrier": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "landline typed without the trunk 0",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "1",
+     "caret": 1,
+     "expect": {
+      "text": "1",
+      "caret": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "14",
+     "caret": 2,
+     "expect": {
+      "text": "1-4",
+      "caret": 3
+     }
+    },
+    {
+     "action": "input",
+     "text": "14123456",
+     "caret": 8,
+     "expect": {
+      "text": "1-4123456",
+      "caret": 9,
+      "valid": true,
+      "national": "01-4123456",
+      "areaCode": "1",
+      "e164": "+97714123456"
+     }
+    }
+   ]
+  },
+  {
+   "name": "landline elsewhere",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "061520123",
+     "caret": 9,
+     "expect": {
+      "text": "061-520123",
+      "caret": 10,
+      "valid": true,
+      "areaCode": "61",
+      "e164": "+97761520123",
+      "national": "061-520123"
+     }
+    }
+   ]
+  },
+  {
+   "name": "area codes 10 and 11 have two digits",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "10",
+     "caret": 2,
+     "expect": {
+      "text": "10",
+      "caret": 2,
+      "type": "landline",
+      "areaCode": "10"
+     }
+    },
+    {
+     "action": "input",
+     "text": "105",
+     "caret": 3,
+     "expect": {
+      "text": "10-5",
+      "caret": 4
+     }
+    },
+    {
+     "action": "input",
+     "text": "010520123",
+     "caret": 9,
+     "expect": {
+      "text": "010-520123",
+      "caret": 10,
+      "valid": true,
+      "areaCode": "10",
+      "e164": "+97710520123"
+     }
+    }
+   ]
+  },
+  {
+   "name": "landline extra digits give too long",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "014123456789",
+     "caret": 12,
+     "expect": {
+      "text": "01-4123456789",
+      "caret": 13,
+      "valid": false,
+      "error": "TOO_LONG"
+     }
+    }
+   ]
+  },
+  {
+   "name": "unknown mobile prefix",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "964",
+     "caret": 3,
+     "expect": {
+      "text": "964",
+      "caret": 3,
+      "error": "BAD_PREFIX",
+      "carrier": null,
+      "type": "mobile",
+      "valid": false,
+      "message": "Phone number does not start with a valid prefix"
+     }
+    }
+   ]
+  },
+  {
+   "name": "unknown area code",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "20",
+     "caret": 2,
+     "expect": {
+      "text": "20",
+      "caret": 2,
+      "error": "BAD_PREFIX",
+      "type": "landline",
+      "areaCode": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "third digit of the area code",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "610",
+     "caret": 3,
+     "expect": {
+      "text": "61-0",
+      "caret": 4,
+      "error": "BAD_PREFIX"
+     }
+    },
+    {
+     "action": "input",
+     "text": "615",
+     "caret": 3,
+     "expect": {
+      "text": "61-5",
+      "caret": 4,
+      "error": null,
+      "areaCode": "61"
+     }
+    },
+    {
+     "action": "input",
+     "text": "99",
+     "caret": 2,
+     "expect": {
+      "text": "99",
+      "caret": 2,
+      "error": null,
+      "areaCode": "99"
+     }
+    },
+    {
+     "action": "input",
+     "text": "991",
+     "caret": 3,
+     "expect": {
+      "text": "99-1",
+      "caret": 4,
+      "error": "BAD_PREFIX"
+     }
+    },
+    {
+     "action": "input",
+     "text": "990",
+     "caret": 3,
+     "expect": {
+      "text": "99-0",
+      "caret": 4,
+      "error": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "Kathmandu area second digit",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "17",
+     "caret": 2,
+     "expect": {
+      "text": "1-7",
+      "caret": 3,
+      "error": "BAD_PREFIX"
+     }
+    },
+    {
+     "action": "input",
+     "text": "16",
+     "caret": 2,
+     "expect": {
+      "text": "1-6",
+      "caret": 3,
+      "error": null,
+      "areaCode": "1"
+     }
+    }
+   ]
+  },
+  {
+   "name": "inactive prefix is reported at three digits",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "961",
+     "caret": 3,
+     "expect": {
+      "text": "961",
+      "caret": 3,
+      "error": "INACTIVE_PREFIX",
+      "carrier": "Smart Telecom"
+     }
+    },
+    {
+     "action": "input",
+     "text": "9611234567",
+     "caret": 10,
+     "expect": {
+      "text": "961-1234567",
+      "caret": 11,
+      "valid": false,
+      "error": "INACTIVE_PREFIX",
+      "carrier": "Smart Telecom",
+      "e164": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "allowInactive accepts it",
+   "init": {
+    "allowInactive": true
+   },
+   "steps": [
+    {
+     "action": "input",
+     "text": "9611234567",
+     "caret": 10,
+     "expect": {
+      "text": "961-1234567",
+      "caret": 11,
+      "valid": true,
+      "error": null,
+      "carrier": "Smart Telecom",
+      "e164": "+9779611234567"
+     }
+    }
+   ]
+  },
+  {
+   "name": "too short is only reported after blur",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "98412",
+     "caret": 5,
+     "expect": {
+      "text": "984-12",
+      "caret": 6,
+      "error": null
+     }
+    },
+    {
+     "action": "blur",
+     "arg": null,
+     "expect": {
+      "error": "TOO_SHORT",
+      "touched": true,
+      "message": "Phone number is too short",
+      "valid": false
+     }
+    },
+    {
+     "action": "input",
+     "text": "984123",
+     "caret": 6,
+     "expect": {
+      "text": "984-123",
+      "caret": 7,
+      "error": "TOO_SHORT"
+     }
+    },
+    {
+     "action": "input",
+     "text": "9841234567",
+     "caret": 10,
+     "expect": {
+      "text": "984-1234567",
+      "caret": 11,
+      "error": null,
+      "valid": true
+     }
+    }
+   ]
+  },
+  {
+   "name": "blur on empty and on a valid number",
+   "init": {},
+   "steps": [
+    {
+     "action": "blur",
+     "arg": null,
+     "expect": {
+      "error": null,
+      "touched": true,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "9841234567",
+     "caret": 10,
+     "expect": {
+      "text": "984-1234567",
+      "valid": true,
+      "error": null
+     }
+    },
+    {
+     "action": "blur",
+     "arg": null,
+     "expect": {
+      "error": null,
+      "valid": true
+     }
+    }
+   ]
+  },
+  {
+   "name": "Nepali messages and language change",
+   "init": {
+    "language": "ne"
+   },
+   "steps": [
+    {
+     "action": "input",
+     "text": "98412",
+     "caret": 5,
+     "expect": {
+      "text": "984-12",
+      "caret": 6
+     }
+    },
+    {
+     "action": "blur",
+     "arg": null,
+     "expect": {
+      "error": "TOO_SHORT",
+      "message": "फोन नम्बर धेरै छोटो छ"
+     }
+    },
+    {
+     "action": "setLanguage",
+     "arg": "en",
+     "expect": {
+      "message": "Phone number is too short",
+      "language": "en"
+     }
+    }
+   ]
+  },
+  {
+   "name": "events: same input twice is one",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "9841",
+     "caret": 4,
+     "expect": {
+      "text": "984-1",
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "9841",
+     "caret": 4,
+     "expect": {
+      "text": "984-1",
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "9841",
+     "caret": 3,
+     "expect": {
+      "text": "984-1",
+      "caret": 3,
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "clear",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "9841234567",
+     "caret": 10,
+     "expect": {
+      "valid": true,
+      "events": 1
+     }
+    },
+    {
+     "action": "clear",
+     "arg": null,
+     "expect": {
+      "text": "",
+      "caret": 0,
+      "valid": false,
+      "error": null,
+      "touched": false,
+      "events": 2
+     }
+    },
+    {
+     "action": "clear",
+     "arg": null,
+     "expect": {
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "initial value",
+   "init": {
+    "value": "9841234567"
+   },
+   "steps": [],
+   "initExpect": {
+    "text": "984-1234567",
+    "valid": true,
+    "events": 0,
+    "e164": "+9779841234567"
+   }
+  }
+ ]
+}

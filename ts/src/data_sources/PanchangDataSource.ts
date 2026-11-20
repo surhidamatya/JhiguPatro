@@ -36,8 +36,9 @@ export class PanchangDataSource {
     return this._year;
   }
 
-  /** Returns the PanchangDay for this BS month/day, or null if not loaded. */
-  getDay(bsMonth: number, bsDay: number): PanchangDay | null {
+  /** Returns the PanchangDay for this BS year/month/day, or null if not loaded or year mismatch. */
+  getDay(bsYear: number, bsMonth: number, bsDay: number): PanchangDay | null {
+    if (this._year !== bsYear) return null;
     return this._lookup.get(`${bsMonth}-${bsDay}`) ?? null;
   }
 
@@ -45,9 +46,10 @@ export class PanchangDataSource {
    * The dominant (sunrise) tithi for a BS day.
    * Sunrise is approximated as minute 375 (06:15 Nepal time).
    * Falls back to the first segment if no segment covers sunrise.
+   * Returns null if data for the given year is not loaded.
    */
-  sunriseTithi(bsMonth: number, bsDay: number): TithiSegment | null {
-    const day = this.getDay(bsMonth, bsDay);
+  sunriseTithi(bsYear: number, bsMonth: number, bsDay: number): TithiSegment | null {
+    const day = this.getDay(bsYear, bsMonth, bsDay);
     if (!day) return null;
     return (
       day.tithiSegments.find(s => 375 >= s.startMinute && 375 < s.endMinute) ??
@@ -59,9 +61,10 @@ export class PanchangDataSource {
   /**
    * The tithi active at [minuteOfDay] (0–1439, Nepal time) for a BS day.
    * Use this for "current tithi right now" queries.
+   * Returns null if data for the given year is not loaded.
    */
-  tithiAt(bsMonth: number, bsDay: number, minuteOfDay: number): TithiSegment | null {
-    const day = this.getDay(bsMonth, bsDay);
+  tithiAt(bsYear: number, bsMonth: number, bsDay: number, minuteOfDay: number): TithiSegment | null {
+    const day = this.getDay(bsYear, bsMonth, bsDay);
     if (!day) return null;
     return (
       day.tithiSegments.find(s => minuteOfDay >= s.startMinute && minuteOfDay < s.endMinute) ??

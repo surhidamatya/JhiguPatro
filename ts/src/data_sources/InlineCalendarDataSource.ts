@@ -16,13 +16,20 @@ export class InlineCalendarDataSource implements NepaliCalendarDataSource {
   private readonly _yearData: Map<number, number[]>;
   private readonly _startYear: number;
   private readonly _endYear: number;
+  readonly verifiedThrough?: number;
 
-  constructor(years: Record<string, number[]>, startYear: number, endYear: number) {
+  constructor(
+    years: Record<string, number[]>,
+    startYear: number,
+    endYear: number,
+    verifiedThrough?: number,
+  ) {
     this._yearData = new Map(
       Object.entries(years).map(([k, v]) => [Number(k), v])
     );
     this._startYear = startYear;
     this._endYear = endYear;
+    this.verifiedThrough = verifiedThrough;
   }
 
   getYearData(year: number): number[] | null {

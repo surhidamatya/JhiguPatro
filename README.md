@@ -12,16 +12,25 @@ Converts between BS and AD (Gregorian), formats Nepali dates, handles Nepal time
 ```
 jhigu_patro_utils/
 ├── data/                              Shared calendar data (BS 2000–2100)
-│   └── nepali_calendar_data.json
+│   ├── nepali_calendar_data.json
+│   └── 2081_tithi.json                Panchang / lunar (tithi) data for 2081
 │
-├── ts/                                TypeScript / JavaScript library
+├── ts/                                TypeScript / JavaScript library + browser demo
 │   ├── src/
 │   │   ├── types.ts
 │   │   ├── nepaliCalendar.ts          Core engine
+│   │   ├── consts.ts                  Weekday header constants
+│   │   ├── calendar_models.ts         CalendarDay, CalendarEvent models
+│   │   ├── calendar_controller.ts     Business logic for interactive calendar
+│   │   ├── calendar_section.ts        Vanilla DOM renderer (no framework)
+│   │   ├── calendar_styles.ts         CSS-in-JS styles
+│   │   ├── calendar_demo.ts           Browser demo entry point
 │   │   ├── data_sources/
 │   │   │   ├── InlineCalendarDataSource.ts   In-memory (Node / server / test)
-│   │   │   └── JsonCalendarDataSource.ts     fetch()-based (browser / Vite)
+│   │   │   ├── JsonCalendarDataSource.ts     fetch()-based (browser / Vite)
+│   │   │   └── PanchangDataSource.ts         Tithi / lunar data loader
 │   │   └── index.ts                   Barrel export
+│   ├── index.html                     Browser demo page
 │   └── tests/
 │       └── nepaliCalendar.test.ts
 │
@@ -83,7 +92,7 @@ $ jhigu-patro today
   AD (numeric):       2026-02-20
   Month (EN):         Falgun
   Month (NE):         फागुन
-  Day (EN):           Shukrabar
+  Day (EN):           Friday
   Day (NE):           शुक्रबार
 ────────────────────────────────────────────
 
@@ -95,7 +104,7 @@ $ jhigu-patro ad2bs 2025-02-20
   BS (result):        Falgun 8, 2081
   BS (Nepali):        फागुन 8, 2081
   BS (numeric):       2081-11-08
-  Weekday (EN):       Bihibar
+  Weekday (EN):       Thursday
   Weekday (NE):       बिहिबार
   Relative:           ८ फागुन २०८१
 ────────────────────────────────────────────
@@ -108,7 +117,7 @@ $ jhigu-patro bs2ad 2082-11-08
   BS (Nepali):        फागुन 8, 2082
   AD (result):        February 20, 2026
   AD (numeric):       2026-02-20
-  Weekday (EN):       Shukrabar
+  Weekday (EN):       Friday
   Weekday (NE):       शुक्रबार
 ────────────────────────────────────────────
 
@@ -137,7 +146,7 @@ $ jhigu-patro info 2082-11-08
   BS (numeric):       2082-11-08
   AD:                 February 20, 2026
   AD (numeric):       2026-02-20
-  Weekday (EN):       Shukrabar
+  Weekday (EN):       Friday
   Weekday (NE):       शुक्रबार
   Relative (NE):      हालै
 ────────────────────────────────────────────
@@ -189,48 +198,175 @@ const source = new InlineCalendarDataSource(data.years, data.supportedRange.star
 initializeCalendar(source);
 ```
 
+### Panchang / Lunar Data
+
+For tithi (lunar phase) information, use `PanchangDataSource`:
+
+```ts
+import { PanchangDataSource } from 'jhigu-patro-utils';
+
+const panchang = new PanchangDataSource();
+await panchang.load('/2081_tithi.json');
+
+// Get all tithi segments for a given BS year/month/day
+// Returns null if data for that year is not loaded
+const day = panchang.getDay(2081, 11, 8);       // year 2081, month 11, day 8
+// → PanchangDay { bsDay, adDate, tithiSegments: [...] }
+
+// Dominant tithi at sunrise (minute 375 = 6:15 AM Nepal time)
+const tithi = panchang.sunriseTithi(2081, 11, 8);
+// → TithiSegment { tithiNumber, tithiName, paksha, startMinute, endMinute }
+// → null if year doesn't match loaded data
+
+// Tithi at any minute of the day
+const current = panchang.tithiAt(2081, 11, 8, 720);  // noon
+```
+
 ### API
 
 ```ts
 import {
+  // Setup
+  initializeCalendar,
+
+  // Names / constants
+  NEPALI_MONTHS_EN,
+  NEPALI_MONTHS_NE,
+  ENGLISH_MONTHS,
+  NEPALI_DAYS_EN,
+  NEPALI_DAYS_NE,
+  NEPALI_DIGITS,
+
+  // Conversion
   convertADToBS,
   convertBSToAD,
+
+  // Current date
   getCurrentNepaliDate,
   getCurrentNepaliDateFormatted,
+
+  // Formatting
   formatNepaliDate,
   formatNepaliDateWithDay,
   formatEnglishDate,
-  getRelativeTimeInNepali,
-  toNepalTime,
-  fromNepalTime,
-  toNepaliDigits,
+  formatNepalDateTime,
   getNepaliMonthName,
   getNepaliDayName,
+  toNepaliDigits,
+  getRelativeTimeInNepali,
+
+  // Timezone
+  toNepalTime,
+  fromNepalTime,
+
+  // Data helpers
   getDaysInBSMonth,
+  getTotalDaysInBSYear,
   isValidBSDate,
+  getAvailableBSYears,
+  getAvailableADYears,
 } from 'jhigu-patro-utils';
 
+// Conversion
 convertADToBS(new Date(2024, 3, 13));
 // → { year: 2081, month: 1, day: 1 }
 
 convertBSToAD(2082, 11, 8);
 // → Date (February 20, 2026)
 
+// Current date
+getCurrentNepaliDate();
+// → { year: 2082, month: 11, day: 8 }
+
 getCurrentNepaliDateFormatted();
 // → "८ फागुन २०८२, शुक्रबार"
+
+// Formatting
+formatNepaliDate({ year: 2082, month: 11, day: 8 }, 'en');
+// → "Falgun 8, 2082"
 
 formatNepaliDate({ year: 2082, month: 11, day: 8 }, 'ne');
 // → "फागुन 8, 2082"
 
+formatNepaliDateWithDay({ year: 2082, month: 11, day: 8 });
+// → "८ फागुन २०८२, शुक्रबार"
+
+formatEnglishDate(new Date(2026, 1, 20));
+// → "February 20, 2026"
+
+formatNepalDateTime(new Date());
+// → "2082-11-08 14:30" (Nepal time)
+
+getNepaliMonthName(11, 'en');
+// → "Falgun"
+
+getNepaliMonthName(11, 'ne');
+// → "फागुन"
+
+getNepaliDayName(new Date(2026, 1, 20), 'en');
+// → "Friday"
+
+// Relative time
 getRelativeTimeInNepali(new Date(Date.now() - 300_000));
 // → "५ मिनेट अगाडि"
 
+// Digits
 toNepaliDigits(2082);
 // → "२०८२"
 
+// Data helpers
 getDaysInBSMonth(2082, 11);
 // → 30
+
+getTotalDaysInBSYear(2082);
+// → 365
+
+isValidBSDate(2082, 11, 8);
+// → true
+
+getAvailableBSYears();
+// → [2000, 2001, ..., 2100]
+
+getAvailableADYears();
+// → [1943, 1944, ..., 2044]
+
+// Timezone
+toNepalTime(new Date());    // Add UTC+5:45 offset
+fromNepalTime(new Date());  // Remove UTC+5:45 offset
 ```
+
+---
+
+## Browser Demo (Interactive Calendar UI)
+
+The `ts/` package ships a zero-framework interactive calendar UI built with vanilla DOM APIs.
+
+### Run locally
+
+```bash
+cd ts
+npm install
+npm run build
+# Serve ts/ with any static file server, e.g.:
+npx serve .
+# Then open http://localhost:3000
+```
+
+The demo page (`ts/index.html`) renders a two-column layout:
+
+- **Left (60%)** — Monthly calendar grid with navigation arrows, today highlight, and Nepali holidays
+- **Right (35%)** — Detail panel for the selected day, showing events and tithi info
+
+### Embed in your own page
+
+```html
+<div id="calendar-root"></div>
+<div id="day-list-root"></div>
+<script type="module" src="dist/calendar_demo.js"></script>
+```
+
+The calendar includes hardcoded Nepali public holidays for BS 2081–2082:
+नयाँ वर्ष, बुद्ध जयन्ती, गणतन्त्र दिवस, तीज, विजयादशमी, लक्ष्मी पूजा, महाशिवरात्री, and more.
 
 ---
 
@@ -342,7 +478,7 @@ dart test
 
 `data/nepali_calendar_data.json` is the single source of truth used by all three implementations.
 
-- Covers **BS 2000–2100**
+- Covers **BS 2000–2100** (AD 1943–2044)
 - Each year entry is a 12-element array: `[daysInBaisakh, daysInJestha, ..., daysInChaitra]`
 - Reference point: **BS 2000/1/1 = AD 1943-04-14**
 
@@ -359,6 +495,8 @@ dart test
 }
 ```
 
+`data/2081_tithi.json` holds Panchang (lunar phase) data for BS 2081, with per-day tithi segments including tithi number, name, paksha (शुक्ल/कृष्ण), and start/end minutes within the Nepal day.
+
 ---
 
 ## Quick reference
@@ -367,7 +505,7 @@ dart test
 |----------|-------------|-------------------|
 | 1  बैशाख | Baisakh  | Apr–May  |
 | 2  जेठ   | Jestha   | May–Jun  |
-| 3  असार  | Asar     | Jun–Jul  |
+| 3  असार  | Ashadh   | Jun–Jul  |
 | 4  साउन  | Shrawan  | Jul–Aug  |
 | 5  भदौ   | Bhadra   | Aug–Sep  |
 | 6  असोज  | Ashwin   | Sep–Oct  |
@@ -379,3 +517,9 @@ dart test
 | 12 चैत्र | Chaitra  | Mar–Apr  |
 
 BS is approximately **56–57 years ahead** of AD.
+
+---
+
+## License
+
+MIT

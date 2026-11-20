@@ -11,6 +11,30 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./address": {
+      "import": "./dist/address.js",
+      "types": "./dist/address.d.ts"
+    },
+    "./address-picker": {
+      "import": "./dist/addressPicker.js",
+      "types": "./dist/addressPicker.d.ts"
+    },
+    "./date-picker": {
+      "import": "./dist/datePicker.js",
+      "types": "./dist/datePicker.d.ts"
+    },
+    "./range-picker": {
+      "import": "./dist/rangePicker.js",
+      "types": "./dist/rangePicker.d.ts"
+    },
+    "./money-input": {
+      "import": "./dist/moneyInput.js",
+      "types": "./dist/moneyInput.d.ts"
+    },
+    "./phone-input": {
+      "import": "./dist/phoneInput.js",
+      "types": "./dist/phoneInput.d.ts"
     }
   },
   "scripts": {

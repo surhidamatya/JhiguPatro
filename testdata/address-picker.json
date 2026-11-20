@@ -1,0 +1,570 @@
+{
+ "_note": "Scenarios for the address picker state machine (guide 11.5). Hand-derived from the rules and data/address.json. Each step runs an action then checks the listed state fields; 'districts', 'localLevels' and 'wards' are list lengths; 'events' is the cumulative number of subscriber notifications; 'error' is the expected AddressError code. Shared by TS and Dart tests.",
+ "initErrors": [
+  {
+   "value": {
+    "localLevelId": 99999
+   },
+   "code": "UNKNOWN_LOCAL_LEVEL"
+  },
+  {
+   "value": {
+    "localLevelId": 307,
+    "ward": 33
+   },
+   "code": "BAD_WARD"
+  }
+ ],
+ "scenarios": [
+  {
+   "name": "cascade down and clear on province change",
+   "steps": [
+    {
+     "action": "selectProvince",
+     "arg": 3,
+     "expect": {
+      "provinceId": 3,
+      "districtId": null,
+      "localLevelId": null,
+      "districts": 13,
+      "localLevels": 0,
+      "wards": 0,
+      "complete": false,
+      "selection": null,
+      "events": 1
+     }
+    },
+    {
+     "action": "selectDistrict",
+     "arg": 27,
+     "expect": {
+      "districtId": 27,
+      "localLevels": 11,
+      "wards": 0,
+      "complete": false,
+      "events": 2
+     }
+    },
+    {
+     "action": "selectLocalLevel",
+     "arg": 307,
+     "expect": {
+      "localLevelId": 307,
+      "wards": 32,
+      "ward": null,
+      "complete": false,
+      "selection": null,
+      "events": 3
+     }
+    },
+    {
+     "action": "selectWard",
+     "arg": 4,
+     "expect": {
+      "ward": 4,
+      "complete": true,
+      "selection": {
+       "provinceId": 3,
+       "districtId": 27,
+       "localLevelId": 307,
+       "ward": 4
+      },
+      "events": 4
+     }
+    },
+    {
+     "action": "selectProvince",
+     "arg": 4,
+     "expect": {
+      "provinceId": 4,
+      "districtId": null,
+      "localLevelId": null,
+      "ward": null,
+      "districts": 11,
+      "localLevels": 0,
+      "wards": 0,
+      "complete": false,
+      "selection": null,
+      "events": 5
+     }
+    }
+   ]
+  },
+  {
+   "name": "district change in same province clears local level and ward",
+   "steps": [
+    {
+     "action": "selectLocalLevel",
+     "arg": 307
+    },
+    {
+     "action": "selectWard",
+     "arg": 4,
+     "expect": {
+      "complete": true,
+      "events": 2
+     }
+    },
+    {
+     "action": "selectDistrict",
+     "arg": 29,
+     "expect": {
+      "provinceId": 3,
+      "districtId": 29,
+      "localLevelId": null,
+      "ward": null,
+      "localLevels": 6,
+      "wards": 0,
+      "complete": false,
+      "events": 3
+     }
+    }
+   ]
+  },
+  {
+   "name": "local level change clears ward",
+   "steps": [
+    {
+     "action": "selectLocalLevel",
+     "arg": 307
+    },
+    {
+     "action": "selectWard",
+     "arg": 4,
+     "expect": {
+      "ward": 4
+     }
+    },
+    {
+     "action": "selectLocalLevel",
+     "arg": 308,
+     "expect": {
+      "ward": null,
+      "complete": false,
+      "events": 3
+     }
+    }
+   ]
+  },
+  {
+   "name": "child select with no parent fills parents",
+   "steps": [
+    {
+     "action": "selectLocalLevel",
+     "arg": 414,
+     "expect": {
+      "provinceId": 4,
+      "districtId": 38,
+      "localLevelId": 414,
+      "ward": null,
+      "districts": 11,
+      "localLevels": 5,
+      "wards": 33,
+      "complete": false,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "district select with no province fills province",
+   "steps": [
+    {
+     "action": "selectDistrict",
+     "arg": 38,
+     "expect": {
+      "provinceId": 4,
+      "districtId": 38,
+      "localLevels": 5,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "selecting the same value is a no-op",
+   "steps": [
+    {
+     "action": "selectProvince",
+     "arg": 3,
+     "expect": {
+      "events": 1
+     }
+    },
+    {
+     "action": "selectProvince",
+     "arg": 3,
+     "expect": {
+      "events": 1
+     }
+    },
+    {
+     "action": "selectDistrict",
+     "arg": 27,
+     "expect": {
+      "events": 2
+     }
+    },
+    {
+     "action": "selectDistrict",
+     "arg": 27,
+     "expect": {
+      "events": 2
+     }
+    },
+    {
+     "action": "selectLocalLevel",
+     "arg": 307,
+     "expect": {
+      "events": 3
+     }
+    },
+    {
+     "action": "selectLocalLevel",
+     "arg": 307,
+     "expect": {
+      "events": 3
+     }
+    },
+    {
+     "action": "selectWard",
+     "arg": 4,
+     "expect": {
+      "events": 4
+     }
+    },
+    {
+     "action": "selectWard",
+     "arg": 4,
+     "expect": {
+      "events": 4
+     }
+    }
+   ]
+  },
+  {
+   "name": "changing ward notifies; null clears ward",
+   "steps": [
+    {
+     "action": "selectLocalLevel",
+     "arg": 307
+    },
+    {
+     "action": "selectWard",
+     "arg": 4,
+     "expect": {
+      "events": 2
+     }
+    },
+    {
+     "action": "selectWard",
+     "arg": 5,
+     "expect": {
+      "ward": 5,
+      "events": 3
+     }
+    },
+    {
+     "action": "selectWard",
+     "arg": null,
+     "expect": {
+      "ward": null,
+      "complete": false,
+      "events": 4
+     }
+    },
+    {
+     "action": "selectWard",
+     "arg": null,
+     "expect": {
+      "events": 4
+     }
+    }
+   ]
+  },
+  {
+   "name": "null clears the level and below, keeps parents",
+   "steps": [
+    {
+     "action": "selectLocalLevel",
+     "arg": 307
+    },
+    {
+     "action": "selectWard",
+     "arg": 4
+    },
+    {
+     "action": "selectLocalLevel",
+     "arg": null,
+     "expect": {
+      "provinceId": 3,
+      "districtId": 27,
+      "localLevelId": null,
+      "ward": null,
+      "events": 3
+     }
+    },
+    {
+     "action": "selectDistrict",
+     "arg": null,
+     "expect": {
+      "provinceId": 3,
+      "districtId": null,
+      "events": 4
+     }
+    },
+    {
+     "action": "selectProvince",
+     "arg": null,
+     "expect": {
+      "provinceId": null,
+      "districts": 0,
+      "events": 5
+     }
+    },
+    {
+     "action": "selectProvince",
+     "arg": null,
+     "expect": {
+      "events": 5
+     }
+    }
+   ]
+  },
+  {
+   "name": "clear resets everything",
+   "steps": [
+    {
+     "action": "selectLocalLevel",
+     "arg": 307
+    },
+    {
+     "action": "selectWard",
+     "arg": 4,
+     "expect": {
+      "complete": true
+     }
+    },
+    {
+     "action": "clear",
+     "arg": null,
+     "expect": {
+      "provinceId": null,
+      "districtId": null,
+      "localLevelId": null,
+      "ward": null,
+      "districts": 0,
+      "localLevels": 0,
+      "wards": 0,
+      "complete": false,
+      "selection": null,
+      "events": 3
+     }
+    },
+    {
+     "action": "clear",
+     "arg": null,
+     "expect": {
+      "events": 3
+     }
+    }
+   ]
+  },
+  {
+   "name": "invalid input throws and changes nothing",
+   "steps": [
+    {
+     "action": "selectLocalLevel",
+     "arg": 307
+    },
+    {
+     "action": "selectWard",
+     "arg": 33,
+     "error": "BAD_WARD",
+     "expect": {
+      "ward": null,
+      "events": 1
+     }
+    },
+    {
+     "action": "selectWard",
+     "arg": 0,
+     "error": "BAD_WARD",
+     "expect": {
+      "events": 1
+     }
+    },
+    {
+     "action": "selectWard",
+     "arg": -1,
+     "error": "BAD_WARD",
+     "expect": {
+      "events": 1
+     }
+    },
+    {
+     "action": "selectProvince",
+     "arg": 99,
+     "error": "UNKNOWN_PROVINCE",
+     "expect": {
+      "provinceId": 3,
+      "events": 1
+     }
+    },
+    {
+     "action": "selectDistrict",
+     "arg": 999,
+     "error": "UNKNOWN_DISTRICT",
+     "expect": {
+      "districtId": 27,
+      "events": 1
+     }
+    },
+    {
+     "action": "selectLocalLevel",
+     "arg": 99999,
+     "error": "UNKNOWN_LOCAL_LEVEL",
+     "expect": {
+      "localLevelId": 307,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "ward needs a local level",
+   "steps": [
+    {
+     "action": "selectWard",
+     "arg": 1,
+     "error": "BAD_WARD",
+     "expect": {
+      "events": 0
+     }
+    },
+    {
+     "action": "selectProvince",
+     "arg": 3
+    },
+    {
+     "action": "selectWard",
+     "arg": 1,
+     "error": "BAD_WARD",
+     "expect": {
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "showWard false completes at local level",
+   "steps": [
+    {
+     "action": "selectLocalLevel",
+     "arg": 307,
+     "expect": {
+      "complete": true,
+      "selection": {
+       "provinceId": 3,
+       "districtId": 27,
+       "localLevelId": 307,
+       "ward": null
+      },
+      "events": 1
+     }
+    },
+    {
+     "action": "selectWard",
+     "arg": 4,
+     "expect": {
+      "complete": true,
+      "selection": {
+       "provinceId": 3,
+       "districtId": 27,
+       "localLevelId": 307,
+       "ward": 4
+      },
+      "events": 2
+     }
+    }
+   ],
+   "init": {
+    "showWard": false
+   }
+  },
+  {
+   "name": "restore a saved value",
+   "steps": [
+    {
+     "action": "selectProvince",
+     "arg": 3,
+     "expect": {
+      "provinceId": 3,
+      "events": 0
+     }
+    }
+   ],
+   "init": {
+    "value": {
+     "localLevelId": 307,
+     "ward": 4
+    }
+   },
+   "initExpect": {
+    "provinceId": 3,
+    "districtId": 27,
+    "localLevelId": 307,
+    "ward": 4,
+    "complete": true,
+    "events": 0
+   }
+  },
+  {
+   "name": "restored value is complete with no events",
+   "steps": [],
+   "init": {
+    "value": {
+     "localLevelId": 307,
+     "ward": 4
+    }
+   },
+   "initExpect": {
+    "provinceId": 3,
+    "districtId": 27,
+    "localLevelId": 307,
+    "ward": 4,
+    "complete": true,
+    "events": 0
+   }
+  },
+  {
+   "name": "language change notifies",
+   "steps": [
+    {
+     "action": "setLanguage",
+     "arg": "ne",
+     "expect": {
+      "language": "ne",
+      "events": 1
+     }
+    },
+    {
+     "action": "setLanguage",
+     "arg": "ne",
+     "expect": {
+      "events": 1
+     }
+    },
+    {
+     "action": "setLanguage",
+     "arg": "en",
+     "expect": {
+      "language": "en",
+      "events": 2
+     }
+    }
+   ],
+   "init": {}
+  }
+ ]
+}

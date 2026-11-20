@@ -18,7 +18,11 @@ async function boot(): Promise<void> {
 
   // Load panchang (tithi) data — optional; calendar works without it
   const panchang = new PanchangDataSource();
-  await panchang.load('./2081_tithi.json');
+  try {
+    await panchang.load('./2081_tithi.json');
+  } catch {
+    console.warn('Panchang data not available; tithi will not be shown.');
+  }
 
   const calContainer  = document.getElementById('calendar-root');
   const listContainer = document.getElementById('day-list-root');

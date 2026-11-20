@@ -1,0 +1,2006 @@
+{
+ "_note": "Scenarios for the headless range picker. Expected values come from a small independent Python model of the documented selection rules and the date picker's focus rules, using day arithmetic from data/nepali_calendar_data.json. 'events' counts subscriber notifications; 'cells' checks getCellProps on the final state. Shared by TS and Dart tests.",
+ "scenarios": [
+  {
+   "name": "initial state",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [],
+   "initExpect": {
+    "start": null,
+    "end": null,
+    "phase": "start",
+    "complete": false,
+    "hovered": null,
+    "previewEnd": null,
+    "focused": "2081-01-15",
+    "visible": [
+     2081,
+     1
+    ],
+    "events": 0
+   }
+  },
+  {
+   "name": "first click sets the start, second sets the end",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      20
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": "2081-01-20",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-20",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    }
+   ],
+   "cells": [
+    {
+     "date": [
+      2081,
+      1,
+      9
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    },
+    {
+     "date": [
+      2081,
+      1,
+      10
+     ],
+     "position": "start",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      15
+     ],
+     "position": "middle",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      20
+     ],
+     "position": "end",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      21
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    }
+   ]
+  },
+  {
+   "name": "same day gives a one-day range",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": "2081-01-10",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    }
+   ],
+   "cells": [
+    {
+     "date": [
+      2081,
+      1,
+      10
+     ],
+     "position": "single",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      11
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    }
+   ]
+  },
+  {
+   "name": "clicking before the start restarts from that day",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      20
+     ],
+     "expect": {
+      "start": "2081-01-20",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-20",
+      "focused": "2081-01-20",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    }
+   ],
+   "cells": [
+    {
+     "date": [
+      2081,
+      1,
+      10
+     ],
+     "position": "start",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      20
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    }
+   ]
+  },
+  {
+   "name": "a click on a complete range starts a new one",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      20
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": "2081-01-20",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-20",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      12
+     ],
+     "expect": {
+      "start": "2081-01-12",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-12",
+      "focused": "2081-01-12",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 3
+     }
+    }
+   ],
+   "cells": [
+    {
+     "date": [
+      2081,
+      1,
+      10
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    },
+    {
+     "date": [
+      2081,
+      1,
+      12
+     ],
+     "position": "start",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      15
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    },
+    {
+     "date": [
+      2081,
+      1,
+      20
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    }
+   ]
+  },
+  {
+   "name": "hover previews the end",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "hover",
+     "arg": [
+      2081,
+      1,
+      18
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": "2081-01-18",
+      "previewEnd": "2081-01-18",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    },
+    {
+     "action": "hover",
+     "arg": null,
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 3
+     }
+    },
+    {
+     "action": "hover",
+     "arg": [
+      2081,
+      1,
+      5
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": "2081-01-05",
+      "previewEnd": "2081-01-05",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 4
+     }
+    }
+   ],
+   "cells": [
+    {
+     "date": [
+      2081,
+      1,
+      10
+     ],
+     "position": "start",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      11
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    },
+    {
+     "date": [
+      2081,
+      1,
+      18
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    },
+    {
+     "date": [
+      2081,
+      1,
+      19
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    }
+   ]
+  },
+  {
+   "name": "hover preview cells",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "hover",
+     "arg": [
+      2081,
+      1,
+      18
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": "2081-01-18",
+      "previewEnd": "2081-01-18",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    }
+   ],
+   "cells": [
+    {
+     "date": [
+      2081,
+      1,
+      10
+     ],
+     "position": "start",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      11
+     ],
+     "position": null,
+     "inPreview": true,
+     "selected": false
+    },
+    {
+     "date": [
+      2081,
+      1,
+      17
+     ],
+     "position": null,
+     "inPreview": true,
+     "selected": false
+    },
+    {
+     "date": [
+      2081,
+      1,
+      18
+     ],
+     "position": null,
+     "inPreview": true,
+     "selected": false
+    },
+    {
+     "date": [
+      2081,
+      1,
+      19
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    },
+    {
+     "date": [
+      2081,
+      1,
+      9
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    }
+   ]
+  },
+  {
+   "name": "keyboard preview follows focus, Enter picks the end",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "right",
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-11",
+      "focused": "2081-01-11",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "right",
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-12",
+      "focused": "2081-01-12",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 3
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "right",
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-13",
+      "focused": "2081-01-13",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 4
+     }
+    },
+    {
+     "action": "selectFocused",
+     "arg": null,
+     "expect": {
+      "start": "2081-01-10",
+      "end": "2081-01-13",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-13",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 5
+     }
+    }
+   ],
+   "cells": [
+    {
+     "date": [
+      2081,
+      1,
+      10
+     ],
+     "position": "start",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      11
+     ],
+     "position": "middle",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      13
+     ],
+     "position": "end",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      14
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    }
+   ]
+  },
+  {
+   "name": "keyboard preview cells",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "right",
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-11",
+      "focused": "2081-01-11",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "right",
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-12",
+      "focused": "2081-01-12",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 3
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "right",
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-13",
+      "focused": "2081-01-13",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 4
+     }
+    }
+   ],
+   "cells": [
+    {
+     "date": [
+      2081,
+      1,
+      10
+     ],
+     "position": "start",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      11
+     ],
+     "position": null,
+     "inPreview": true,
+     "selected": false
+    },
+    {
+     "date": [
+      2081,
+      1,
+      13
+     ],
+     "position": null,
+     "inPreview": true,
+     "selected": false
+    },
+    {
+     "date": [
+      2081,
+      1,
+      14
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    }
+   ]
+  },
+  {
+   "name": "range across months and years",
+   "init": {
+    "today": [
+     2080,
+     12,
+     20
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2080,
+      12,
+      25
+     ],
+     "expect": {
+      "start": "2080-12-25",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2080-12-25",
+      "focused": "2080-12-25",
+      "visible": [
+       2080,
+       12
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "nextMonth",
+     "arg": null,
+     "expect": {
+      "start": "2080-12-25",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-25",
+      "focused": "2081-01-25",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      5
+     ],
+     "expect": {
+      "start": "2080-12-25",
+      "end": "2081-01-05",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-05",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 3
+     }
+    }
+   ],
+   "cells": [
+    {
+     "date": [
+      2080,
+      12,
+      24
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    },
+    {
+     "date": [
+      2080,
+      12,
+      25
+     ],
+     "position": "start",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2080,
+      12,
+      30
+     ],
+     "position": "middle",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      1
+     ],
+     "position": "middle",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      5
+     ],
+     "position": "end",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      6
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    }
+   ]
+  },
+  {
+   "name": "range picked while navigating months",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      25
+     ],
+     "expect": {
+      "start": "2081-01-25",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-25",
+      "focused": "2081-01-25",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "nextMonth",
+     "arg": null,
+     "expect": {
+      "start": "2081-01-25",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-02-25",
+      "focused": "2081-02-25",
+      "visible": [
+       2081,
+       2
+      ],
+      "events": 2
+     }
+    },
+    {
+     "action": "nextMonth",
+     "arg": null,
+     "expect": {
+      "start": "2081-01-25",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-03-25",
+      "focused": "2081-03-25",
+      "visible": [
+       2081,
+       3
+      ],
+      "events": 3
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      3,
+      5
+     ],
+     "expect": {
+      "start": "2081-01-25",
+      "end": "2081-03-05",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-03-05",
+      "visible": [
+       2081,
+       3
+      ],
+      "events": 4
+     }
+    }
+   ],
+   "cells": [
+    {
+     "date": [
+      2081,
+      1,
+      25
+     ],
+     "position": "start",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      2,
+      1
+     ],
+     "position": "middle",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      3,
+      4
+     ],
+     "position": "middle",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      3,
+      5
+     ],
+     "position": "end",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      3,
+      6
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    }
+   ]
+  },
+  {
+   "name": "min and max reject days outside",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "min": [
+     2081,
+     1,
+     10
+    ],
+    "max": [
+     2081,
+     1,
+     20
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      9
+     ],
+     "expect": {
+      "start": null,
+      "end": null,
+      "phase": "start",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-15",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 0
+     },
+     "error": "OUT_OF_RANGE"
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      21
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     },
+     "error": "OUT_OF_RANGE"
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      20
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": "2081-01-20",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-20",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "clear",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      20
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": "2081-01-20",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-20",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    },
+    {
+     "action": "clear",
+     "arg": null,
+     "expect": {
+      "start": null,
+      "end": null,
+      "phase": "start",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-20",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 3
+     }
+    },
+    {
+     "action": "clear",
+     "arg": null,
+     "expect": {
+      "start": null,
+      "end": null,
+      "phase": "start",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-20",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 3
+     }
+    }
+   ]
+  },
+  {
+   "name": "setRange",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "setRange",
+     "arg": [
+      [
+       2081,
+       1,
+       10
+      ],
+      [
+       2081,
+       1,
+       20
+      ]
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": "2081-01-20",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-20",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "setRange",
+     "arg": [
+      [
+       2081,
+       1,
+       20
+      ],
+      [
+       2081,
+       1,
+       10
+      ]
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": "2081-01-20",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-20",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     },
+     "error": "INVALID_DATA"
+    },
+    {
+     "action": "setRange",
+     "arg": [
+      [
+       2081,
+       1,
+       10
+      ],
+      [
+       2081,
+       1,
+       20
+      ]
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": "2081-01-20",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-20",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    }
+   ],
+   "cells": [
+    {
+     "date": [
+      2081,
+      1,
+      10
+     ],
+     "position": "start",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      15
+     ],
+     "position": "middle",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      20
+     ],
+     "position": "end",
+     "inPreview": false,
+     "selected": true
+    }
+   ]
+  },
+  {
+   "name": "setRange respects min and max and changes nothing on error",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "min": [
+     2081,
+     1,
+     10
+    ],
+    "max": [
+     2081,
+     1,
+     20
+    ]
+   },
+   "steps": [
+    {
+     "action": "setRange",
+     "arg": [
+      [
+       2081,
+       1,
+       10
+      ],
+      [
+       2081,
+       1,
+       25
+      ]
+     ],
+     "expect": {
+      "start": null,
+      "end": null,
+      "phase": "start",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-15",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 0
+     },
+     "error": "OUT_OF_RANGE"
+    },
+    {
+     "action": "setRange",
+     "arg": [
+      [
+       2081,
+       1,
+       12
+      ],
+      [
+       2081,
+       1,
+       18
+      ]
+     ],
+     "expect": {
+      "start": "2081-01-12",
+      "end": "2081-01-18",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-18",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "initial start only waits for the end",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "start": [
+     2081,
+     1,
+     10
+    ]
+   },
+   "steps": [],
+   "initExpect": {
+    "start": "2081-01-10",
+    "end": null,
+    "phase": "end",
+    "complete": false,
+    "hovered": null,
+    "previewEnd": "2081-01-10",
+    "focused": "2081-01-10",
+    "visible": [
+     2081,
+     1
+    ],
+    "events": 0
+   }
+  },
+  {
+   "name": "initial range is complete",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "start": [
+     2081,
+     1,
+     10
+    ],
+    "end": [
+     2081,
+     1,
+     20
+    ]
+   },
+   "steps": [],
+   "initExpect": {
+    "start": "2081-01-10",
+    "end": "2081-01-20",
+    "phase": "start",
+    "complete": true,
+    "hovered": null,
+    "previewEnd": null,
+    "focused": "2081-01-20",
+    "visible": [
+     2081,
+     1
+    ],
+    "events": 0
+   },
+   "cells": [
+    {
+     "date": [
+      2081,
+      1,
+      10
+     ],
+     "position": "start",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      15
+     ],
+     "position": "middle",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      20
+     ],
+     "position": "end",
+     "inPreview": false,
+     "selected": true
+    },
+    {
+     "date": [
+      2081,
+      1,
+      21
+     ],
+     "position": null,
+     "inPreview": false,
+     "selected": false
+    }
+   ]
+  },
+  {
+   "name": "navigation keeps the range",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      20
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": "2081-01-20",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-20",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    },
+    {
+     "action": "nextMonth",
+     "arg": null,
+     "expect": {
+      "start": "2081-01-10",
+      "end": "2081-01-20",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-02-20",
+      "visible": [
+       2081,
+       2
+      ],
+      "events": 3
+     }
+    },
+    {
+     "action": "prevMonth",
+     "arg": null,
+     "expect": {
+      "start": "2081-01-10",
+      "end": "2081-01-20",
+      "phase": "start",
+      "complete": true,
+      "hovered": null,
+      "previewEnd": null,
+      "focused": "2081-01-20",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 4
+     }
+    }
+   ],
+   "cells": [
+    {
+     "date": [
+      2081,
+      1,
+      15
+     ],
+     "position": "middle",
+     "inPreview": false,
+     "selected": true
+    }
+   ]
+  },
+  {
+   "name": "hover changes are one event each; same hover is none",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": null,
+      "previewEnd": "2081-01-10",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "hover",
+     "arg": [
+      2081,
+      1,
+      12
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": "2081-01-12",
+      "previewEnd": "2081-01-12",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    },
+    {
+     "action": "hover",
+     "arg": [
+      2081,
+      1,
+      12
+     ],
+     "expect": {
+      "start": "2081-01-10",
+      "end": null,
+      "phase": "end",
+      "complete": false,
+      "hovered": "2081-01-12",
+      "previewEnd": "2081-01-12",
+      "focused": "2081-01-10",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    }
+   ]
+  }
+ ],
+ "initErrors": [
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "end": [
+     2081,
+     1,
+     20
+    ]
+   },
+   "code": "INVALID_DATA"
+  },
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "start": [
+     2081,
+     1,
+     20
+    ],
+    "end": [
+     2081,
+     1,
+     10
+    ]
+   },
+   "code": "INVALID_DATA"
+  },
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "start": [
+     2081,
+     1,
+     5
+    ],
+    "min": [
+     2081,
+     1,
+     10
+    ]
+   },
+   "code": "OUT_OF_RANGE"
+  },
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "start": [
+     2081,
+     9,
+     30
+    ]
+   },
+   "code": "INVALID_DATE"
+  }
+ ]
+}

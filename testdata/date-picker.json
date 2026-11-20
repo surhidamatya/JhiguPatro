@@ -1,0 +1,1313 @@
+{
+ "_note": "Scenarios for the headless date picker (guide 15.1). Expected focus dates were computed with an independent Python day-number model from data/nepali_calendar_data.json and the guide's keyboard table. 'events' is the cumulative number of subscriber notifications; 'rows' the grid rows; 'weekday0'/'weekday6' the first and last short weekday header; 'monthsDisabled'/'yearsDisabled' counts. Shared by TS and Dart tests.",
+ "scenarios": [
+  {
+   "name": "initial state",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [],
+   "initExpect": {
+    "view": "days",
+    "visible": [
+     2081,
+     1
+    ],
+    "value": null,
+    "focused": "2081-01-15",
+    "canGoPrev": true,
+    "canGoNext": true,
+    "title": "Baisakh 2081",
+    "rows": 6,
+    "weekday0": "Sun",
+    "events": 0
+   }
+  },
+  {
+   "name": "Nepali labels",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "language": "ne"
+   },
+   "steps": [],
+   "initExpect": {
+    "title": "बैशाख २०८१",
+    "weekday0": "आइत",
+    "weekday6": "शनि"
+   }
+  },
+  {
+   "name": "week starts Monday",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "weekStartsOn": 1
+   },
+   "steps": [],
+   "initExpect": {
+    "weekday0": "Mon",
+    "weekday6": "Sun",
+    "rows": 6
+   }
+  },
+  {
+   "name": "month navigation keeps the day",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "nextMonth",
+     "arg": null,
+     "expect": {
+      "visible": [
+       2081,
+       2
+      ],
+      "focused": "2081-02-15",
+      "events": 1
+     }
+    },
+    {
+     "action": "prevMonth",
+     "arg": null,
+     "expect": {
+      "visible": [
+       2081,
+       1
+      ],
+      "focused": "2081-01-15",
+      "events": 2
+     }
+    },
+    {
+     "action": "prevMonth",
+     "arg": null,
+     "expect": {
+      "visible": [
+       2080,
+       12
+      ],
+      "focused": "2080-12-15",
+      "events": 3
+     }
+    }
+   ]
+  },
+  {
+   "name": "day is clamped to the target month",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      2,
+      32
+     ],
+     "expect": {
+      "value": "2081-02-32",
+      "focused": "2081-02-32",
+      "visible": [
+       2081,
+       2
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "nextMonth",
+     "arg": null,
+     "expect": {
+      "visible": [
+       2081,
+       3
+      ],
+      "focused": "2081-03-31",
+      "value": "2081-02-32",
+      "events": 2
+     }
+    },
+    {
+     "action": "prevMonth",
+     "arg": null,
+     "expect": {
+      "visible": [
+       2081,
+       2
+      ],
+      "focused": "2081-02-31",
+      "events": 3
+     }
+    }
+   ]
+  },
+  {
+   "name": "select and clear",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      20
+     ],
+     "expect": {
+      "value": "2081-01-20",
+      "focused": "2081-01-20",
+      "events": 1
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      20
+     ],
+     "expect": {
+      "events": 1
+     }
+    },
+    {
+     "action": "clear",
+     "arg": null,
+     "expect": {
+      "value": null,
+      "focused": "2081-01-20",
+      "events": 2
+     }
+    },
+    {
+     "action": "clear",
+     "arg": null,
+     "expect": {
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "selectToday",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      3,
+      5
+     ],
+     "expect": {
+      "visible": [
+       2081,
+       3
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "selectToday",
+     "arg": null,
+     "expect": {
+      "value": "2081-01-15",
+      "focused": "2081-01-15",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "keyboard focus moves (week starts Sunday)",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "moveFocus",
+     "arg": "left",
+     "expect": {
+      "focused": "2081-01-14",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "up",
+     "expect": {
+      "focused": "2081-01-07",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 2
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "down",
+     "expect": {
+      "focused": "2081-01-14",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 3
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "right",
+     "expect": {
+      "focused": "2081-01-15",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 4
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "end",
+     "expect": {
+      "focused": "2081-01-15",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 4
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "home",
+     "expect": {
+      "focused": "2081-01-09",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 5
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "end",
+     "expect": {
+      "focused": "2081-01-15",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 6
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "pageDown",
+     "expect": {
+      "focused": "2081-02-15",
+      "visible": [
+       2081,
+       2
+      ],
+      "events": 7
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "pageUp",
+     "expect": {
+      "focused": "2081-01-15",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 8
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "shiftPageDown",
+     "expect": {
+      "focused": "2082-01-15",
+      "visible": [
+       2082,
+       1
+      ],
+      "events": 9
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "shiftPageUp",
+     "expect": {
+      "focused": "2081-01-15",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 10
+     }
+    }
+   ]
+  },
+  {
+   "name": "home and end with week starting Saturday",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "weekStartsOn": 6
+   },
+   "steps": [
+    {
+     "action": "moveFocus",
+     "arg": "home",
+     "expect": {
+      "focused": "2081-01-15",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 0
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "end",
+     "expect": {
+      "focused": "2081-01-21",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "focus crosses a month boundary and the view follows",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      31
+     ],
+     "expect": {
+      "events": 1
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "right",
+     "expect": {
+      "focused": "2081-02-01",
+      "visible": [
+       2081,
+       2
+      ],
+      "events": 2
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "left",
+     "expect": {
+      "focused": "2081-01-31",
+      "visible": [
+       2081,
+       1
+      ],
+      "events": 3
+     }
+    }
+   ]
+  },
+  {
+   "name": "min and max stop focus and disable dates",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "min": [
+     2081,
+     1,
+     10
+    ],
+    "max": [
+     2081,
+     1,
+     20
+    ]
+   },
+   "steps": [
+    {
+     "action": "moveFocus",
+     "arg": "pageUp",
+     "expect": {
+      "focused": "2081-01-10",
+      "events": 1,
+      "canGoPrev": false,
+      "canGoNext": false
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "left",
+     "expect": {
+      "focused": "2081-01-10",
+      "events": 1
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "pageDown",
+     "expect": {
+      "focused": "2081-01-20",
+      "events": 2
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "right",
+     "expect": {
+      "focused": "2081-01-20",
+      "events": 2
+     }
+    },
+    {
+     "action": "prevMonth",
+     "arg": null,
+     "expect": {
+      "events": 2
+     }
+    },
+    {
+     "action": "nextMonth",
+     "arg": null,
+     "expect": {
+      "events": 2
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      9
+     ],
+     "error": "OUT_OF_RANGE",
+     "expect": {
+      "value": null,
+      "events": 2
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      21
+     ],
+     "error": "OUT_OF_RANGE",
+     "expect": {
+      "events": 2
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      10
+     ],
+     "expect": {
+      "value": "2081-01-10",
+      "focused": "2081-01-10",
+      "events": 3
+     }
+    },
+    {
+     "action": "selectToday",
+     "arg": null,
+     "expect": {
+      "value": "2081-01-15",
+      "focused": "2081-01-15",
+      "events": 4
+     }
+    }
+   ],
+   "initExpect": {
+    "focused": "2081-01-15",
+    "canGoPrev": false,
+    "canGoNext": false,
+    "monthsDisabled": 11,
+    "yearsDisabled": 11
+   }
+  },
+  {
+   "name": "min in a later month moves the initial focus",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "min": [
+     2081,
+     3,
+     1
+    ]
+   },
+   "steps": [],
+   "initExpect": {
+    "focused": "2081-03-01",
+    "visible": [
+     2081,
+     3
+    ],
+    "canGoPrev": false,
+    "canGoNext": true,
+    "monthsDisabled": 2,
+    "yearsDisabled": 9
+   }
+  },
+  {
+   "name": "goTo",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "goTo",
+     "arg": [
+      2081,
+      9
+     ],
+     "expect": {
+      "visible": [
+       2081,
+       9
+      ],
+      "focused": "2081-09-15",
+      "events": 1
+     }
+    },
+    {
+     "action": "goTo",
+     "arg": [
+      2081,
+      9
+     ],
+     "expect": {
+      "events": 1
+     }
+    },
+    {
+     "action": "goTo",
+     "arg": [
+      2081,
+      13
+     ],
+     "error": "INVALID_DATE",
+     "expect": {
+      "visible": [
+       2081,
+       9
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "goTo",
+     "arg": [
+      1999,
+      1
+     ],
+     "error": "OUT_OF_RANGE",
+     "expect": {
+      "visible": [
+       2081,
+       9
+      ],
+      "events": 1
+     }
+    },
+    {
+     "action": "goTo",
+     "arg": [
+      2082,
+      2
+     ],
+     "expect": {
+      "visible": [
+       2082,
+       2
+      ],
+      "focused": "2082-02-15",
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "first month of the data",
+   "init": {
+    "today": [
+     2000,
+     1,
+     1
+    ]
+   },
+   "steps": [
+    {
+     "action": "prevMonth",
+     "arg": null,
+     "expect": {
+      "events": 0,
+      "visible": [
+       2000,
+       1
+      ]
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "left",
+     "expect": {
+      "events": 0,
+      "focused": "2000-01-01"
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "pageUp",
+     "expect": {
+      "events": 0,
+      "focused": "2000-01-01"
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "shiftPageUp",
+     "expect": {
+      "events": 0
+     }
+    },
+    {
+     "action": "nextMonth",
+     "arg": null,
+     "expect": {
+      "visible": [
+       2000,
+       2
+      ],
+      "events": 1
+     }
+    }
+   ],
+   "initExpect": {
+    "canGoPrev": false,
+    "canGoNext": true
+   }
+  },
+  {
+   "name": "last month of the data",
+   "init": {
+    "today": [
+     2100,
+     12,
+     31
+    ]
+   },
+   "steps": [
+    {
+     "action": "nextMonth",
+     "arg": null,
+     "expect": {
+      "events": 0
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "right",
+     "expect": {
+      "events": 0,
+      "focused": "2100-12-31"
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "pageDown",
+     "expect": {
+      "events": 0
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "shiftPageDown",
+     "expect": {
+      "events": 0
+     }
+    },
+    {
+     "action": "prevMonth",
+     "arg": null,
+     "expect": {
+      "visible": [
+       2100,
+       11
+      ],
+      "events": 1
+     }
+    }
+   ],
+   "initExpect": {
+    "canGoPrev": true,
+    "canGoNext": false
+   }
+  },
+  {
+   "name": "views and year pages",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "setView",
+     "arg": "months",
+     "expect": {
+      "view": "months",
+      "events": 1
+     }
+    },
+    {
+     "action": "setView",
+     "arg": "months",
+     "expect": {
+      "events": 1
+     }
+    },
+    {
+     "action": "setView",
+     "arg": "years",
+     "expect": {
+      "view": "years",
+      "events": 2,
+      "yearsFirst": 2072,
+      "yearsFirstLabel": "2072"
+     }
+    },
+    {
+     "action": "select",
+     "arg": [
+      2081,
+      1,
+      20
+     ],
+     "expect": {
+      "view": "days",
+      "value": "2081-01-20",
+      "events": 3
+     }
+    }
+   ]
+  },
+  {
+   "name": "year page in Nepali",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "language": "ne"
+   },
+   "steps": [],
+   "initExpect": {
+    "yearsFirst": 2072,
+    "yearsFirstLabel": "२०७२",
+    "monthsFirstLabel": "बैशाख"
+   }
+  },
+  {
+   "name": "language change",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "setLanguage",
+     "arg": "ne",
+     "expect": {
+      "title": "बैशाख २०८१",
+      "events": 1
+     }
+    },
+    {
+     "action": "setLanguage",
+     "arg": "ne",
+     "expect": {
+      "events": 1
+     }
+    },
+    {
+     "action": "setLanguage",
+     "arg": "en",
+     "expect": {
+      "title": "Baisakh 2081",
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "initial value",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "value": [
+     2081,
+     1,
+     20
+    ]
+   },
+   "steps": [],
+   "initExpect": {
+    "value": "2081-01-20",
+    "focused": "2081-01-20",
+    "events": 0
+   }
+  },
+  {
+   "name": "subscribers hear every change once",
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ]
+   },
+   "steps": [
+    {
+     "action": "nextMonth",
+     "arg": null,
+     "expect": {
+      "events": 1
+     }
+    },
+    {
+     "action": "moveFocus",
+     "arg": "right",
+     "expect": {
+      "events": 2
+     }
+    }
+   ]
+  }
+ ],
+ "initErrors": [
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "value": [
+     2081,
+     1,
+     20
+    ],
+    "min": [
+     2081,
+     2,
+     1
+    ]
+   },
+   "code": "OUT_OF_RANGE"
+  },
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "min": [
+     2081,
+     2,
+     1
+    ],
+    "max": [
+     2081,
+     1,
+     1
+    ]
+   },
+   "code": "INVALID_DATA"
+  },
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "weekStartsOn": 7
+   },
+   "code": "INVALID_DATA"
+  },
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "value": [
+     2081,
+     9,
+     30
+    ]
+   },
+   "code": "INVALID_DATE"
+  }
+ ],
+ "cellProps": [
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "value": [
+     2081,
+     1,
+     20
+    ]
+   },
+   "date": [
+    2081,
+    1,
+    15
+   ],
+   "props": {
+    "role": "gridcell",
+    "aria-selected": false,
+    "aria-disabled": false,
+    "aria-label": "Saturday, 15 Baisakh 2081 (AD 27 April 2024)",
+    "tabIndex": -1
+   }
+  },
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "value": [
+     2081,
+     1,
+     20
+    ]
+   },
+   "date": [
+    2081,
+    1,
+    20
+   ],
+   "props": {
+    "role": "gridcell",
+    "aria-selected": true,
+    "aria-disabled": false,
+    "aria-label": "Thursday, 20 Baisakh 2081 (AD 2 May 2024)",
+    "tabIndex": 0
+   }
+  },
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "language": "ne"
+   },
+   "date": [
+    2081,
+    1,
+    15
+   ],
+   "props": {
+    "role": "gridcell",
+    "aria-selected": false,
+    "aria-disabled": false,
+    "aria-label": "शनिबार, १५ बैशाख २०८१ (ई.सं. 27 अप्रिल 2024)",
+    "tabIndex": 0
+   }
+  },
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "showAd": false
+   },
+   "date": [
+    2081,
+    1,
+    15
+   ],
+   "props": {
+    "role": "gridcell",
+    "aria-selected": false,
+    "aria-disabled": false,
+    "aria-label": "Saturday, 15 Baisakh 2081",
+    "tabIndex": 0
+   }
+  },
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "min": [
+     2081,
+     1,
+     10
+    ],
+    "max": [
+     2081,
+     1,
+     20
+    ]
+   },
+   "date": [
+    2081,
+    1,
+    9
+   ],
+   "props": {
+    "role": "gridcell",
+    "aria-selected": false,
+    "aria-disabled": true,
+    "aria-label": "Sunday, 9 Baisakh 2081 (AD 21 April 2024)",
+    "tabIndex": -1
+   }
+  },
+  {
+   "init": {
+    "today": [
+     2081,
+     1,
+     15
+    ],
+    "min": [
+     2081,
+     1,
+     10
+    ],
+    "max": [
+     2081,
+     1,
+     20
+    ]
+   },
+   "date": [
+    2081,
+    1,
+    21
+   ],
+   "props": {
+    "role": "gridcell",
+    "aria-selected": false,
+    "aria-disabled": true,
+    "aria-label": "Friday, 21 Baisakh 2081 (AD 3 May 2024)",
+    "tabIndex": -1
+   }
+  },
+  {
+   "init": {
+    "today": [
+     2000,
+     1,
+     1
+    ]
+   },
+   "date": null,
+   "props": {
+    "role": "gridcell",
+    "aria-selected": false,
+    "aria-disabled": true,
+    "aria-label": "",
+    "tabIndex": -1
+   }
+  }
+ ],
+ "keyActions": [
+  {
+   "key": "ArrowLeft",
+   "shift": false,
+   "out": "left"
+  },
+  {
+   "key": "ArrowRight",
+   "shift": false,
+   "out": "right"
+  },
+  {
+   "key": "ArrowUp",
+   "shift": false,
+   "out": "up"
+  },
+  {
+   "key": "ArrowDown",
+   "shift": false,
+   "out": "down"
+  },
+  {
+   "key": "Home",
+   "shift": false,
+   "out": "home"
+  },
+  {
+   "key": "End",
+   "shift": false,
+   "out": "end"
+  },
+  {
+   "key": "PageUp",
+   "shift": false,
+   "out": "pageUp"
+  },
+  {
+   "key": "PageDown",
+   "shift": false,
+   "out": "pageDown"
+  },
+  {
+   "key": "PageUp",
+   "shift": true,
+   "out": "shiftPageUp"
+  },
+  {
+   "key": "PageDown",
+   "shift": true,
+   "out": "shiftPageDown"
+  },
+  {
+   "key": "ArrowLeft",
+   "shift": true,
+   "out": "left"
+  },
+  {
+   "key": "Enter",
+   "shift": false,
+   "out": "select"
+  },
+  {
+   "key": " ",
+   "shift": false,
+   "out": "select"
+  },
+  {
+   "key": "Escape",
+   "shift": false,
+   "out": "close"
+  },
+  {
+   "key": "a",
+   "shift": false,
+   "out": null
+  },
+  {
+   "key": "Tab",
+   "shift": false,
+   "out": null
+  }
+ ]
+}

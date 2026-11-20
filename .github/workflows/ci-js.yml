@@ -1,0 +1,30 @@
+name: ci-js
+on:
+  pull_request:
+  push:
+    branches: [main, dev]
+jobs:
+  js:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tz: [Asia/Kathmandu, UTC, America/Los_Angeles, Pacific/Kiritimati]
+    env:
+      TZ: ${{ matrix.tz }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            ts/package-lock.json
+            cli/package-lock.json
+      - run: npm ci
+        working-directory: ts
+      - run: npm run build
+        working-directory: ts
+      - run: npm run test:run
+        working-directory: ts
+      - run: npm ci && npm run build
+        working-directory: cli

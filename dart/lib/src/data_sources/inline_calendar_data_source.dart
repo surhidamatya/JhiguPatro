@@ -15,13 +15,18 @@ import '../types.dart';
 /// ```
 class InlineCalendarDataSource implements NepaliCalendarDataSource {
   final Map<int, List<int>> _years;
-  @override final int supportedStartYear;
-  @override final int supportedEndYear;
+  @override
+  final int supportedStartYear;
+  @override
+  final int supportedEndYear;
+  @override
+  final int? verifiedThrough;
 
   const InlineCalendarDataSource({
     required Map<int, List<int>> years,
     required this.supportedStartYear,
     required this.supportedEndYear,
+    this.verifiedThrough,
   }) : _years = years;
 
   @override

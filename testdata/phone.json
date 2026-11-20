@@ -1,0 +1,39 @@
+{
+  "_note": "Hand-derived from data/phone-prefixes.json and the rules in docs/IMPLEMENTATION_GUIDE.md section 10. Not from an official source. Shared by TS and Dart tests.",
+  "valid": [
+    { "in": "9841234567", "e164": "+9779841234567", "national": "984-1234567", "type": "mobile", "carrier": "NTC" },
+    { "in": "984-123 4567", "e164": "+9779841234567", "national": "984-1234567", "type": "mobile", "carrier": "NTC" },
+    { "in": "+977 9841234567", "e164": "+9779841234567", "national": "984-1234567", "type": "mobile", "carrier": "NTC" },
+    { "in": "+977-984-1234567", "e164": "+9779841234567", "national": "984-1234567", "type": "mobile", "carrier": "NTC" },
+    { "in": "009779841234567", "e164": "+9779841234567", "national": "984-1234567", "type": "mobile", "carrier": "NTC" },
+    { "in": "9779841234567", "e164": "+9779841234567", "national": "984-1234567", "type": "mobile", "carrier": "NTC" },
+    { "in": "09841234567", "e164": "+9779841234567", "national": "984-1234567", "type": "mobile", "carrier": "NTC" },
+    { "in": "९८४१२३४५६७", "e164": "+9779841234567", "national": "984-1234567", "type": "mobile", "carrier": "NTC" },
+    { "in": "+९७७ ९८४-१२३४५६७", "e164": "+9779841234567", "national": "984-1234567", "type": "mobile", "carrier": "NTC" },
+    { "in": "9801234567", "e164": "+9779801234567", "national": "980-1234567", "type": "mobile", "carrier": "Ncell" },
+    { "in": "9741234567", "e164": "+9779741234567", "national": "974-1234567", "type": "mobile", "carrier": "NTC" },
+    { "in": "01-4123456", "e164": "+97714123456", "national": "01-4123456", "type": "landline", "areaCode": "1" },
+    { "in": "+977 1 4123456", "e164": "+97714123456", "national": "01-4123456", "type": "landline", "areaCode": "1" },
+    { "in": "061-520123", "e164": "+97761520123", "national": "061-520123", "type": "landline", "areaCode": "61" },
+    { "in": "010-520123", "e164": "+97710520123", "national": "010-520123", "type": "landline", "areaCode": "10" },
+    { "in": "9611234567", "allowInactive": true, "e164": "+9779611234567", "national": "961-1234567", "type": "mobile", "carrier": "Smart Telecom" },
+    { "in": "9001234567", "allowInactive": true, "e164": "+9779001234567", "national": "900-1234567", "type": "mobile", "carrier": null }
+  ],
+  "invalid": [
+    { "in": "", "code": "EMPTY" },
+    { "in": "   ", "code": "EMPTY" },
+    { "in": "98412", "code": "TOO_SHORT" },
+    { "in": "9841234", "code": "TOO_SHORT" },
+    { "in": "984123456", "code": "TOO_SHORT" },
+    { "in": "98412345678", "code": "TOO_LONG" },
+    { "in": "+977984123456789", "code": "TOO_LONG" },
+    { "in": "984abc4567", "code": "BAD_CHARACTERS" },
+    { "in": "9831234567", "code": "BAD_PREFIX" },
+    { "in": "8841234567", "code": "BAD_PREFIX" },
+    { "in": "+1 4155550123", "code": "BAD_PREFIX" },
+    { "in": "01-7123456", "code": "BAD_PREFIX" },
+    { "in": "061-123456", "code": "BAD_PREFIX" },
+    { "in": "9611234567", "code": "INACTIVE_PREFIX" },
+    { "in": "9721234567", "code": "INACTIVE_PREFIX" }
+  ]
+}

@@ -4,7 +4,8 @@
 
 export type CalendarType = 'AD' | 'BS';
 
-export interface NepaliDate {
+/** Plain year/month/day fields. The `NepaliDate` class (nepaliDate.ts) has the same fields plus methods. */
+export interface NepaliDateFields {
   year: number;
   month: number; // 1–12
   day: number;
@@ -36,11 +37,20 @@ export interface NepaliCalendarDataSource {
 
   /** The last BS year supported by this data source. */
   readonly supportedEndYear: number;
+
+  /**
+   * Last BS year checked against agreeing sources. Years after it still
+   * convert, but getDateAccuracy() reports a warning. Omit if unknown
+   * (every year is then reported as unverified).
+   */
+  readonly verifiedThrough?: number;
 }
 
 export interface CalendarJson {
   version: string;
   supportedRange: { start: number; end: number };
+  verifiedThrough?: number;
+  unverifiedYears?: string;
   referencePoint: {
     bsYear: number;
     bsMonth: number;
