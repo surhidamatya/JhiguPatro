@@ -187,6 +187,14 @@ class _HomeState extends State<Home> {
                   onChanged: (d) => _note('field: ${d?.toIsoString()}'),
                 ),
                 const SizedBox(height: 8),
+                JhiguDateRangeField(
+                  decoration: const InputDecoration(
+                      labelText: 'Stay', border: OutlineInputBorder()),
+                  today: today,
+                  onChanged: (a, b) =>
+                      _note('range field: ${a?.toIsoString()} to ${b?.toIsoString()}'),
+                ),
+                const SizedBox(height: 8),
                 Builder(
                   builder: (context) => FilledButton(
                     onPressed: () async {

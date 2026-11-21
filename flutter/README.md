@@ -164,8 +164,23 @@ JhiguDateField(
 
 `JhiguDatePicker` gained `onSelected` (called on every pick, even the day that was
 already selected; `onChanged` only fires for a change) and `showClear`. A
-`suffixIcon` in your `decoration` replaces the clear button. There is no range
-field widget yet.
+`suffixIcon` in your `decoration` replaces the clear button.
+
+`JhiguDateRangeField` is the same for a range: it shows "10 Bhadra 2082 – 15 Bhadra
+2082" (`format` and `separator` are yours to change) and opens the range dialog.
+`onChanged(start, end)` gets both together, or two nulls when cleared; `start` and
+`end` are optional and followed from the parent as for the date field. An empty
+field shows the date field's "Select a date" placeholder because the string
+tables have no range wording.
+
+```dart
+JhiguDateRangeField(
+  start: _start,
+  end: _end,
+  decoration: const InputDecoration(labelText: 'Stay'),
+  onChanged: (s, e) => setState(() { _start = s; _end = e; }),
+)
+```
 
 ## `FlutterDevanagariRenderer` (PDF receipts)
 

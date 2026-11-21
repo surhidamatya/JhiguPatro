@@ -355,7 +355,7 @@ Dart has the model, validation and totals for receipts, the SMS gateway interfac
 
 ### Flutter widgets
 
-`flutter/` is a Flutter package (`jhigu_patro_flutter`, depends on `dart/` by path) with `JhiguDatePicker`, `JhiguCalendar`, `JhiguRangePicker`, `JhiguMoneyField`, `JhiguPhoneField`, `JhiguAddressPicker`, `JhiguDateField` and the dialog functions `showJhiguDatePicker` and `showJhiguDateRangePicker`. The date picker is an inline BS date picker built on the same `DatePicker` state machine as the web component:
+`flutter/` is a Flutter package (`jhigu_patro_flutter`, depends on `dart/` by path) with `JhiguDatePicker`, `JhiguCalendar`, `JhiguRangePicker`, `JhiguMoneyField`, `JhiguPhoneField`, `JhiguAddressPicker`, `JhiguDateField`, `JhiguDateRangeField` and the dialog functions `showJhiguDatePicker` and `showJhiguDateRangePicker`. The date picker is an inline BS date picker built on the same `DatePicker` state machine as the web component:
 
 ```dart
 JhiguDatePicker(
@@ -399,6 +399,7 @@ To pick in a dialog or from a form field:
 ```dart
 final date = await showJhiguDatePicker(context: context, initial: _date);   // null if dismissed
 JhiguDateField(value: _date, onChanged: (d) => setState(() => _date = d))   // tap to pick, clear button
+JhiguDateRangeField(onChanged: (start, end) => print('$start $end'))        // the same for a range
 ```
 
 Style the pickers with a `JhiguTheme` in `ThemeData.extensions`; anything left null falls back to your `ColorScheme`. There is nothing for React Native. See `flutter/README.md`.
@@ -440,5 +441,5 @@ await buildReceiptPdf(doc, options: ReceiptPdfOptions(renderer: FlutterDevanagar
 - **Shared vectors** in `testdata/` are mostly hand-derived or produced by independent Python models, not copied from official sources.
 - **Nepali text** (month aliases, labels, error messages, SMS templates) is unreviewed by a native speaker. Short Nepali month names are ambiguous.
 - **Phone** carrier and active flags, **addresses** (names, ward counts) and **amount in words** (English only) are best effort. Notes: `data/PHONE_NOTES.md`, `data/ADDRESS_NOTES.md`, `data/MONEY_NOTES.md`.
-- **Not built:** Flutter print/share helpers, a Flutter range field, React Native widgets, framework wrappers for the web components, Nepali amount in words, a file-backed SMS reminder store.
+- **Not built:** Flutter print/share helpers, React Native widgets, framework wrappers for the web components, Nepali amount in words, a file-backed SMS reminder store.
 - Design notes per area: `data/DATES_NOTES.md`, `data/PICKER_NOTES.md`, `data/RECEIPT_NOTES.md`, `data/SMS_NOTES.md`, `data/STRINGS_NOTES.md`.
