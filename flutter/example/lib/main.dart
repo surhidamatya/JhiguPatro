@@ -50,8 +50,7 @@ class _HomeState extends State<Home> {
   Uint8List? _png;
   String _pdfNote = '';
 
-  Future<void> _share() async {
-    final doc = ReceiptDocument(
+  ReceiptDocument _nepaliReceipt() => ReceiptDocument(
       kind: ReceiptKind.invoice,
       number: '2082/83-001',
       issueDate: NepaliDate.checked(2082, 5, 10),
@@ -69,6 +68,9 @@ class _HomeState extends State<Home> {
       language: ReceiptLanguage.ne,
       pageSize: PageSize.a4,
     );
+
+  Future<void> _share() async {
+    final doc = _nepaliReceipt();
     final ok = await shareReceipt(doc,
         onWarnings: (w) => _note('receipt warnings: $w'));
     _note('share: $ok');
@@ -238,6 +240,18 @@ class _HomeState extends State<Home> {
                 const SizedBox(height: 8),
                 FilledButton(
                     onPressed: _renderNepali, child: const Text('Render Nepali + build PDF')),
+                const SizedBox(height: 8),
+                FilledButton(
+                    key: const Key('preview'),
+                    onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
+                        builder: (_) => Scaffold(
+                              appBar: AppBar(title: const Text('Receipt preview')),
+                              body: JhiguReceiptPreview(
+                                doc: _nepaliReceipt(),
+                                onWarnings: (w) => debugPrint('warnings: $w'),
+                              ),
+                            ))),
+                    child: const Text('Preview Nepali receipt')),
                 const SizedBox(height: 8),
                 FilledButton(
                     key: const Key('share'),

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jhigu_patro_flutter/receipt_print.dart';
 import 'package:jhigu_patro_utils/jhigu_patro_utils.dart';
@@ -68,6 +68,19 @@ class _FakePrinting extends PrintingPlatform {
       body: body
     ));
     return result;
+  }
+
+  /// What the preview asked to draw: the PDF bytes of each `raster` call.
+  final rasters = <Uint8List>[];
+
+  @override
+  Future<PrintingInfo> info() async =>
+      const PrintingInfo(canPrint: true, canShare: true, canRaster: true);
+
+  @override
+  Stream<PdfRaster> raster(Uint8List document, List<int>? pages, double dpi) {
+    rasters.add(document);
+    return const Stream.empty();
   }
 
   @override
@@ -267,6 +280,204 @@ void main() {
         await buildReceiptPdfWithFlutter(_doc(), renderer: _Recording(calls));
         expect(calls, isEmpty);
       });
+    });
+  });
+
+  group('JhiguReceiptPreview', () {
+    Future<void> show(
+      WidgetTester t,
+      Widget preview, {
+      bool settle = true,
+    }) async {
+      await t.pumpWidget(MaterialApp(
+        home: Scaffold(body: SizedBox(height: 700, width: 500, child: preview)),
+      ));
+      if (settle) {
+        // The PDF is built on a real event loop, not on the test's fake clock.
+        await t.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 300)));
+        await t.pump();
+      }
+    }
+
+    PdfPreview pdfPreview(WidgetTester t) =>
+        t.widget<PdfPreview>(find.byType(PdfPreview));
+
+    testWidgets(
+        'shows a PdfPreview at the receipt paper with no format controls',
+        (t) async {
+      await show(t, JhiguReceiptPreview(doc: _doc(pageSize: PageSize.a5)));
+      final p = pdfPreview(t);
+      expect(p.initialPageFormat, PdfPageFormat.a5);
+      expect(p.canChangePageFormat, isFalse);
+      expect(p.canChangeOrientation, isFalse);
+      expect(p.canDebug, isFalse);
+      expect(p.dynamicLayout, isFalse);
+      expect(p.allowPrinting, isTrue);
+      expect(p.allowSharing, isTrue);
+    });
+
+    testWidgets('the paper follows the receipt: A4 and the 80 mm roll too',
+        (t) async {
+      await show(t, JhiguReceiptPreview(doc: _doc(pageSize: PageSize.roll80)));
+      expect(pdfPreview(t).initialPageFormat, PdfPageFormat.roll80);
+      await show(t, JhiguReceiptPreview(doc: _doc()));
+      expect(pdfPreview(t).initialPageFormat, PdfPageFormat.a4);
+    });
+
+    testWidgets('the file name is safe by default and can be set', (t) async {
+      await show(t, JhiguReceiptPreview(doc: _doc(number: '2082/83-001')));
+      expect(pdfPreview(t).pdfFileName, '2082_83-001.pdf');
+      await show(t, JhiguReceiptPreview(doc: _doc(), fileName: 'bill.pdf'));
+      expect(pdfPreview(t).pdfFileName, 'bill.pdf');
+    });
+
+    testWidgets('printing, sharing and the page width are passed on',
+        (t) async {
+      await show(
+          t,
+          JhiguReceiptPreview(
+              doc: _doc(),
+              allowPrinting: false,
+              allowSharing: false,
+              maxPageWidth: 320));
+      final p = pdfPreview(t);
+      expect(p.allowPrinting, isFalse);
+      expect(p.allowSharing, isFalse);
+      expect(p.maxPageWidth, 320);
+    });
+
+    testWidgets(
+        'the PDF it draws is the receipt, and any paper gets the same file',
+        (t) async {
+      final calls = <String>[];
+      await show(
+          t,
+          JhiguReceiptPreview(
+              doc: _doc(language: ReceiptLanguage.ne, customer: 'राम'),
+              renderer: _Recording(calls)));
+      await t.runAsync(() async {
+        final p = pdfPreview(t);
+        final a = await p.build(PdfPageFormat.a4);
+        final b =
+            await p.build(PdfPageFormat.roll80); // any paper: the same PDF
+        expect(String.fromCharCodes(a.sublist(0, 5)), '%PDF-');
+        expect(b, a);
+        // What the preview handed to the rasterizer is that same file.
+        for (var i = 0; i < 10 && fake.rasters.isEmpty; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+          await t.pump(const Duration(milliseconds: 100));
+        }
+        expect(fake.rasters, isNotEmpty);
+        expect(fake.rasters.first, a);
+      });
+      expect(calls, isNotEmpty);
+    });
+
+    testWidgets('the same document instance is not built again on a rebuild',
+        (t) async {
+      final calls = <String>[];
+      final renderer = _Recording(calls);
+      final doc = _doc(language: ReceiptLanguage.ne, customer: 'राम');
+      late StateSetter set;
+      await t.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: StatefulBuilder(builder: (c, setState) {
+            set = setState;
+            return SizedBox(
+                height: 700,
+                width: 500,
+                child: JhiguReceiptPreview(doc: doc, renderer: renderer));
+          }),
+        ),
+      ));
+      await t.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 300)));
+      await t.pump();
+      final first = calls.length;
+      expect(first, greaterThan(0));
+      set(() {});
+      await t.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 200)));
+      await t.pump();
+      expect(calls.length, first);
+    });
+
+    testWidgets('a different document is built and shown', (t) async {
+      final calls = <String>[];
+      final renderer = _Recording(calls);
+      await show(
+          t,
+          JhiguReceiptPreview(
+              doc: _doc(language: ReceiptLanguage.ne, customer: 'राम'),
+              renderer: renderer));
+      expect(calls, contains('राम'));
+      await show(
+          t,
+          JhiguReceiptPreview(
+              doc: _doc(language: ReceiptLanguage.ne, customer: 'सीता'),
+              renderer: renderer));
+      expect(calls, contains('सीता'));
+      await t.runAsync(() async {
+        final bytes = await pdfPreview(t).build(PdfPageFormat.a4);
+        expect(String.fromCharCodes(bytes.sublist(0, 5)), '%PDF-');
+      });
+    });
+
+    testWidgets('a different renderer for the same document builds again',
+        (t) async {
+      final one = <String>[];
+      final two = <String>[];
+      final doc = _doc(language: ReceiptLanguage.ne, customer: 'राम');
+      await show(t, JhiguReceiptPreview(doc: doc, renderer: _Recording(one)));
+      expect(one, isNotEmpty);
+      await show(t, JhiguReceiptPreview(doc: doc, renderer: _Recording(two)));
+      expect(two, isNotEmpty);
+    });
+
+    testWidgets('warnings are reported, and the preview still builds',
+        (t) async {
+      List<String>? seen;
+      await show(
+          t,
+          JhiguReceiptPreview(
+              doc: _doc(language: ReceiptLanguage.ne, customer: 'राम'),
+              renderer: _FailingRenderer(),
+              onWarnings: (w) => seen = w));
+      expect(seen, isNotNull);
+      expect(seen!.join(' '), contains('DevanagariRenderException'));
+      await t.runAsync(() async {
+        final bytes = await pdfPreview(t).build(PdfPageFormat.a4);
+        expect(String.fromCharCodes(bytes.sublist(0, 5)), '%PDF-');
+      });
+    });
+
+    testWidgets('onPrinted, onShared and the error builder are passed on',
+        (t) async {
+      var printed = 0;
+      var shared = 0;
+      Widget err(BuildContext c, Object e) => const Text('oops');
+      await show(
+          t,
+          JhiguReceiptPreview(
+              doc: _doc(),
+              onPrinted: () => printed++,
+              onShared: () => shared++,
+              errorBuilder: err));
+      final p = pdfPreview(t);
+      p.onPrinted!(t.element(find.byType(PdfPreview)));
+      p.onShared!(t.element(find.byType(PdfPreview)));
+      expect(printed, 1);
+      expect(shared, 1);
+      expect(p.onError, same(err));
+    });
+
+    testWidgets('no callbacks given means none are installed', (t) async {
+      await show(t, JhiguReceiptPreview(doc: _doc()));
+      final p = pdfPreview(t);
+      expect(p.onPrinted, isNull);
+      expect(p.onShared, isNull);
+      expect(p.onError, isNull);
     });
   });
 }

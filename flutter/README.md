@@ -231,8 +231,23 @@ are yours to set. `buildReceiptPdfWithFlutter`, `receiptPageFormat` and
 `receiptFileName` are there if you want the pieces. The entry point re-exports the
 `receipt_pdf.dart` API.
 
-There is no in-app preview widget: `printing`'s `PdfPreview` needs extra setup on
-the web, so it was left out.
+`JhiguReceiptPreview` shows the receipt in the app, as it will print: its pages in
+a scrollable view with the system's print and share buttons (it is `PdfPreview`
+from `printing`, configured for a receipt).
+
+```dart
+SizedBox(height: 600, child: JhiguReceiptPreview(doc: doc))
+```
+
+The PDF is built once for a given `doc` and renderer and reused for the preview,
+printing and sharing, so what you see is what is printed; pass a different `doc`
+and it rebuilds. The paper is the receipt's own size and cannot be changed in the
+preview (no page format, orientation or debug controls, no reflow). It needs a
+bounded height. `renderer`, `onWarnings`, `allowPrinting`, `allowSharing`,
+`maxPageWidth`, `fileName`, `onPrinted`, `onShared` and `errorBuilder` are
+optional. On the web it loads pdf.js from a CDN to draw the pages (the `printing`
+README says how to host it yourself). The preview's buttons use the package's own
+English labels; they are not translated here.
 
 See [`example/`](example) for a working app (web) and
 [`../data/PICKER_NOTES.md`](../data/PICKER_NOTES.md) for what was and was not

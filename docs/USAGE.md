@@ -467,6 +467,7 @@ To print or share straight from a Flutter app, use `package:jhigu_patro_flutter/
 ```dart
 await printReceipt(doc);    // system print dialog
 await shareReceipt(doc);    // share sheet, or a download on the web
+// in the widget tree: SizedBox(height: 600, child: JhiguReceiptPreview(doc: doc))
 ```
 
 ## Accuracy and limits
@@ -475,5 +476,5 @@ await shareReceipt(doc);    // share sheet, or a download on the web
 - **Shared vectors** in `testdata/` are mostly hand-derived or produced by independent Python models, not copied from official sources.
 - **Nepali text** (month aliases, labels, error messages, SMS templates) is unreviewed by a native speaker. Short Nepali month names are ambiguous.
 - **Phone** carrier and active flags, **addresses** (names, ward counts) and **amount in words** (English only) are best effort. Notes: `data/PHONE_NOTES.md`, `data/ADDRESS_NOTES.md`, `data/MONEY_NOTES.md`.
-- **Not built:** a Flutter in-app PDF preview, React Native widgets, wrappers for frameworks other than React, Nepali amount in words, a database-backed SMS reminder store, multi-process locking for the file store.
+- **Not built:** React Native widgets, wrappers for frameworks other than React and Vue, Nepali amount in words, a database-backed SMS reminder store, multi-process locking for the file store.
 - Design notes per area: `data/DATES_NOTES.md`, `data/PICKER_NOTES.md`, `data/RECEIPT_NOTES.md`, `data/SMS_NOTES.md`, `data/STRINGS_NOTES.md`.
