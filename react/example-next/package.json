@@ -1,0 +1,19 @@
+{
+  "name": "jhigu-patro-react-example-next",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 5178 -H 127.0.0.1",
+    "build": "next build",
+    "start": "next start -p 5178 -H 127.0.0.1"
+  },
+  "dependencies": {
+    "jhigu-patro-react": "file:..",
+    "jhigu-patro-utils-ts": "file:../../ts",
+    "next": "16.4.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6"
+  }
+}

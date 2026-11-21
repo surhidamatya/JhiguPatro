@@ -76,7 +76,7 @@ theming: `style={{ '--jhigu-color-primary': '#b91c1c' }}`), `id`, `title`, `hidd
   `<div style="display: contents">` as the place to put it.
 - **Client only.** The element is created after the first render, so server rendering
   gives the empty wrapper, and the field appears on hydration. Nothing is registered
-  without a browser.
+  without a browser. In Next.js, use the components from a `'use client'` file.
 - **StrictMode is fine** (mount, unmount, mount gives one element and one listener).
 
 ## Checked and not checked
@@ -95,6 +95,15 @@ theming: `style={{ '--jhigu-color-primary': '#b91c1c' }}`), `id`, `title`, `hidd
   rerender; a parent-driven date updates the picker; switching `language` re-renders
   in Nepali with values kept; a themed `style` custom property changes the colour;
   submitting the form gives `dob`, `stay_start`, `stay_end`, `amount` and `phone`.
-- **Not checked:** the example in a browser with React 18; server rendering and
-  hydration in a real framework (Next.js and the like); Safari, Firefox, touch and
+- Seen in Next.js 16.4.6 (App Router, Turbopack, React 19) in `example-next/`: a server component
+  renders a client component with all six kinds of field. `next build` prerenders the page (the HTML
+  has five empty wrappers and no custom elements, so nothing needs `customElements` on the server).
+  In Chromium, after hydration each element exists once, the date picker draws its 31 days, typing
+  into the money field formats it, and the form gives `dob` and `amount` (paisa). The console has
+  no errors and no hydration warnings, in `next start` and in `next dev` (StrictMode). The calendar
+  data is imported from `jhigu-patro-utils-ts/nepali_calendar_data.json` and initialised at module
+  level, so the same code runs on the server and in the browser. In a monorepo with linked packages,
+  set `turbopack.root` to the repo root (see `example-next/next.config.mjs`).
+- **Not checked:** the example in a browser with React 18; the Pages Router and webpack builds of
+  Next.js, and other frameworks (Remix, Astro); Safari, Firefox, touch and
   screen readers (the same limits as the web components themselves).

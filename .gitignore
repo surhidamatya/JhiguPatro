@@ -21,3 +21,7 @@ __pycache__/
 
 # dart
 dart/.dart_tool/
+
+# Next.js example
+.next/
+next-env.d.ts
