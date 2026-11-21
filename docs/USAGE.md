@@ -140,7 +140,7 @@ vatInclusive(Npr.fromRupees(1130)).subtotal.paisa; // => 100000
 amountInWords(Npr.fromPaisa(12345)); // => 'Rupees One Hundred Twenty-Three and Forty-Five Paisa Only'
 ```
 
-Amount in words is English only for now.
+Pass `{ language: 'ne' }` for Nepali: `amountInWords(Npr.fromPaisa(12345), { language: 'ne' })` gives `एक सय तेइस रुपैयाँ पैँतालीस पैसा मात्र`. The Nepali word table comes from one package (every word compared with web tables; 38 are spelled differently in at least one, mostly long versus short vowel) and has not been reviewed by a native speaker (`data/MONEY_NOTES.md`). `numberToWords(n, 'ne')` gives the number alone.
 
 ## Phone numbers
 
@@ -445,7 +445,7 @@ File('invoice.pdf').writeAsBytesSync(result.bytes);
 for (final w in result.warnings) { print(w); }
 ```
 
-Latin text and digits are real, selectable PDF text. The PDF library cannot shape Devanagari, so any string that contains it must be drawn as an image by a `DevanagariRenderer` you supply (a ready one for Flutter and one for servers are below). Without one, Nepali labels fall back to English and Devanagari text from the document (names, notes) is replaced by `[?]`, and `result.warnings` says so. Amount in words is English only, so it is left out for `ne` receipts.
+Latin text and digits are real, selectable PDF text. The PDF library cannot shape Devanagari, so any string that contains it must be drawn as an image by a `DevanagariRenderer` you supply (a ready one for Flutter and one for servers are below). Without one, Nepali labels fall back to English and Devanagari text from the document (names, notes) is replaced by `[?]`, and `result.warnings` says so. The amount in words is English for `en` and `bilingual` receipts and Nepali for `ne` (the Nepali words are not native-speaker reviewed); in a Nepali PDF it is drawn as an image like any Devanagari text.
 
 For servers and command-line tools there is a ready renderer that calls an external program (`rsvg-convert` by default, which shapes Devanagari correctly). Install it and a Devanagari font such as Noto Sans Devanagari, then:
 
@@ -477,7 +477,7 @@ await shareReceipt(doc);    // share sheet, or a download on the web
 - **Calendar data:** BS 2000 to 2100 is in the data file. Years up to 2083 are cross-checked; BS 2062 and 2084 to 2099 are not verified against the official calendar. See `data/CALENDAR_NOTES.md`.
 - **Shared vectors** in `testdata/` are mostly hand-derived or produced by independent Python models, not copied from official sources.
 - **Nepali text** (month aliases, labels, error messages, SMS templates) is unreviewed by a native speaker. Short Nepali month names are ambiguous.
-- **Phone** carrier and active flags, **addresses** (names, ward counts) and **amount in words** (English only) are best effort. Notes: `data/PHONE_NOTES.md`, `data/ADDRESS_NOTES.md`, `data/MONEY_NOTES.md`.
+- **Phone** carrier and active flags, **addresses** (names, ward counts) and **amount in words** (the Nepali words are from one package and unreviewed) are best effort. Notes: `data/PHONE_NOTES.md`, `data/ADDRESS_NOTES.md`, `data/MONEY_NOTES.md`.
 - **Release readiness:** `tools/pack-check/` packs the four npm packages, installs the tarballs in a scratch project, and imports and runs them (0 failures; one warning: there is no LICENSE file yet, which the owner has to add, along with a copyright holder). Nothing has been published, and the package names and versions were not reviewed for availability.
 - **Browsers and accessibility:** the web components were checked in Chromium and WebKit (25 checks each) and audited with axe-core in 34 page states (`tools/browser-check/`); Firefox, iOS Safari, touch, real screen readers and keyboard-only use by a person were not. One axe finding is known and documented there (the small AD number on date cells).
 - **Not built:** React Native widgets, wrappers for frameworks other than React and Vue, Nepali amount in words, a database-backed SMS reminder store, multi-process locking for the file store.

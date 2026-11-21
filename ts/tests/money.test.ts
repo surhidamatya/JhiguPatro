@@ -164,7 +164,7 @@ describe('amountInWords', () => {
     it(`${t.paisa} ${JSON.stringify(t.options)}`, () => expect(amountInWords(p(t.paisa), t.options)).toBe(t.out));
   }
   it('Npr.inWords matches', () => expect(p(12345).inWords()).toBe(amountInWords(p(12345))));
-  it('only English is supported for now', () => {
+  it('an unsupported language is an error', () => {
     expect(code(() => amountInWords(p(1), { language: v.words.unsupportedLanguage }))).toBe('INVALID_ARGUMENT');
   });
 });

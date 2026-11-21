@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Generates typed TypeScript and Dart files from data/*.json (guide 5.4).
- * Currently: strings.{en,ne}.json, phone-prefixes.json, address.json.
+ * Currently: strings.{en,ne}.json, phone-prefixes.json, address.json, nepali-numbers.json.
  *
  *   node tools/gen-data/gen.mjs           write generated files
  *   node tools/gen-data/gen.mjs --check   fail if committed files are stale
@@ -347,6 +347,57 @@ ${monthNameList.map(([k, m]) => `  ${dq(k)}: ${m},`).join('\n')}
 `;
 }
 
+// ── Nepali number words ──────────────────────────────────────────────────────
+const nepaliNumbers = read('data/nepali-numbers.json');
+if (nepaliNumbers.words.length !== 100 || new Set(nepaliNumbers.words).size !== 100) {
+  throw new Error('data/nepali-numbers.json: words must be 100 distinct entries (0-99)');
+}
+const NN_SCALES = ['hundred', 'thousand', 'lakh', 'crore', 'arba', 'kharba'];
+for (const k of NN_SCALES) if (typeof nepaliNumbers.scales[k] !== 'string') throw new Error(`data/nepali-numbers.json: missing scale ${k}`);
+
+function nepaliNumbersTs() {
+  return `// ${HEADER('data/nepali-numbers.json')}
+
+/**
+ * Nepali words for 0 to 99. Not native-speaker reviewed; see \`data/nepali-numbers.json\`
+ * (\`review\` and \`variants\`) for how far each word is backed.
+ */
+export const nepaliNumberWords: readonly string[] = [
+${nepaliNumbers.words.map(w => `  ${JSON.stringify(w)},`).join('\n')}
+];
+
+/** How far each word of \`nepaliNumberWords\` is backed: \`two-sources\`, \`single-source\` or \`disputed\`. */
+export const nepaliNumberReview: readonly string[] = [
+${nepaliNumbers.review.map(w => `  ${JSON.stringify(w)},`).join('\n')}
+];
+
+/** Scale words: 100, 10^3, 10^5, 10^7, 10^9, 10^11. */
+export const nepaliScales = {
+${NN_SCALES.map(k => `  ${k}: ${JSON.stringify(nepaliNumbers.scales[k])},`).join('\n')}
+} as const;
+`;
+}
+
+function nepaliNumbersDart() {
+  return `// ${HEADER('data/nepali-numbers.json')}
+// ignore_for_file: lines_longer_than_80_chars
+
+/// Nepali words for 0 to 99. Not native-speaker reviewed; see data/nepali-numbers.json
+/// (review and variants) for how far each word is backed.
+const List<String> nepaliNumberWords = [
+${nepaliNumbers.words.map(w => `  ${dq(w)},`).join('\n')}
+];
+
+/// How far each word of [nepaliNumberWords] is backed: two-sources, single-source or disputed.
+const List<String> nepaliNumberReview = [
+${nepaliNumbers.review.map(w => `  ${dq(w)},`).join('\n')}
+];
+
+/// Scale words: 100, 10^3, 10^5, 10^7, 10^9, 10^11.
+${NN_SCALES.map(k => `const String nepaliScale${cap(k)} = ${dq(nepaliNumbers.scales[k])};`).join('\n')}
+`;
+}
+
 const outputs = {
   'ts/src/generated/strings.ts': ts(),
   'dart/lib/src/generated/strings.dart': dart(),
@@ -356,6 +407,8 @@ const outputs = {
   'dart/lib/src/generated/month_names.dart': monthNamesDart(),
   'ts/src/generated/address.ts': addressTs(),
   'dart/lib/src/generated/address.dart': addressDart(),
+  'ts/src/generated/nepaliNumbers.ts': nepaliNumbersTs(),
+  'dart/lib/src/generated/nepali_numbers.dart': nepaliNumbersDart(),
 };
 
 let stale = false;

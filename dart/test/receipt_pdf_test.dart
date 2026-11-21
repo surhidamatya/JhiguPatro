@@ -308,9 +308,10 @@ void main() {
       expect(RegExp(r'/Subtype/Image').hasMatch(s), isTrue);
       expect(fake.calls, contains('राम श्रेष्ठ'));
       expect(fake.calls, contains('बिजक')); // the Nepali word for invoice
-      // Amount in words is English only, so a Nepali receipt leaves it out.
+      // The amount in words is in Nepali, drawn through the renderer, not English text.
       expect(_text(r.bytes), isNot(contains('Rupees')));
-      expect(fake.calls.any((c) => c.contains('अक्षरमा')), isFalse);
+      expect(fake.calls, contains('अक्षरमा रकम'));
+      expect(fake.calls, contains('चार सय पच्चीस रुपैयाँ सोह्र पैसा मात्र'));
       // Each distinct string is rendered once.
       expect(fake.calls.toSet().length, fake.calls.length);
     });

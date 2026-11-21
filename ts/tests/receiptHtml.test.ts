@@ -89,7 +89,7 @@ describe('renderReceiptHtml', () => {
     expect(html).toContain('a<br>b<br>c');
   });
 
-  it('Nepali: Devanagari digits and labels, no English words', () => {
+  it('Nepali: Devanagari digits and labels, the amount in Nepali words, no English words', () => {
     const html = renderReceiptHtml(doc({ language: 'ne' }));
     expect(html).toContain('<html lang="ne">');
     expect(html).toContain('बिजक');
@@ -99,6 +99,7 @@ describe('renderReceiptHtml', () => {
     expect(html).not.toContain('Rupees');
     expect(html).not.toContain('Amount in words');
     expect(html).not.toContain('Bill to');
+    expect(html).toContain('<strong>अक्षरमा रकम:</strong> चार सय पच्चीस रुपैयाँ सोह्र पैसा मात्र');
   });
 
   it('bilingual: both labels, ascii digits, words kept', () => {

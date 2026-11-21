@@ -129,8 +129,9 @@ export function renderReceiptHtml(doc: ReceiptDocument, options: ReceiptHtmlOpti
     ? totalRow('balance', 'overpaid', t.balance.negate())
     : totalRow('balance', 'balance', t.balance));
 
-  const words = lang !== 'ne' && !t.total.isNegative()
-    ? `<p class="words"><strong>${label('amountInWords')}:</strong> ${esc(t.total.inWords())}</p>`
+  // Nepali receipts get the amount in Nepali words (not native-speaker reviewed); bilingual keeps English.
+  const words = !t.total.isNegative()
+    ? `<p class="words"><strong>${label('amountInWords')}:</strong> ${esc(t.total.inWords(lang === 'ne' ? { language: 'ne' } : {}))}</p>`
     : '';
   const notes = doc.notes && doc.notes.trim()
     ? `<div class="notes"><strong>${label('notes')}:</strong><div>${escMultiline(doc.notes)}</div></div>`

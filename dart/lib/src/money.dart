@@ -7,6 +7,7 @@
 /// from zero.
 library;
 
+import 'generated/nepali_numbers.dart';
 import 'generated/strings.dart';
 
 /// Why a money operation or parse failed.
@@ -329,6 +330,7 @@ class Npr {
     String language = 'en',
     String letterCase = 'title',
     String? prefix,
+    String? rupeesLabel,
     String? suffix,
     String? paisaLabel,
     String? joiner,
@@ -339,6 +341,7 @@ class Npr {
         language: language,
         letterCase: letterCase,
         prefix: prefix,
+        rupeesLabel: rupeesLabel,
         suffix: suffix,
         paisaLabel: paisaLabel,
         joiner: joiner,
@@ -361,7 +364,7 @@ VatResult vatInclusive(Npr total, {int bp = 1300}) {
   return VatResult(subtotal: base, vat: total.minus(base), total: total);
 }
 
-// ── Amount in words (guide 9.5, English only) ────────────────────────────────
+// ── Amount in words (guide 9.5) ──────────────────────────────────────────────────────────────────────────
 
 const _ones = [
   'zero',
@@ -429,8 +432,15 @@ String _belowCrore(int n) {
 /// `twelve lakh thirty-four thousand five hundred sixty-seven`. Above 99 crore
 /// the crore count is spoken as its own number (`one hundred crore`). No "and"
 /// inside the number.
-String numberToWords(int n) {
+///
+/// With `language: 'ne'` it is in Nepali (Devanagari) with the scales सय, हजार,
+/// लाख, करोड, अर्ब and खर्ब: `123456` is `एक लाख तेइस हजार चार सय छपन्न`. Above 99
+/// खर्ब the खर्ब count is spoken as its own number. The Nepali word table is
+/// **not native-speaker reviewed** (see `data/nepali-numbers.json`).
+String numberToWords(int n, {String language = 'en'}) {
   if (n < 0 || n > maxPaisa) throw _invalid;
+  if (language == 'ne') return _nepaliWords(n);
+  if (language != 'en') throw _invalid;
   if (n == 0) return 'zero';
   final crore = n ~/ 10000000;
   final rest = n % 10000000;
@@ -438,6 +448,33 @@ String numberToWords(int n) {
     if (crore > 0) '${_belowCrore(crore)} crore',
     if (rest > 0) _belowCrore(rest),
   ].join(' ');
+}
+
+/// [n] divided by [d] (whole part) and the remainder, for a safe integer [n].
+(int, int) _divmod(int n, int d) {
+  final r = n % d;
+  return ((n - r) ~/ d, r);
+}
+
+/// Nepali words for a non-negative safe integer. Every number below 100 is
+/// its own word.
+String _nepaliWords(int n) {
+  if (n == 0) return nepaliNumberWords[0];
+  final parts = <String>[];
+  var (count, rest) = _divmod(n, 100000000000);
+  if (count > 0) parts.add('${_nepaliWords(count)} $nepaliScaleKharba');
+  (count, rest) = _divmod(rest, 1000000000);
+  if (count > 0) parts.add('${nepaliNumberWords[count]} $nepaliScaleArba');
+  (count, rest) = _divmod(rest, 10000000);
+  if (count > 0) parts.add('${nepaliNumberWords[count]} $nepaliScaleCrore');
+  (count, rest) = _divmod(rest, 100000);
+  if (count > 0) parts.add('${nepaliNumberWords[count]} $nepaliScaleLakh');
+  (count, rest) = _divmod(rest, 1000);
+  if (count > 0) parts.add('${nepaliNumberWords[count]} $nepaliScaleThousand');
+  (count, rest) = _divmod(rest, 100);
+  if (count > 0) parts.add('${nepaliNumberWords[count]} $nepaliScaleHundred');
+  if (rest > 0) parts.add(nepaliNumberWords[rest]);
+  return parts.join(' ');
 }
 
 String _titleCase(String s) => s.replaceAllMapped(
@@ -449,21 +486,30 @@ String _titleCase(String s) => s.replaceAllMapped(
 /// paisa the rupee part is left out (`Fifty Paisa Only`); with nothing at all
 /// it is `Rupees Zero Only`. A negative amount starts with `Minus`.
 ///
-/// Only English (`language: 'en'`) is available; Nepali needs a reviewed word
-/// table. [letterCase] is `'title'` (default) or `'lower'`. Labels default to
-/// the strings table.
+/// [language] is `'en'` (default) or `'ne'`. The Nepali words are not
+/// native-speaker reviewed. In Nepali the order is
+/// `<rupee words> रुपैयाँ [<paisa words> पैसा] मात्र`, `ऋण` comes first for a
+/// negative amount, and [letterCase] has no effect. [letterCase] is `'title'`
+/// (default) or `'lower'`. Labels default to the strings table: [prefix]
+/// (before the rupee words) and [joiner] (between rupees and paisa) are empty
+/// in Nepali, and [rupeesLabel] (after the rupee words, default `रुपैयाँ`) is
+/// used in Nepali only.
 String amountInWords(
   Npr amount, {
   String language = 'en',
   String letterCase = 'title',
   String? prefix,
+  String? rupeesLabel,
   String? suffix,
   String? paisaLabel,
   String? joiner,
   String? minus,
 }) {
-  if (language != 'en') throw _invalid;
-  final w = getStrings('en').words;
+  if (language != 'en' && language != 'ne') throw _invalid;
+  final ne = language == 'ne';
+  final w = getStrings(language).words;
+  String spell(int n) =>
+      ne ? numberToWords(n, language: 'ne') : _titleCase(numberToWords(n));
   final abs = amount.paisa.abs();
   final rupees = abs ~/ 100;
   final paise = abs % 100;
@@ -471,16 +517,17 @@ String amountInWords(
   if (amount.paisa < 0) parts.add(minus ?? w.minus);
   if (rupees > 0 || paise == 0) {
     parts
-      ..add(prefix ?? w.rupees)
-      ..add(_titleCase(numberToWords(rupees)));
-    if (paise > 0) parts.add(joiner ?? w.and);
+      ..add(prefix ?? (ne ? '' : w.rupees))
+      ..add(spell(rupees))
+      ..add(ne ? (rupeesLabel ?? w.rupees) : '');
+    if (paise > 0) parts.add(joiner ?? (ne ? '' : w.and));
   }
   if (paise > 0) {
     parts
-      ..add(_titleCase(numberToWords(paise)))
+      ..add(spell(paise))
       ..add(paisaLabel ?? w.paisa);
   }
   parts.add(suffix ?? w.only);
-  final out = parts.join(' ');
-  return letterCase == 'lower' ? out.toLowerCase() : out;
+  final out = parts.where((x) => x.isNotEmpty).join(' ');
+  return !ne && letterCase == 'lower' ? out.toLowerCase() : out;
 }

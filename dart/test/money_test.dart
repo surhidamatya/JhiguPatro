@@ -323,7 +323,7 @@ void main() {
     test('Npr.inWords matches', () {
       expect(p(12345).inWords(), amountInWords(p(12345)));
     });
-    test('only English is supported for now', () {
+    test('an unsupported language is an error', () {
       expect(
         code(() => amountInWords(p(1),
             language: words['unsupportedLanguage'] as String)),

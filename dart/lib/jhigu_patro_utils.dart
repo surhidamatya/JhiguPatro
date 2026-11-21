@@ -5,6 +5,7 @@ export 'src/types.dart';
 export 'src/data_sources/inline_calendar_data_source.dart';
 export 'src/nepali_calendar.dart';
 export 'src/generated/strings.dart';
+export 'src/generated/nepali_numbers.dart';
 export 'src/phone.dart';
 export 'src/generated/address.dart';
 export 'src/address.dart';

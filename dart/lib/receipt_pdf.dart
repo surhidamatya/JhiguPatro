@@ -18,8 +18,9 @@
 /// both are reported in [ReceiptPdf.warnings], never silently.
 ///
 /// Page sizes: A4 and A5 (multi-page, header row repeats), 80 mm roll (one
-/// column, no table borders, as tall as needed). Amount in words is English
-/// only, so it is left out when the language is `ne`.
+/// column, no table borders, as tall as needed). Amount in words is English for
+/// `en` and `bilingual` and Nepali for `ne` (the Nepali words are not
+/// native-speaker reviewed); it is left out for a negative total.
 ///
 /// Not built here: a Flutter renderer, an atlas or command renderer, the FFI
 /// shaper, and print or share helpers (they belong in a Flutter package).
@@ -438,7 +439,7 @@ class _Builder {
       children: totalRows,
     );
 
-    final words = doc.language != ReceiptLanguage.ne && !t.total.isNegative
+    final words = !t.total.isNegative
         ? pw.Padding(
             padding: const pw.EdgeInsets.only(top: 8),
             child: pw.Row(
@@ -448,7 +449,12 @@ class _Builder {
                       size: fontSize, bold: true),
                   pw.SizedBox(width: 4),
                   pw.Expanded(
-                      child: await text(t.total.inWords(), size: fontSize)),
+                      child: await text(
+                          t.total.inWords(
+                              language: doc.language == ReceiptLanguage.ne
+                                  ? 'ne'
+                                  : 'en'),
+                          size: fontSize)),
                 ]),
           )
         : pw.SizedBox();

@@ -100,6 +100,12 @@ describe('money (shared vectors)', () => {
     assert.equal(r.data.devanagari, 'रु १२,३४,५६७.५०');
     assert.equal(r.data.words, 'Rupees Twelve Lakh Thirty-Four Thousand Five Hundred Sixty-Seven and Fifty Paisa Only');
   });
+  test('--lang ne gives the words in Nepali (from the independent model in tools/check-words)', () => {
+    const r = run('money', ['1234567.5', '--words', '--lang', 'ne']);
+    assert.equal(r.data.words, 'बाह्र लाख चौँतीस हजार पाँच सय सतसट्ठी रुपैयाँ पचास पैसा मात्र');
+    assert.match(r.lines.find(l => l.startsWith('In words')), /not native-speaker reviewed/);
+    assert.equal(run('money', ['1234567.5', '--words', '--lang', 'en']).data.words.startsWith('Rupees Twelve Lakh'), true);
+  });
   test('VAT 13% added to Rs. 1,234,567.50 (Python Decimal, half up)', () => {
     const r = run('money', ['1234567.50', '--vat', 'excl']);
     assert.deepEqual([r.data.vat.vat, r.data.vat.total], [16049378, 139506128]);

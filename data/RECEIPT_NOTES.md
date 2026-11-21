@@ -34,7 +34,7 @@ Messages are in `data/strings.*.json` group `receipt`. Nepali messages are unrev
 - Dates are BS only here. The AD date beside it is for rendering.
 - The guide's logo bytes are left out of the model (rendering concern).
 - A sum above the money limit throws `MoneyError OUT_OF_RANGE`, not a ReceiptError.
-- Amount in words: use `total.inWords()`; English only until Nepali number data exists.
+- Amount in words: use `total.inWords()`; `inWords({ language: 'ne' })` gives Nepali (single-source word table, not native-speaker reviewed: `data/nepali-numbers.json`).
 - TS dates are `NepaliDateFields` (a `NepaliDate` fits); Dart uses `NepaliDate`.
 
 ## Vectors
@@ -48,7 +48,7 @@ view, or print it to PDF with a headless browser on a server. It is not a PDF en
 - Languages: `en`, `ne` (Devanagari digits and labels), `bilingual` (both labels, ASCII digits). `options.digits` overrides.
 - All document text is HTML-escaped; line breaks become `<br>`. Totals come from `computeTotals`, so invalid documents throw the same errors.
 - Issue and due dates use the `dual` preset (BS date with AD beside it).
-- Amount in words is English only: shown for `en` and `bilingual`, left out for `ne` until Nepali number data exists.
+- Amount in words: English for `en` and `bilingual`, Nepali for `ne` (not native-speaker reviewed); left out for a negative total.
 - Fonts: no Noto font file is bundled (none is in the repo). Pass `fontCss` (an `@font-face`, for example with a base64 data URL) and `fontFamily` for identical output everywhere. `fontCss` is trusted input; `</style` in it is refused.
 - Money with a minus shows it before the symbol (`-Rs. 28.22`), as `Npr.format` does.
 - Not verified: the layout was not looked at in a browser or printed; only the markup is tested. No golden images yet.
@@ -60,7 +60,7 @@ view, or print it to PDF with a headless browser on a server. It is not a PDF en
 - Layout: header, title block with BS date and AD date, customer, lines table (header row repeats across pages), totals, amount in words, notes, signature, rotated semi-transparent stamp. A4 and A5 use `MultiPage`; 80 mm roll is one page as tall as the content, single column, no borders.
 - Built-in Helvetica, so Latin text and digits are real, selectable text. Tests read it back from the page stream (uncompressed with `ReceiptPdfOptions(compress: false)`).
 - **Devanagari (guide 12.4):** strings with a character in U+0900 to U+097F go to a `DevanagariRenderer` (returns a PNG and its size in points) and are placed as images, cached per `(text, size, weight)`. With no renderer, labels fall back to English and document text becomes `[?]`, with warnings `DEVANAGARI_LABELS_UNAVAILABLE` and `DEVANAGARI_TEXT_UNAVAILABLE`. The command renderer below is included; there is no Flutter, atlas or FFI renderer.
-- Amount in words is English only: shown for `en` and `bilingual`, left out for `ne`.
+- Amount in words: English for `en` and `bilingual`, Nepali for `ne` (drawn through the `DevanagariRenderer`, like any Devanagari text); left out for a negative total.
 - Text in standard fonts has no Unicode support, so characters outside Latin-1 in names or notes (for example a typographic dash or other scripts) will not draw correctly; Devanagari is handled, other scripts are not.
 - **Checked:** 17 tests (content, totals text matches `computeTotals`, page sizes, paging and repeated header, stamps, compression, Devanagari paths, errors); a deliberately wrong VAT value was caught. The A4 and 80 mm PDFs were rendered with `pdftoppm` and looked right. Not checked: other PDF viewers, printing, A5 by eye, bold weights at small sizes.
 - `pdf` prints a "no Unicode support" notice from an `assert`, so only in debug and test runs.

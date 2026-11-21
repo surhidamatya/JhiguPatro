@@ -116,8 +116,8 @@ export function money(args: string[]): ToolResult {
       `Devanagari:   ${data.devanagari}`,
     ];
     if (values.words) {
-      data.words = amountInWords(amount);
-      lines.push(`In words:     ${data.words} (English only)`);
+      data.words = amountInWords(amount, { language: lang });
+      lines.push(`In words:     ${data.words}${lang === 'ne' ? ' (Nepali words: not native-speaker reviewed)' : ''}`);
     }
     if (values.vat) {
       const bp = values.rate === undefined ? 1300 : percentToBp(values.rate);

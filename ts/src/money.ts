@@ -8,6 +8,7 @@
  * from zero.
  */
 import { getStrings } from './generated/strings.js';
+import { nepaliNumberWords, nepaliScales } from './generated/nepaliNumbers.js';
 import type { Language } from './generated/strings.js';
 
 export type MoneyErrorCode =
@@ -301,7 +302,7 @@ export function vatInclusive(total: Npr, bp = 1300): VatResult {
   return { subtotal: base, vat: total.minus(base), total };
 }
 
-// ── Amount in words (guide 9.5, English only) ────────────────────────────────
+// ── Amount in words (guide 9.5) ──────────────────────────────────────────────────────────────────────────
 
 const ONES = [
   'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
@@ -344,10 +345,17 @@ function belowCrore(n: number): string {
  * `twelve lakh thirty-four thousand five hundred sixty-seven`. Above 99 crore the
  * crore count is spoken as its own number (`one hundred crore`). No "and"
  * inside the number.
+ *
+ * With `language: 'ne'` it is in Nepali (Devanagari) with the scales सय, हजार,
+ * लाख, करोड, अर्ब and खर्ब: `123456` is `एक लाख तेइस हजार चार सय छपन्न`. Above 99
+ * खर्ब the खर्ब count is spoken as its own number. The Nepali word table is
+ * **not native-speaker reviewed** (see `data/nepali-numbers.json`).
  */
-export function numberToWords(n: number): string {
+export function numberToWords(n: number, language: 'en' | 'ne' = 'en'): string {
   checkInt(n);
   if (n < 0 || n > MAX_PAISA) throw new MoneyError('INVALID_ARGUMENT');
+  if (language === 'ne') return nepaliWords(n);
+  if (language !== 'en') throw new MoneyError('INVALID_ARGUMENT');
   if (n === 0) return 'zero';
   const crore = Math.floor(n / 10000000);
   const rest = n % 10000000;
@@ -357,18 +365,52 @@ export function numberToWords(n: number): string {
   return parts.join(' ');
 }
 
+/** `n` divided by `d` (whole part) and the remainder, for a safe integer `n`. */
+function divmod(n: number, d: number): [number, number] {
+  const r = n % d;
+  return [(n - r) / d, r];
+}
+
+/** Nepali words for a non-negative safe integer. Every number below 100 is its own word. */
+function nepaliWords(n: number): string {
+  if (n === 0) return nepaliNumberWords[0];
+  const parts: string[] = [];
+  let rest = n;
+  let count: number;
+  [count, rest] = divmod(rest, 100000000000);
+  if (count) parts.push(`${nepaliWords(count)} ${nepaliScales.kharba}`);
+  [count, rest] = divmod(rest, 1000000000);
+  if (count) parts.push(`${nepaliNumberWords[count]} ${nepaliScales.arba}`);
+  [count, rest] = divmod(rest, 10000000);
+  if (count) parts.push(`${nepaliNumberWords[count]} ${nepaliScales.crore}`);
+  [count, rest] = divmod(rest, 100000);
+  if (count) parts.push(`${nepaliNumberWords[count]} ${nepaliScales.lakh}`);
+  [count, rest] = divmod(rest, 1000);
+  if (count) parts.push(`${nepaliNumberWords[count]} ${nepaliScales.thousand}`);
+  [count, rest] = divmod(rest, 100);
+  if (count) parts.push(`${nepaliNumberWords[count]} ${nepaliScales.hundred}`);
+  if (rest) parts.push(nepaliNumberWords[rest]);
+  return parts.join(' ');
+}
+
 export interface AmountInWordsOptions {
-  /** Only English is available; Nepali needs a reviewed word table. */
-  language?: 'en';
+  /**
+   * `en` (default) or `ne`. The Nepali words are not native-speaker reviewed. In Nepali the
+   * order is `<rupee words> रुपैयाँ [<paisa words> पैसा] मात्र`, `ऋण` comes first for a
+   * negative amount, and `letterCase` has no effect.
+   */
+  language?: 'en' | 'ne';
   /** `title` (default) or `lower`. Applies to the whole result. */
   letterCase?: 'title' | 'lower';
-  /** Before the rupee words. Default from the strings table (`Rupees`). */
+  /** Before the rupee words. Default from the strings table (`Rupees`); empty in Nepali. */
   prefix?: string;
+  /** Nepali only: after the rupee words. Default `रुपैयाँ`. */
+  rupeesLabel?: string;
   /** After everything. Default `Only`. */
   suffix?: string;
   /** After the paisa words. Default `Paisa`. */
   paisaLabel?: string;
-  /** Between rupees and paisa. Default `and`. */
+  /** Between rupees and paisa. Default `and`; empty in Nepali. */
   joiner?: string;
   /** Before a negative amount. Default `Minus`. */
   minus?: string;
@@ -382,13 +424,17 @@ const titleCase = (s: string) => s.replace(/(^|[\s-])([a-z])/g, (_, sep: string,
  * is `Rupees Zero Only`. A negative amount starts with `Minus`.
  */
 export function amountInWords(amount: Npr, options: AmountInWordsOptions = {}): string {
-  if ((options.language ?? 'en') !== 'en') throw new MoneyError('INVALID_ARGUMENT');
-  const w = getStrings('en').words;
-  const prefix = options.prefix ?? w.rupees;
+  const language = options.language ?? 'en';
+  if (language !== 'en' && language !== 'ne') throw new MoneyError('INVALID_ARGUMENT');
+  const ne = language === 'ne';
+  const w = getStrings(language).words;
+  const prefix = options.prefix ?? (ne ? '' : w.rupees);
+  const rupeesLabel = ne ? (options.rupeesLabel ?? w.rupees) : '';
   const suffix = options.suffix ?? w.only;
   const paisaLabel = options.paisaLabel ?? w.paisa;
-  const joiner = options.joiner ?? w.and;
+  const joiner = options.joiner ?? (ne ? '' : w.and);
   const minus = options.minus ?? w.minus;
+  const spell = (n: number) => (ne ? numberToWords(n, 'ne') : titleCase(numberToWords(n)));
 
   const abs = Math.abs(amount.paisa);
   const rupees = Math.floor(abs / 100);
@@ -396,11 +442,11 @@ export function amountInWords(amount: Npr, options: AmountInWordsOptions = {}): 
   const parts: string[] = [];
   if (amount.paisa < 0) parts.push(minus);
   if (rupees > 0 || paise === 0) {
-    parts.push(prefix, titleCase(numberToWords(rupees)));
+    parts.push(prefix, spell(rupees), rupeesLabel);
     if (paise > 0) parts.push(joiner);
   }
-  if (paise > 0) parts.push(titleCase(numberToWords(paise)), paisaLabel);
+  if (paise > 0) parts.push(spell(paise), paisaLabel);
   parts.push(suffix);
-  const out = parts.join(' ');
-  return options.letterCase === 'lower' ? out.toLowerCase() : out;
+  const out = parts.filter(x => x !== '').join(' ');
+  return !ne && options.letterCase === 'lower' ? out.toLowerCase() : out;
 }
