@@ -51,8 +51,16 @@ class JhiguDatePicker extends StatefulWidget {
   /// The day marked as today. Default: today in Nepal. Pass it in tests.
   final NepaliDate? today;
 
+  /// Called every time the user picks a day (tap, Enter or Space, or Today),
+  /// even when it is the day that was already selected. [onChanged] only fires
+  /// for a change; a dialog uses this to close on any pick.
+  final ValueChanged<NepaliDate>? onSelected;
+
   /// Show the Today and Clear buttons.
   final bool showFooter;
+
+  /// Show the Clear button (only when [showFooter] is on).
+  final bool showClear;
 
   /// Take keyboard focus when first shown.
   final bool autofocus;
@@ -68,6 +76,8 @@ class JhiguDatePicker extends StatefulWidget {
     this.showAd = true,
     this.today,
     this.showFooter = true,
+    this.showClear = true,
+    this.onSelected,
     this.autofocus = false,
   });
 
@@ -171,7 +181,7 @@ class _JhiguDatePickerState extends State<JhiguDatePicker> {
     }
     try {
       if (action == KeyAction.select) {
-        _picker.select(_picker.state.focused);
+        _choose(() => _picker.select(_picker.state.focused));
       } else {
         _picker.moveFocus(action.focusMove!);
       }
@@ -189,6 +199,17 @@ class _JhiguDatePickerState extends State<JhiguDatePicker> {
     } on JhiguException {
       // A disabled date or a month outside the calendar data: ignore.
     }
+  }
+
+  /// Run a pick; when it was allowed, tell [JhiguDatePicker.onSelected].
+  void _choose(void Function() pick) {
+    try {
+      pick();
+    } on JhiguException {
+      return; // a disabled day or a month outside the data: not a pick
+    }
+    final v = _picker.state.value;
+    if (v != null) widget.onSelected?.call(v);
   }
 
   void _cycleView() {
@@ -265,13 +286,14 @@ class _JhiguDatePickerState extends State<JhiguDatePicker> {
             alignment: WrapAlignment.spaceBetween,
             children: [
               TextButton(
-                onPressed: () => _guard(_picker.selectToday),
+                onPressed: () => _choose(_picker.selectToday),
                 child: Text(strings.today),
               ),
-              TextButton(
-                onPressed: _picker.clear,
-                child: Text(strings.clear),
-              ),
+              if (widget.showClear)
+                TextButton(
+                  onPressed: _picker.clear,
+                  child: Text(strings.clear),
+                ),
             ],
           )
         : const SizedBox.shrink();
@@ -395,6 +417,6 @@ class _JhiguDatePickerState extends State<JhiguDatePicker> {
 
   void _tapDay(NepaliDate d) {
     _focus.requestFocus();
-    _guard(() => _picker.select(d));
+    _choose(() => _picker.select(d));
   }
 }

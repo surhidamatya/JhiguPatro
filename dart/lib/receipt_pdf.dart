@@ -63,6 +63,17 @@ abstract class DevanagariRenderer {
   });
 }
 
+/// A [DevanagariRenderer] could not produce an image. [buildReceiptPdf] catches
+/// it, falls back for that string and adds a warning.
+class DevanagariRenderException implements Exception {
+  /// A short reason. It never contains the text that was being drawn.
+  final String message;
+  const DevanagariRenderException(this.message);
+
+  @override
+  String toString() => 'DevanagariRenderException: $message';
+}
+
 /// Result of [buildReceiptPdf].
 class ReceiptPdf {
   final Uint8List bytes;

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jhigu_patro_flutter/jhigu_patro_flutter.dart';
 import 'package:jhigu_patro_utils/jhigu_patro_utils.dart';
+import 'package:jhigu_patro_utils/receipt_pdf.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +47,40 @@ class _HomeState extends State<Home> {
   NepaliDate? _en;
   NepaliDate? _ne = NepaliDate.checked(2082, 5, 12);
   String _log = '';
+  Uint8List? _png;
+  String _pdfNote = '';
+
+  Future<void> _renderNepali() async {
+    final renderer = FlutterDevanagariRenderer();
+    final r = await renderer.render('श्रेष्ठ क्ष भदौ २०८२',
+        fontSize: 20, bold: false, color: 0xFFFFFFFF);
+    final pdf = await buildReceiptPdf(
+      ReceiptDocument(
+        kind: ReceiptKind.invoice,
+        number: 'INV-001',
+        issueDate: NepaliDate.checked(2082, 5, 10),
+        business: const Business(name: 'हिमाल ट्रेडर्स', address: 'ठमेल'),
+        customer: const Party(name: 'राम श्रेष्ठ'),
+        lines: [
+          ReceiptLine(
+              description: 'चामल',
+              qtyMilli: 1000,
+              unit: 'kg',
+              unitPrice: Npr.fromPaisa(10000)),
+        ],
+        vatMode: VatMode.none,
+        paid: Npr.zero,
+        language: ReceiptLanguage.ne,
+        pageSize: PageSize.a4,
+      ),
+      options: ReceiptPdfOptions(renderer: renderer),
+    );
+    setState(() {
+      _png = r.png;
+      _pdfNote =
+          'picture ${r.widthPt.toStringAsFixed(1)} x ${r.heightPt.toStringAsFixed(1)} pt; PDF ${pdf.bytes.length} bytes, warnings: ${pdf.warnings.length}';
+    });
+  }
 
   void _note(String s) => setState(() => _log = '$s\n$_log');
 
@@ -137,6 +172,48 @@ class _HomeState extends State<Home> {
                       ? 'address: ${formatAddress(localLevelId: s.localLevelId!, ward: s.ward ?? 1)}'
                       : 'address: ${s.provinceId} ${s.districtId} ${s.localLevelId} ${s.ward}'),
                 ),
+              ]),
+            ),
+            SizedBox(
+              width: 340,
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('JhiguDateField and dialogs'),
+                const SizedBox(height: 8),
+                JhiguDateField(
+                  decoration: const InputDecoration(
+                      labelText: 'Date of birth', border: OutlineInputBorder()),
+                  max: today,
+                  today: today,
+                  onChanged: (d) => _note('field: ${d?.toIsoString()}'),
+                ),
+                const SizedBox(height: 8),
+                Builder(
+                  builder: (context) => FilledButton(
+                    onPressed: () async {
+                      final r = await showJhiguDateRangePicker(
+                          context: context, today: today);
+                      _note('range dialog: ${r == null ? null : '${r.start.toIsoString()} to ${r.end.toIsoString()}'}');
+                    },
+                    child: const Text('Pick a range in a dialog'),
+                  ),
+                ),
+              ]),
+            ),
+            SizedBox(
+              width: 340,
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('FlutterDevanagariRenderer'),
+                const SizedBox(height: 8),
+                FilledButton(
+                    onPressed: _renderNepali, child: const Text('Render Nepali + build PDF')),
+                if (_png != null) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                      color: Colors.black,
+                      padding: const EdgeInsets.all(8),
+                      child: Image.memory(_png!, key: const Key('png'))),
+                  Text(_pdfNote, key: const Key('pdfnote')),
+                ],
               ]),
             ),
             SizedBox(width: 340, child: Text(_log.isEmpty ? '(events appear here)' : _log, key: const Key('log'))),

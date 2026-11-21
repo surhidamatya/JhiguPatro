@@ -134,6 +134,65 @@ without calling `onChanged`; a parent that does not pass them keeps the choice.
 shared address data; the Nepali province names are the old numbered form for
 provinces 1 and 2 (see `data/ADDRESS_NOTES.md`).
 
+## Dialogs and `JhiguDateField`
+
+`showJhiguDatePicker` and `showJhiguDateRangePicker` show the pickers in a dialog
+and return what the user chose, or null if they dismiss it (tap outside, Escape,
+back). Picking a day closes the dialog at once, including the day that was already
+selected; the range dialog closes when the second day is chosen. There are no OK
+and Cancel buttons: the string tables have no words for them, and no Clear button
+in the date dialog (a dismissal and a clear would both be null).
+
+```dart
+final date = await showJhiguDatePicker(context: context, initial: _date, language: 'ne');
+final range = await showJhiguDateRangePicker(context: context); // (start: .., end: ..)?
+```
+
+`JhiguDateField` is a read-only text field that shows the date (`format`, default
+`D MMMM YYYY`, in `language`) and opens the dialog on tap, with a clear button.
+Its `onChanged` gets the day, or null when cleared. `value` is optional; when the
+parent changes it, the field follows without calling `onChanged`.
+
+```dart
+JhiguDateField(
+  value: _date,
+  max: today,
+  decoration: const InputDecoration(labelText: 'Date of birth'),
+  onChanged: (d) => setState(() => _date = d),
+)
+```
+
+`JhiguDatePicker` gained `onSelected` (called on every pick, even the day that was
+already selected; `onChanged` only fires for a change) and `showClear`. A
+`suffixIcon` in your `decoration` replaces the clear button. There is no range
+field widget yet.
+
+## `FlutterDevanagariRenderer` (PDF receipts)
+
+The `pdf` package cannot shape Devanagari, so `buildReceiptPdf` asks a renderer
+for a picture of each Nepali string. `FlutterDevanagariRenderer` draws them with
+Flutter's own text engine, so it works on every Flutter platform, the web included:
+
+```dart
+import 'package:jhigu_patro_utils/receipt_pdf.dart';
+
+final pdf = await buildReceiptPdf(
+  doc,
+  options: ReceiptPdfOptions(renderer: FlutterDevanagariRenderer()),
+);
+// pdf.bytes, pdf.warnings
+```
+
+It needs a Devanagari font. Without `fontFamily` it uses the platform's own, with
+Noto Sans Devanagari, Kohinoor Devanagari, Devanagari Sangam MN and Mangal as
+fallbacks. To control the look, bundle a font in your app and name it
+(`FlutterDevanagariRenderer(fontFamily: 'NotoSansDevanagari')`). This package ships
+no font. If a platform has no Devanagari font at all, the glyphs come out as empty
+boxes and nothing here can tell, so check a sample receipt on each platform you
+ship. The picture is transparent, 1.6 times the font size tall with the baseline at
+1.0 times (as the command renderer), and ignores the user's text-scale setting.
+Errors are a `DevanagariRenderException` that never contains the text.
+
 See [`example/`](example) for a working app (web) and
 [`../data/PICKER_NOTES.md`](../data/PICKER_NOTES.md) for what was and was not
 verified.

@@ -355,7 +355,7 @@ Dart has the model, validation and totals for receipts, the SMS gateway interfac
 
 ### Flutter widgets
 
-`flutter/` is a Flutter package (`jhigu_patro_flutter`, depends on `dart/` by path) with `JhiguDatePicker`, `JhiguCalendar`, `JhiguRangePicker`, `JhiguMoneyField`, `JhiguPhoneField` and `JhiguAddressPicker`. The date picker is an inline BS date picker built on the same `DatePicker` state machine as the web component:
+`flutter/` is a Flutter package (`jhigu_patro_flutter`, depends on `dart/` by path) with `JhiguDatePicker`, `JhiguCalendar`, `JhiguRangePicker`, `JhiguMoneyField`, `JhiguPhoneField`, `JhiguAddressPicker`, `JhiguDateField` and the dialog functions `showJhiguDatePicker` and `showJhiguDateRangePicker`. The date picker is an inline BS date picker built on the same `DatePicker` state machine as the web component:
 
 ```dart
 JhiguDatePicker(
@@ -394,6 +394,13 @@ JhiguPhoneField(onChanged: (e164) => print(e164))                 // 984-1234567
 JhiguAddressPicker(onChanged: (s) => print(s.selection))   // ids when complete, else null
 ```
 
+To pick in a dialog or from a form field:
+
+```dart
+final date = await showJhiguDatePicker(context: context, initial: _date);   // null if dismissed
+JhiguDateField(value: _date, onChanged: (d) => setState(() => _date = d))   // tap to pick, clear button
+```
+
 Style the pickers with a `JhiguTheme` in `ThemeData.extensions`; anything left null falls back to your `ColorScheme`. There is nothing for React Native. See `flutter/README.md`.
 
 ### PDF receipts
@@ -408,7 +415,7 @@ File('invoice.pdf').writeAsBytesSync(result.bytes);
 for (final w in result.warnings) { print(w); }
 ```
 
-Latin text and digits are real, selectable PDF text. The PDF library cannot shape Devanagari, so any string that contains it must be drawn as an image by a `DevanagariRenderer` you supply (for example one built on Flutter's `TextPainter`, or an external command). Without one, Nepali labels fall back to English and Devanagari text from the document (names, notes) is replaced by `[?]`, and `result.warnings` says so. Amount in words is English only, so it is left out for `ne` receipts.
+Latin text and digits are real, selectable PDF text. The PDF library cannot shape Devanagari, so any string that contains it must be drawn as an image by a `DevanagariRenderer` you supply (a ready one for Flutter and one for servers are below). Without one, Nepali labels fall back to English and Devanagari text from the document (names, notes) is replaced by `[?]`, and `result.warnings` says so. Amount in words is English only, so it is left out for `ne` receipts.
 
 For servers and command-line tools there is a ready renderer that calls an external program (`rsvg-convert` by default, which shapes Devanagari correctly). Install it and a Devanagari font such as Noto Sans Devanagari, then:
 
@@ -421,11 +428,17 @@ final result = await buildReceiptPdf(doc, options: ReceiptPdfOptions(renderer: r
 
 It uses `dart:io`, so it is not for the web, and no font is bundled. If the program fails, the PDF is still produced, the affected text becomes `[?]` and `result.warnings` says so.
 
+In a Flutter app (all platforms, the web included) use `FlutterDevanagariRenderer` from `jhigu_patro_flutter`, which draws with Flutter's own text engine; bundle a Devanagari font and name it, or it falls back to a platform font (see `flutter/README.md`):
+
+```dart
+await buildReceiptPdf(doc, options: ReceiptPdfOptions(renderer: FlutterDevanagariRenderer()));
+```
+
 ## Accuracy and limits
 
 - **Calendar data:** BS 2000 to 2100 is in the data file. Years up to 2083 are cross-checked; BS 2062 and 2084 to 2099 are not verified against the official calendar. See `data/CALENDAR_NOTES.md`.
 - **Shared vectors** in `testdata/` are mostly hand-derived or produced by independent Python models, not copied from official sources.
 - **Nepali text** (month aliases, labels, error messages, SMS templates) is unreviewed by a native speaker. Short Nepali month names are ambiguous.
 - **Phone** carrier and active flags, **addresses** (names, ward counts) and **amount in words** (English only) are best effort. Notes: `data/PHONE_NOTES.md`, `data/ADDRESS_NOTES.md`, `data/MONEY_NOTES.md`.
-- **Not built:** a Flutter or atlas Devanagari renderer for PDFs, Flutter print/share helpers, the other Flutter widgets (only the date picker exists), React Native widgets, framework wrappers for the web components, Nepali amount in words, a file-backed SMS reminder store.
+- **Not built:** Flutter print/share helpers, a Flutter range field, React Native widgets, framework wrappers for the web components, Nepali amount in words, a file-backed SMS reminder store.
 - Design notes per area: `data/DATES_NOTES.md`, `data/PICKER_NOTES.md`, `data/RECEIPT_NOTES.md`, `data/SMS_NOTES.md`, `data/STRINGS_NOTES.md`.

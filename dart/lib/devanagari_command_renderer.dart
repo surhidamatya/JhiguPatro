@@ -33,6 +33,10 @@ import 'dart:typed_data';
 
 import 'receipt_pdf.dart';
 
+// The exception lives in receipt_pdf.dart so renderers that cannot import
+// dart:io (the Flutter one) can throw it too.
+export 'receipt_pdf.dart' show DevanagariRenderException;
+
 /// Runs a program with [stdin] and returns its standard output. Throws if the
 /// program fails. Replace it in tests.
 typedef CommandRunner = Future<Uint8List> Function(
@@ -40,16 +44,6 @@ typedef CommandRunner = Future<Uint8List> Function(
   List<String> arguments,
   Uint8List stdin,
 );
-
-/// The renderer could not produce an image.
-class DevanagariRenderException implements Exception {
-  /// A short reason. It never contains the text that was being drawn.
-  final String message;
-  const DevanagariRenderException(this.message);
-
-  @override
-  String toString() => 'DevanagariRenderException: $message';
-}
 
 Future<Uint8List> _runProcess(
   String executable,
