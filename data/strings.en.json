@@ -33,7 +33,10 @@
     "selectYear": "Select year",
     "selectMonth": "Select month",
     "previousMonth": "Previous month",
-    "nextMonth": "Next month"
+    "nextMonth": "Next month",
+    "required": "Select a date",
+    "placeholder": "Select a date",
+    "noEvents": "No events"
   },
   "phone": {
     "empty": "Enter a phone number",
@@ -48,7 +51,13 @@
     "unknownProvince": "Unknown province",
     "unknownDistrict": "Unknown district",
     "unknownLocalLevel": "Unknown local level",
-    "badWard": "Ward number is not valid for this local level"
+    "badWard": "Ward number is not valid for this local level",
+    "province": "Province",
+    "district": "District",
+    "localLevel": "Local level",
+    "wardLabel": "Ward",
+    "choose": "Select",
+    "required": "Select an address"
   },
   "money": {
     "empty": "Enter an amount",
@@ -88,6 +97,43 @@
     "notes": "Notes",
     "signature": "Signature",
     "stampPaid": "PAID",
-    "stampCancelled": "CANCELLED"
+    "stampCancelled": "CANCELLED",
+    "emptyNumber": "Document number is required.",
+    "noLines": "At least one line is required.",
+    "emptyDescription": "Line description is required.",
+    "badQuantity": "Quantity must be a positive whole number of thousandths.",
+    "badUnitPrice": "Unit price must not be negative.",
+    "badDiscount": "Discount is invalid or larger than the total.",
+    "badVatRate": "VAT rate must be 0 to 10000 basis points.",
+    "badPaid": "Paid amount must not be negative.",
+    "dueBeforeIssue": "Due date is before the issue date.",
+    "pan": "PAN",
+    "vatNo": "VAT No.",
+    "phone": "Phone",
+    "billTo": "Bill to",
+    "number": "No.",
+    "date": "Date",
+    "description": "Description",
+    "quantity": "Qty",
+    "rate": "Rate",
+    "amount": "Amount",
+    "overpaid": "Overpaid"
+  },
+  "sms": {
+    "auth": "The SMS gateway rejected the credentials.",
+    "balance": "The SMS gateway account has insufficient balance.",
+    "badNumber": "The phone number was rejected.",
+    "rateLimit": "The SMS gateway rate limit was reached.",
+    "server": "The SMS gateway had a server error.",
+    "network": "The SMS gateway could not be reached.",
+    "unknown": "The SMS could not be sent.",
+    "badTemplate": "The message template could not be rendered.",
+    "missingValue": "A value for a template placeholder is missing.",
+    "unknownTemplate": "Unknown SMS template."
+  },
+  "smsTemplates": {
+    "rentDue": "Dear {name}, your rent of {amount} for {month} is due on {dueDate}. Please pay on time. - {sender}",
+    "udhaaro": "Dear {name}, you owe {amount}. Please clear the balance by {dueDate}. - {sender}",
+    "appointment": "Dear {name}, reminder: your appointment is on {date} at {time}. - {sender}"
   }
 }

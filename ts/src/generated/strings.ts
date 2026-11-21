@@ -38,6 +38,9 @@ export interface Strings {
     readonly selectMonth: string;
     readonly previousMonth: string;
     readonly nextMonth: string;
+    readonly required: string;
+    readonly placeholder: string;
+    readonly noEvents: string;
   };
   readonly phone: {
     readonly empty: string;
@@ -53,6 +56,12 @@ export interface Strings {
     readonly unknownDistrict: string;
     readonly unknownLocalLevel: string;
     readonly badWard: string;
+    readonly province: string;
+    readonly district: string;
+    readonly localLevel: string;
+    readonly wardLabel: string;
+    readonly choose: string;
+    readonly required: string;
   };
   readonly money: {
     readonly empty: string;
@@ -93,6 +102,43 @@ export interface Strings {
     readonly signature: string;
     readonly stampPaid: string;
     readonly stampCancelled: string;
+    readonly emptyNumber: string;
+    readonly noLines: string;
+    readonly emptyDescription: string;
+    readonly badQuantity: string;
+    readonly badUnitPrice: string;
+    readonly badDiscount: string;
+    readonly badVatRate: string;
+    readonly badPaid: string;
+    readonly dueBeforeIssue: string;
+    readonly pan: string;
+    readonly vatNo: string;
+    readonly phone: string;
+    readonly billTo: string;
+    readonly number: string;
+    readonly date: string;
+    readonly description: string;
+    readonly quantity: string;
+    readonly rate: string;
+    readonly amount: string;
+    readonly overpaid: string;
+  };
+  readonly sms: {
+    readonly auth: string;
+    readonly balance: string;
+    readonly badNumber: string;
+    readonly rateLimit: string;
+    readonly server: string;
+    readonly network: string;
+    readonly unknown: string;
+    readonly badTemplate: string;
+    readonly missingValue: string;
+    readonly unknownTemplate: string;
+  };
+  readonly smsTemplates: {
+    readonly rentDue: string;
+    readonly udhaaro: string;
+    readonly appointment: string;
   };
 }
 
@@ -132,6 +178,9 @@ export const stringsEn: Strings = {
     selectMonth: "Select month",
     previousMonth: "Previous month",
     nextMonth: "Next month",
+    required: "Select a date",
+    placeholder: "Select a date",
+    noEvents: "No events",
   },
   phone: {
     empty: "Enter a phone number",
@@ -147,6 +196,12 @@ export const stringsEn: Strings = {
     unknownDistrict: "Unknown district",
     unknownLocalLevel: "Unknown local level",
     badWard: "Ward number is not valid for this local level",
+    province: "Province",
+    district: "District",
+    localLevel: "Local level",
+    wardLabel: "Ward",
+    choose: "Select",
+    required: "Select an address",
   },
   money: {
     empty: "Enter an amount",
@@ -187,6 +242,43 @@ export const stringsEn: Strings = {
     signature: "Signature",
     stampPaid: "PAID",
     stampCancelled: "CANCELLED",
+    emptyNumber: "Document number is required.",
+    noLines: "At least one line is required.",
+    emptyDescription: "Line description is required.",
+    badQuantity: "Quantity must be a positive whole number of thousandths.",
+    badUnitPrice: "Unit price must not be negative.",
+    badDiscount: "Discount is invalid or larger than the total.",
+    badVatRate: "VAT rate must be 0 to 10000 basis points.",
+    badPaid: "Paid amount must not be negative.",
+    dueBeforeIssue: "Due date is before the issue date.",
+    pan: "PAN",
+    vatNo: "VAT No.",
+    phone: "Phone",
+    billTo: "Bill to",
+    number: "No.",
+    date: "Date",
+    description: "Description",
+    quantity: "Qty",
+    rate: "Rate",
+    amount: "Amount",
+    overpaid: "Overpaid",
+  },
+  sms: {
+    auth: "The SMS gateway rejected the credentials.",
+    balance: "The SMS gateway account has insufficient balance.",
+    badNumber: "The phone number was rejected.",
+    rateLimit: "The SMS gateway rate limit was reached.",
+    server: "The SMS gateway had a server error.",
+    network: "The SMS gateway could not be reached.",
+    unknown: "The SMS could not be sent.",
+    badTemplate: "The message template could not be rendered.",
+    missingValue: "A value for a template placeholder is missing.",
+    unknownTemplate: "Unknown SMS template.",
+  },
+  smsTemplates: {
+    rentDue: "Dear {name}, your rent of {amount} for {month} is due on {dueDate}. Please pay on time. - {sender}",
+    udhaaro: "Dear {name}, you owe {amount}. Please clear the balance by {dueDate}. - {sender}",
+    appointment: "Dear {name}, reminder: your appointment is on {date} at {time}. - {sender}",
   },
 };
 
@@ -226,6 +318,9 @@ export const stringsNe: Strings = {
     selectMonth: "महिना छान्नुहोस्",
     previousMonth: "अघिल्लो महिना",
     nextMonth: "अर्को महिना",
+    required: "मिति छान्नुहोस्",
+    placeholder: "मिति छान्नुहोस्",
+    noEvents: "कुनै कार्यक्रम छैन",
   },
   phone: {
     empty: "फोन नम्बर लेख्नुहोस्",
@@ -241,6 +336,12 @@ export const stringsNe: Strings = {
     unknownDistrict: "अज्ञात जिल्ला",
     unknownLocalLevel: "अज्ञात स्थानीय तह",
     badWard: "यो स्थानीय तहका लागि वडा नम्बर मान्य छैन",
+    province: "प्रदेश",
+    district: "जिल्ला",
+    localLevel: "स्थानीय तह",
+    wardLabel: "वडा",
+    choose: "छान्नुहोस्",
+    required: "ठेगाना छान्नुहोस्",
   },
   money: {
     empty: "रकम राख्नुहोस्",
@@ -281,6 +382,43 @@ export const stringsNe: Strings = {
     signature: "हस्ताक्षर",
     stampPaid: "भुक्तानी भयो",
     stampCancelled: "रद्द",
+    emptyNumber: "कागजात नम्बर आवश्यक छ।",
+    noLines: "कम्तीमा एउटा लाइन आवश्यक छ।",
+    emptyDescription: "लाइनको विवरण आवश्यक छ।",
+    badQuantity: "परिमाण हजारौं भागमा धनात्मक पूर्णांक हुनुपर्छ।",
+    badUnitPrice: "एकाइ मूल्य ऋणात्मक हुनु हुँदैन।",
+    badDiscount: "छुट अमान्य छ वा जम्माभन्दा ठूलो छ।",
+    badVatRate: "भ्याट दर ० देखि १०००० बेसिस प्वाइन्टबीच हुनुपर्छ।",
+    badPaid: "तिरेको रकम ऋणात्मक हुनु हुँदैन।",
+    dueBeforeIssue: "भुक्तानी मिति जारी मितिभन्दा अगाडि छ।",
+    pan: "प्यान",
+    vatNo: "भ्याट नं.",
+    phone: "फोन",
+    billTo: "ग्राहक",
+    number: "नं.",
+    date: "मिति",
+    description: "विवरण",
+    quantity: "परिमाण",
+    rate: "दर",
+    amount: "रकम",
+    overpaid: "बढी भुक्तानी",
+  },
+  sms: {
+    auth: "एसएमएस गेटवेले प्रमाणहरू अस्वीकार गर्‍यो।",
+    balance: "एसएमएस गेटवे खातामा पर्याप्त ब्यालेन्स छैन।",
+    badNumber: "फोन नम्बर अस्वीकृत भयो।",
+    rateLimit: "एसएमएस गेटवेको दर सीमा पुग्यो।",
+    server: "एसएमएस गेटवेमा सर्भर त्रुटि भयो।",
+    network: "एसएमएस गेटवेमा पुग्न सकिएन।",
+    unknown: "एसएमएस पठाउन सकिएन।",
+    badTemplate: "सन्देश ढाँचा तयार गर्न सकिएन।",
+    missingValue: "ढाँचाको एउटा प्लेसहोल्डरको मान छैन।",
+    unknownTemplate: "अज्ञात एसएमएस ढाँचा।",
+  },
+  smsTemplates: {
+    rentDue: "आदरणीय {name}, {month} को तपाईंको कोठा भाडा {amount} {dueDate} सम्म तिर्न बाँकी छ। कृपया समयमै तिर्नुहोला। - {sender}",
+    udhaaro: "आदरणीय {name}, तपाईंले {amount} उधारो तिर्न बाँकी छ। कृपया {dueDate} सम्म चुक्ता गर्नुहोला। - {sender}",
+    appointment: "आदरणीय {name}, सम्झना: तपाईंको अपोइन्टमेन्ट {date} मा {time} बजे छ। - {sender}",
   },
 };
 

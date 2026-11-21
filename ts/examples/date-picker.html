@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jhigu-date-picker example</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 24px; max-width: 760px; }
+  section { margin: 0 0 28px; }
+  h2 { font-size: 15px; margin: 0 0 8px; }
+  jhigu-date-picker::part(selected) { font-weight: 700; }
+  pre { background: #f3f4f6; padding: 8px; border-radius: 6px; min-height: 2em; }
+</style>
+</head>
+<body>
+<h1>jhigu-date-picker</h1>
+<form id="f">
+  <section><h2>Inline, English, AD shown</h2>
+    <jhigu-date-picker id="inline" name="inline" today="2082-05-10"></jhigu-date-picker></section>
+  <section><h2>Popup, Nepali, required, min 2082-05-05, max 2082-06-20</h2>
+    <jhigu-date-picker id="popup" name="when" language="ne" popup required min="2082-05-05" max="2082-06-20" today="2082-05-10"></jhigu-date-picker></section>
+  <section><h2>Dark, week starts Monday, value preset</h2>
+    <jhigu-date-picker id="dark" name="dark" theme="dark" week-starts-on="1" value="2082-01-15" today="2082-05-10"></jhigu-date-picker></section>
+  <button type="submit">Submit</button> <button type="reset">Reset</button>
+</form>
+<h2>Events and form data</h2>
+<pre id="log"></pre>
+<script type="module">
+  import { initializeCalendar, InlineCalendarDataSource } from '../dist/index.js';
+  import { defineJhiguDatePicker } from '../dist/elements/datePickerElement.js';
+  const cal = await (await fetch('../nepali_calendar_data.json')).json();
+  initializeCalendar(new InlineCalendarDataSource(cal.years, cal.supportedRange.start, cal.supportedRange.end, cal.verifiedThrough));
+  defineJhiguDatePicker();
+  const log = document.getElementById('log');
+  document.addEventListener('jhiguChange', e => { log.textContent += `change ${e.target.id}: ${JSON.stringify({bs: e.detail.bs, ad: e.detail.ad})}\n`; });
+  for (const t of ['jhiguOpen','jhiguClose']) document.addEventListener(t, e => { log.textContent += `${t} ${e.target.id}\n`; });
+  document.getElementById('f').addEventListener('submit', e => {
+    e.preventDefault();
+    log.textContent += 'submit ' + JSON.stringify([...new FormData(e.target).entries()]) + '\n';
+  });
+  window.ready = true;
+</script>
+</body>
+</html>

@@ -5,9 +5,28 @@ Converts between BS and AD (Gregorian), formats Nepali dates, handles Nepal time
 
 **Zero external dependencies. Offline-first. Works everywhere.**
 
+## The toolkit
+
+This repository is growing from a calendar library into one toolkit for apps in Nepal, in TypeScript/JavaScript and Dart, with shared data and shared test vectors so both give the same answers:
+
+| Area | What you get |
+|------|--------------|
+| Dates | `NepaliDate`, BS/AD conversion, token formatter, parser, fiscal year, month grid |
+| Money | `Npr` (integer paisa), lakh grouping, VAT, allocation, amount in words (English) |
+| Phone | Parse and validate Nepali mobile and landline numbers, carrier names |
+| Address | Provinces, districts, local levels and wards; search and formatting |
+| Receipts | Model, validation and totals (TS and Dart); HTML template for print or PDF (TS) |
+| SMS | Gateway interface (bring your own provider), templates, segment counter, retrying scheduler |
+| Headless widgets | Framework-free state machines for date, range, address, money and phone inputs |
+| Web components | `<jhigu-date-picker>`, `-date-range-picker`, `-calendar`, `-address-select`, `-money-input`, `-phone-input` |
+
+**Start with [docs/USAGE.md](docs/USAGE.md).** Its JavaScript samples are run by the test suite. Design notes and known gaps are in `data/*_NOTES.md`; the plan is in `docs/PRD.md` and `docs/IMPLEMENTATION_GUIDE.md`. The sections below describe the original calendar library and CLI, which still work as described.
+
 ---
 
-## What's inside
+## What's inside (original layout)
+
+The tree shows the calendar-era layout. Newer code is in `ts/src/` (dates, money, phone, address, receipts, SMS, pickers, `elements/`), `dart/lib/src/`, `data/` (shared JSON and notes), `testdata/` (shared vectors), `tools/` (generators and checks) and `docs/`.
 
 ```
 jhigu_patro_utils/
@@ -179,7 +198,7 @@ npm run test:run   # runs ts/ tests
 Serve `data/nepali_calendar_data.json` from your `public/` folder, then:
 
 ```ts
-import { JsonCalendarDataSource, initializeCalendar } from 'jhigu-patro-utils';
+import { JsonCalendarDataSource, initializeCalendar } from 'jhigu-patro-utils-ts';
 
 const source = new JsonCalendarDataSource();
 await source.initialize('/nepali_calendar_data.json');
@@ -190,8 +209,8 @@ initializeCalendar(source);
 
 ```ts
 import { readFileSync } from 'node:fs';
-import { InlineCalendarDataSource, initializeCalendar } from 'jhigu-patro-utils';
-import type { CalendarJson } from 'jhigu-patro-utils';
+import { InlineCalendarDataSource, initializeCalendar } from 'jhigu-patro-utils-ts';
+import type { CalendarJson } from 'jhigu-patro-utils-ts';
 
 const data: CalendarJson = JSON.parse(readFileSync('data/nepali_calendar_data.json', 'utf8'));
 const source = new InlineCalendarDataSource(data.years, data.supportedRange.start, data.supportedRange.end);
@@ -203,7 +222,7 @@ initializeCalendar(source);
 For tithi (lunar phase) information, use `PanchangDataSource`:
 
 ```ts
-import { PanchangDataSource } from 'jhigu-patro-utils';
+import { PanchangDataSource } from 'jhigu-patro-utils-ts';
 
 const panchang = new PanchangDataSource();
 await panchang.load('/2081_tithi.json');
@@ -265,7 +284,7 @@ import {
   isValidBSDate,
   getAvailableBSYears,
   getAvailableADYears,
-} from 'jhigu-patro-utils';
+} from 'jhigu-patro-utils-ts';
 
 // Conversion
 convertADToBS(new Date(2024, 3, 13));

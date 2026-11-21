@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jhigu-calendar example</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 24px; max-width: 760px; }
+  section { margin: 0 0 28px; }
+  h2 { font-size: 15px; margin: 0 0 8px; }
+  pre { background: #f3f4f6; padding: 8px; border-radius: 6px; min-height: 2em; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>jhigu-calendar</h1>
+<section><h2>English, marked via attribute, starts at 2082 Ashwin</h2>
+  <jhigu-calendar id="c1" year="2082" month="6" today="2082-05-10"
+    marked='{"2082-06-03":["Laxmi Puja","Market day"],"2082-06-05":"Bhai Tika","2082-05-29":"Teej"}'></jhigu-calendar></section>
+<section><h2>Nepali, events set from script, Monday start</h2>
+  <jhigu-calendar id="c2" language="ne" week-starts-on="1" today="2082-05-10"></jhigu-calendar></section>
+<h2>Events</h2>
+<pre id="log"></pre>
+<script type="module">
+  import { initializeCalendar, InlineCalendarDataSource } from '../dist/index.js';
+  import { defineJhiguCalendar } from '../dist/elements/calendarElement.js';
+  const cal = await (await fetch('../nepali_calendar_data.json')).json();
+  initializeCalendar(new InlineCalendarDataSource(cal.years, cal.supportedRange.start, cal.supportedRange.end, cal.verifiedThrough));
+  defineJhiguCalendar();
+  document.getElementById('c2').events = { '2082-05-12': 'जन्मदिन', '2082-05-14': ['बैठक', 'भोज'] };
+  const log = document.getElementById('log');
+  for (const t of ['jhiguSelect','jhiguMonthChange']) document.addEventListener(t, e => { log.textContent += `${t} ${e.target.id}: ${JSON.stringify(e.detail)}\n`; });
+  window.ready = true;
+</script>
+</body>
+</html>

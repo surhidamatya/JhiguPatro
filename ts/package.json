@@ -35,6 +35,70 @@
     "./phone-input": {
       "import": "./dist/phoneInput.js",
       "types": "./dist/phoneInput.d.ts"
+    },
+    "./receipt": {
+      "import": "./dist/receipt.js",
+      "types": "./dist/receipt.d.ts"
+    },
+    "./sms": {
+      "import": "./dist/sms.js",
+      "types": "./dist/sms.d.ts"
+    },
+    "./receipt-html": {
+      "import": "./dist/receiptHtml.js",
+      "types": "./dist/receiptHtml.d.ts"
+    },
+    "./date-picker-element": {
+      "import": "./dist/elements/datePickerElement.js",
+      "types": "./dist/elements/datePickerElement.d.ts"
+    },
+    "./field-elements": {
+      "import": "./dist/elements/fieldElements.js",
+      "types": "./dist/elements/fieldElements.d.ts"
+    },
+    "./address-element": {
+      "import": "./dist/elements/addressElement.js",
+      "types": "./dist/elements/addressElement.d.ts"
+    },
+    "./range-picker-element": {
+      "import": "./dist/elements/rangePickerElement.js",
+      "types": "./dist/elements/rangePickerElement.d.ts"
+    },
+    "./calendar-element": {
+      "import": "./dist/elements/calendarElement.js",
+      "types": "./dist/elements/calendarElement.d.ts"
+    },
+    "./receipt": {
+      "import": "./dist/receipt.js",
+      "types": "./dist/receipt.d.ts"
+    },
+    "./sms": {
+      "import": "./dist/sms.js",
+      "types": "./dist/sms.d.ts"
+    },
+    "./receipt-html": {
+      "import": "./dist/receiptHtml.js",
+      "types": "./dist/receiptHtml.d.ts"
+    },
+    "./date-picker-element": {
+      "import": "./dist/elements/datePickerElement.js",
+      "types": "./dist/elements/datePickerElement.d.ts"
+    },
+    "./field-elements": {
+      "import": "./dist/elements/fieldElements.js",
+      "types": "./dist/elements/fieldElements.d.ts"
+    },
+    "./address-element": {
+      "import": "./dist/elements/addressElement.js",
+      "types": "./dist/elements/addressElement.d.ts"
+    },
+    "./range-picker-element": {
+      "import": "./dist/elements/rangePickerElement.js",
+      "types": "./dist/elements/rangePickerElement.d.ts"
+    },
+    "./calendar-element": {
+      "import": "./dist/elements/calendarElement.js",
+      "types": "./dist/elements/calendarElement.d.ts"
     }
   },
   "scripts": {

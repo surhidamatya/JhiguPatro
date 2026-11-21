@@ -107,3 +107,61 @@ UI feeds `input(text, caret)` on every change and writes `state.text` and `state
 - Vectors (`testdata/money-input.json`, 28 scenarios; `testdata/phone-input.json`, 30 scenarios) are
   hand-derived from these rules, not from an official source. The phone input is also tested against
   every valid and invalid vector of `testdata/phone.json`.
+
+## `<jhigu-date-picker>` web component (guide 15.2, U-5, U-6)
+Code: `ts/src/elements/datePickerElement.ts` (`jhigu-patro-utils-ts/date-picker-element`),
+`ts/src/elements/pickerMarkup.ts` (pure markup and CSS), example `ts/examples/date-picker.html`.
+- Plain custom element, shadow DOM, no dependencies, on top of `createDatePicker`. The guide suggests Stencil for generated React/Vue/Angular wrappers and SSR; this does not use it, so there are no wrappers and no SSR build.
+- The app must call `initializeCalendar` before the element connects, else the element shows the error text instead of throwing.
+- Attributes, events, form behaviour, CSS variables and parts are listed in the file header.
+- Form-associated (`ElementInternals`): posts the BS date under `name`; `required` gives `valueMissing`; an unreadable or out-of-range `value` is dropped and gives `badInput`; reset restores the `value` attribute.
+- Popup mode: Escape closes, outside click closes, Arrow Down on the trigger opens, choosing a day closes.
+- Keyboard in the grid uses the shared `keyAction` map. The whole panel re-renders on each state change and focus is restored to the focused cell or button.
+- `show-ad` is on by default (`show-ad="false"` turns it off); a bare boolean attribute cannot default to on.
+- **Checked in a real browser** (Chromium in the Claude app browser pane, served by `python3 -m http.server` from `ts/`, see `.claude/launch.json`): rendering of all three example pickers; click to select; next month; popup open, Escape (focus back to the trigger), outside-click close; arrow keys and Enter; `jhiguChange`/`jhiguOpen`/`jhiguClose` events with correct AD dates; form submit data; reset restoring the `value` attribute; `required` giving `valueMissing` with the Nepali message; title drill-down days, months, years and back; picking a year and month; min/max dimming and the disabled prev arrow; next arrow disabled at BS 2100 Chaitra; unreadable and out-of-range `value` giving `badInput`; `disabled` ignoring clicks; `week-starts-on`; `show-ad="false"`; property set and clear; `min` after `max` showing the error text.
+- **Still not verified:** the screen-reader experience (the browser tool cannot see into shadow DOM, so ARIA is only checked in the markup tests); other browsers (Safari and Firefox `ElementInternals`); touch; narrow screens; `prefers-reduced-motion`; the light system theme; a popup near the screen edge (the popover is absolutely positioned and can overlap content or run off screen). In the years view the title still shows the month and year.
+- Calendar, range picker, address, phone and money elements are not built.
+
+## `<jhigu-money-input>` and `<jhigu-phone-input>` (guide 15.1, 15.2, P2)
+Code: `ts/src/elements/fieldElements.ts` (`jhigu-patro-utils-ts/field-elements`), example `ts/examples/inputs.html`.
+Plain custom elements, shadow DOM, one native `<input>` each, on the headless `createMoneyInput` / `createPhoneInput`. Attributes, events and parts are listed in the file header.
+- Money form value is the integer paisa as text (`12993456750`), not the formatted text. The symbol (`Rs.`, `रु`) sits beside the field, never in the field text, so it is not posted.
+- Phone form value is E.164 when valid, else empty. A non-empty invalid number gives a `customError` validity with the message in the chosen language (the "too short" text before blur, when the machine has no message yet).
+- Typing is handled on `input` events (skipped during IME composition); after every change the field is repainted from the machine, so a change the machine ignores (past the maximum) is put back.
+- **Checked in a real browser** (Chromium, `ts/examples/inputs.html`): real typing with caret kept after mid-number inserts; lakh grouping; blur padding to `.50`; Devanagari preset display; carrier badge at the 3-digit prefix; Nepali error text, red border and `aria-invalid`; phone completion and E.164; events; form submit data; validity before and after fixing; reset; `required`. By script: maximum amount accepted and one paisa more ignored, Devanagari digit typing shown as ASCII, symbol stripping, junk dropped, `.` to `0.`, negatives, bad and negative `value-paisa` giving `badInput`, toggling `devanagari` and `symbol`, property set and clear, `readonly` and `disabled`, `+977` input, too-long numbers, language switch, landline typing.
+- **Not verified:** screen readers, Safari and Firefox, touch and mobile keyboards, IME composition, paste behaviour beyond a scripted input event, the light theme. No Stencil wrappers.
+- Address select, calendar and range-picker elements are not built.
+
+## `<jhigu-address-select>` (guide 11.5, 15.2)
+Code: `ts/src/elements/addressElement.ts` (`jhigu-patro-utils-ts/address-element`), example `ts/examples/address.html`.
+Form-associated element with native `<select>`s (province, district, local level, ward) on the headless address picker. Attributes, form data and events are in the file header.
+- Form data (when `name` is set): `name` = local level id; `name_ward`, `name_district`, `name_province` added when chosen. Nothing is posted until a local level is chosen.
+- `required` is satisfied when the selection is complete (a ward is needed unless `show-ward="false"`). A `value` or `ward` that is not valid gives `badInput` and an empty selection.
+- With `show-ward="false"` the ward is always null, even if a `ward` attribute is set; showing the ward again asks for it again.
+- The `ward` attribute stays as written: changing `value` keeps applying it if it is valid for the new local level.
+- Options are in data order (not sorted). Select labels and the placeholder come from the strings tables (new `address` keys: province, district, localLevel, wardLabel, choose, required; Nepali unreviewed).
+- **Checked in a real browser:** cascade and disabled states, 7 provinces, ward counts, events with the formatted address in English and Nepali, form data, validity, reset, `setAddress` and its `BAD_WARD` error, province change clearing the rest, language switch, show/hide ward, disabled, focus kept across re-render, bad attributes, required with and without ward.
+- **Not verified:** driving the native dropdown with real clicks or keys (changes were made by setting the select value and dispatching `change`, which is what a pick does), screen readers, Safari/Firefox, touch.
+- **Data issue seen:** Nepali province names in `data/address.json` are old numbered names (`प्रदेश न. १`) while English uses `Koshi Province`. Already listed as unchecked in `data/ADDRESS_NOTES.md`; this makes it visible in the UI.
+- No type-ahead search box yet, though `searchAddress` exists.
+
+## `<jhigu-date-range-picker>` (guide 15.2)
+Code: `ts/src/elements/rangePickerElement.ts` (`jhigu-patro-utils-ts/range-picker-element`), example `ts/examples/range-picker.html`. Shares markup and styles with the date picker (`pickerMarkup.ts`, now with range classes and parts).
+- Form data when `name` is set and the range is complete: `name_start` and `name_end`. `required` needs a complete range. Event `jhiguChange` has `start`, `end`, AD dates, `complete`, `days` (inclusive).
+- Hover only patches cell classes in place. A full re-render on hover replaced the cell under the pointer between mouse-down and mouse-up and lost real clicks (found in the browser, fixed, re-tested with repeated real clicks).
+- Middle days are `aria-selected` but styled with the band, not the solid selected style (the solid style made their text unreadable).
+- **Checked in a real browser:** inline and popup; real clicks for start and end; click before the start restarts; hover preview band and final range look; keyboard in the popup (focus starts on the start, Enter chooses the end and closes); events with `days`; form data; reset (restores `start`/`end` attributes); `required` partial and complete; `setRange` and its error; `clear`; `min`/`max` blocking clicks; `disabled`; Nepali labels; bad, reversed, end-without-start and below-min attributes giving `badInput`.
+- **Not verified:** screen readers, Safari/Firefox, touch (no hover on touch, so no preview), narrow screens, the light theme. No Stencil wrappers.
+- Calendar element (month view with events) is not built.
+
+## `<jhigu-calendar>` (guide 15.2)
+Code: `ts/src/elements/calendarElement.ts` (`jhigu-patro-utils-ts/calendar-element`), example `ts/examples/calendar.html`. A month view with marked days and an events list; a display and navigation widget, not a form field. Built on `createDatePicker` and the shared markup (new: day marks, `showClear`).
+- `marked` attribute is JSON: object from BS date to a title or list of titles, or an array of dates. The `events` property takes the object form and replaces the attribute's marks; setting the attribute again takes over again. A date with no titles is not marked. An unreadable attribute shows an English error line (a developer error).
+- Marked days: dot (top-right), titles in the ARIA label, and listed under the grid when the day is selected ("No events" otherwise; new string `picker.noEvents`, Nepali unreviewed).
+- Events `jhiguSelect` and `jhiguMonthChange`. Changing `language`, `week-starts-on`, `show-ad` or `today` keeps the shown month and the selection.
+- **Checked in a real browser:** rendering in English and Nepali; marks from attribute and property; real click selects and lists events; keyboard arrows and Enter; next month and `jhiguMonthChange`; `goTo`, `select` and their errors; `year`/`month` attribute changes; language switch; array form, mixed and bad `marked` values; `show-ad`, `week-starts-on`. Found and fixed: the dot overlapped the AD number; empty title lists created bogus entries; changing an option jumped the view back to the selected day's month; a bad `marked` failed silently.
+- **Not verified:** screen readers, Safari/Firefox, touch, narrow screens, light theme. No Stencil wrappers. It does not read the tithi or the built-in holiday data (`StaticCalendarEventSource`); events come only from `marked`/`events`.
+- With this, all six elements in the guide's table exist: date picker, calendar, range picker, address select, phone input and money input.
+
+## Usage guide and doc tests
+`docs/USAGE.md` documents every module. Its ```` ```js test ```` blocks are run by `ts/tests/docs.test.ts` (one shared session, in order; a line ending `// => value` is an assertion; imports resolve through the `package.json` `exports` map). The same test fails if an export is missing from the docs or points at a missing source file, and a deliberately broken expected value was confirmed to fail. Dart and HTML samples are not run; the Dart sample was run once by hand. The README now has a toolkit overview and uses the real package name `jhigu-patro-utils-ts`; its older calendar and CLI sections are unchanged.

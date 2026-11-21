@@ -1,0 +1,1214 @@
+{
+ "_comment": "Receipt totals (guide 12.2). Expected values computed by an independent Python model with exact fractions, rounding half away from zero. Hand-derived, not from an official source. Amounts are paisa; qtyMilli is quantity x 1000. Dates are [year, month, day] BS.",
+ "totals": [
+  {
+   "name": "one line exclusive 13%",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     100000
+    ],
+    "gross": 100000,
+    "discount": 0,
+    "taxable": 100000,
+    "vat": 13000,
+    "total": 113000,
+    "paid": 0,
+    "balance": 113000,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "no vat",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 2000,
+      "unitPaisa": 12550
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 5
+     }
+    ],
+    "vatMode": "none",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     25100,
+     5
+    ],
+    "gross": 25105,
+    "discount": 0,
+    "taxable": 25105,
+    "vat": 0,
+    "total": 25105,
+    "paid": 0,
+    "balance": 25105,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "fraction half rounds up",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1500,
+      "unitPaisa": 33333
+     }
+    ],
+    "vatMode": "none",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     50000
+    ],
+    "gross": 50000,
+    "discount": 0,
+    "taxable": 50000,
+    "vat": 0,
+    "total": 50000,
+    "paid": 0,
+    "balance": 50000,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "fraction below half rounds down",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1001,
+      "unitPaisa": 499
+     }
+    ],
+    "vatMode": "none",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     499
+    ],
+    "gross": 499,
+    "discount": 0,
+    "taxable": 499,
+    "vat": 0,
+    "total": 499,
+    "paid": 0,
+    "balance": 499,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "tiny qty rounds to zero line",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1,
+      "unitPaisa": 499
+     }
+    ],
+    "vatMode": "none",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     0
+    ],
+    "gross": 0,
+    "discount": 0,
+    "taxable": 0,
+    "vat": 0,
+    "total": 0,
+    "paid": 0,
+    "balance": 0,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "tiny qty half rounds to one",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1,
+      "unitPaisa": 500
+     }
+    ],
+    "vatMode": "none",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     1
+    ],
+    "gross": 1,
+    "discount": 0,
+    "taxable": 1,
+    "vat": 0,
+    "total": 1,
+    "paid": 0,
+    "balance": 1,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "lines rounded before sum",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1500,
+      "unitPaisa": 33333
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1500,
+      "unitPaisa": 33333
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1500,
+      "unitPaisa": 33333
+     }
+    ],
+    "vatMode": "none",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     50000,
+     50000,
+     50000
+    ],
+    "gross": 150000,
+    "discount": 0,
+    "taxable": 150000,
+    "vat": 0,
+    "total": 150000,
+    "paid": 0,
+    "balance": 150000,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "percent discount exclusive",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 3000,
+      "unitPaisa": 250000
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 99999
+     }
+    ],
+    "discount": {
+     "type": "percent",
+     "basisPoints": 750
+    },
+    "vatMode": "exclusive",
+    "paidPaisa": 100000
+   },
+   "expect": {
+    "lines": [
+     750000,
+     99999
+    ],
+    "gross": 849999,
+    "discount": 63750,
+    "taxable": 786249,
+    "vat": 102212,
+    "total": 888461,
+    "paid": 100000,
+    "balance": 788461,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "amount discount exclusive",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 2000,
+      "unitPaisa": 150000
+     }
+    ],
+    "discount": {
+     "type": "amount",
+     "paisa": 25050
+    },
+    "vatMode": "exclusive",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     300000
+    ],
+    "gross": 300000,
+    "discount": 25050,
+    "taxable": 274950,
+    "vat": 35744,
+    "total": 310694,
+    "paid": 0,
+    "balance": 310694,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "percent discount rounding half",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 1001
+     }
+    ],
+    "discount": {
+     "type": "percent",
+     "basisPoints": 5000
+    },
+    "vatMode": "none",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     1001
+    ],
+    "gross": 1001,
+    "discount": 501,
+    "taxable": 500,
+    "vat": 0,
+    "total": 500,
+    "paid": 0,
+    "balance": 500,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "inclusive no discount",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 113000
+     }
+    ],
+    "vatMode": "inclusive",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     113000
+    ],
+    "gross": 113000,
+    "discount": 0,
+    "taxable": 100000,
+    "vat": 13000,
+    "total": 113000,
+    "paid": 0,
+    "balance": 113000,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "inclusive odd total",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 99999
+     }
+    ],
+    "vatMode": "inclusive",
+    "paidPaisa": 50000
+   },
+   "expect": {
+    "lines": [
+     99999
+    ],
+    "gross": 99999,
+    "discount": 0,
+    "taxable": 88495,
+    "vat": 11504,
+    "total": 99999,
+    "paid": 50000,
+    "balance": 49999,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "inclusive with percent discount",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 4000,
+      "unitPaisa": 56500
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 500,
+      "unitPaisa": 200001
+     }
+    ],
+    "discount": {
+     "type": "percent",
+     "basisPoints": 1000
+    },
+    "vatMode": "inclusive",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     226000,
+     100001
+    ],
+    "gross": 326001,
+    "discount": 32600,
+    "taxable": 259647,
+    "vat": 33754,
+    "total": 293401,
+    "paid": 0,
+    "balance": 293401,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "custom vat 10%",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "vatBasisPoints": 1000,
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     100000
+    ],
+    "gross": 100000,
+    "discount": 0,
+    "taxable": 100000,
+    "vat": 10000,
+    "total": 110000,
+    "paid": 0,
+    "balance": 110000,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "zero vat rate inclusive",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 12345
+     }
+    ],
+    "vatMode": "inclusive",
+    "vatBasisPoints": 0,
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     12345
+    ],
+    "gross": 12345,
+    "discount": 0,
+    "taxable": 12345,
+    "vat": 0,
+    "total": 12345,
+    "paid": 0,
+    "balance": 12345,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "vat half paisa exclusive",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 50
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     50
+    ],
+    "gross": 50,
+    "discount": 0,
+    "taxable": 50,
+    "vat": 7,
+    "total": 57,
+    "paid": 0,
+    "balance": 57,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "fully discounted by percent",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "discount": {
+     "type": "percent",
+     "basisPoints": 10000
+    },
+    "vatMode": "exclusive",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     100000
+    ],
+    "gross": 100000,
+    "discount": 100000,
+    "taxable": 0,
+    "vat": 0,
+    "total": 0,
+    "paid": 0,
+    "balance": 0,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "fully discounted by amount",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "discount": {
+     "type": "amount",
+     "paisa": 100000
+    },
+    "vatMode": "inclusive",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     100000
+    ],
+    "gross": 100000,
+    "discount": 100000,
+    "taxable": 0,
+    "vat": 0,
+    "total": 0,
+    "paid": 0,
+    "balance": 0,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "zero price line",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 0
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     0,
+     100
+    ],
+    "gross": 100,
+    "discount": 0,
+    "taxable": 100,
+    "vat": 13,
+    "total": 113,
+    "paid": 0,
+    "balance": 113,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "fully paid",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 113000
+   },
+   "expect": {
+    "lines": [
+     100000
+    ],
+    "gross": 100000,
+    "discount": 0,
+    "taxable": 100000,
+    "vat": 13000,
+    "total": 113000,
+    "paid": 113000,
+    "balance": 0,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "overpaid",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 200000
+   },
+   "expect": {
+    "lines": [
+     100000
+    ],
+    "gross": 100000,
+    "discount": 0,
+    "taxable": 100000,
+    "vat": 13000,
+    "total": 113000,
+    "paid": 200000,
+    "balance": -87000,
+    "overpaid": true
+   }
+  },
+  {
+   "name": "large amount",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 900000000000000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0
+   },
+   "expect": {
+    "lines": [
+     900000000000000
+    ],
+    "gross": 900000000000000,
+    "discount": 0,
+    "taxable": 900000000000000,
+    "vat": 117000000000000,
+    "total": 1017000000000000,
+    "paid": 0,
+    "balance": 1017000000000000,
+    "overpaid": false
+   }
+  },
+  {
+   "name": "many lines",
+   "doc": {
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 1000
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1037,
+      "unitPaisa": 1911
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1074,
+      "unitPaisa": 2822
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1111,
+      "unitPaisa": 3733
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1148,
+      "unitPaisa": 4644
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1185,
+      "unitPaisa": 5555
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1222,
+      "unitPaisa": 6466
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1259,
+      "unitPaisa": 7377
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1296,
+      "unitPaisa": 8288
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1333,
+      "unitPaisa": 9199
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1370,
+      "unitPaisa": 10110
+     },
+     {
+      "description": "Item",
+      "qtyMilli": 1407,
+      "unitPaisa": 11021
+     }
+    ],
+    "discount": {
+     "type": "percent",
+     "basisPoints": 333
+    },
+    "vatMode": "exclusive",
+    "paidPaisa": 5
+   },
+   "expect": {
+    "lines": [
+     1000,
+     1982,
+     3031,
+     4147,
+     5331,
+     6583,
+     7901,
+     9288,
+     10741,
+     12262,
+     13851,
+     15507
+    ],
+    "gross": 91624,
+    "discount": 3051,
+    "taxable": 88573,
+    "vat": 11514,
+    "total": 100087,
+    "paid": 5,
+    "balance": 100082,
+    "overpaid": false
+   }
+  }
+ ],
+ "invalid": [
+  {
+   "name": "empty number",
+   "doc": {
+    "number": "  ",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0
+   },
+   "issues": [
+    {
+     "code": "EMPTY_NUMBER"
+    }
+   ]
+  },
+  {
+   "name": "no lines",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [],
+    "vatMode": "exclusive",
+    "paidPaisa": 0
+   },
+   "issues": [
+    {
+     "code": "NO_LINES"
+    }
+   ]
+  },
+  {
+   "name": "blank description",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 1
+     },
+     {
+      "description": " ",
+      "qtyMilli": 1000,
+      "unitPaisa": 1
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0
+   },
+   "issues": [
+    {
+     "code": "EMPTY_DESCRIPTION",
+     "line": 1
+    }
+   ]
+  },
+  {
+   "name": "zero quantity",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 0,
+      "unitPaisa": 100
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0
+   },
+   "issues": [
+    {
+     "code": "BAD_QUANTITY",
+     "line": 0
+    }
+   ]
+  },
+  {
+   "name": "negative quantity",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": -1000,
+      "unitPaisa": 100
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0
+   },
+   "issues": [
+    {
+     "code": "BAD_QUANTITY",
+     "line": 0
+    }
+   ]
+  },
+  {
+   "name": "negative unit price",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": -1
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0
+   },
+   "issues": [
+    {
+     "code": "BAD_UNIT_PRICE",
+     "line": 0
+    }
+   ]
+  },
+  {
+   "name": "percent over 100",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0,
+    "discount": {
+     "type": "percent",
+     "basisPoints": 10001
+    }
+   },
+   "issues": [
+    {
+     "code": "BAD_DISCOUNT"
+    }
+   ]
+  },
+  {
+   "name": "negative percent",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0,
+    "discount": {
+     "type": "percent",
+     "basisPoints": -1
+    }
+   },
+   "issues": [
+    {
+     "code": "BAD_DISCOUNT"
+    }
+   ]
+  },
+  {
+   "name": "amount over gross",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0,
+    "discount": {
+     "type": "amount",
+     "paisa": 100001
+    }
+   },
+   "issues": [
+    {
+     "code": "BAD_DISCOUNT"
+    }
+   ]
+  },
+  {
+   "name": "negative amount discount",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0,
+    "discount": {
+     "type": "amount",
+     "paisa": -5
+    }
+   },
+   "issues": [
+    {
+     "code": "BAD_DISCOUNT"
+    }
+   ]
+  },
+  {
+   "name": "vat rate too big",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0,
+    "vatBasisPoints": 10001
+   },
+   "issues": [
+    {
+     "code": "BAD_VAT_RATE"
+    }
+   ]
+  },
+  {
+   "name": "negative vat rate",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0,
+    "vatBasisPoints": -1
+   },
+   "issues": [
+    {
+     "code": "BAD_VAT_RATE"
+    }
+   ]
+  },
+  {
+   "name": "negative paid",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": -1
+   },
+   "issues": [
+    {
+     "code": "BAD_PAID"
+    }
+   ]
+  },
+  {
+   "name": "due before issue",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0,
+    "due": [
+     2082,
+     5,
+     9
+    ]
+   },
+   "issues": [
+    {
+     "code": "DUE_BEFORE_ISSUE"
+    }
+   ]
+  },
+  {
+   "name": "due same day ok",
+   "doc": {
+    "number": "INV-1",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "Item",
+      "qtyMilli": 1000,
+      "unitPaisa": 100000
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": 0,
+    "due": [
+     2082,
+     5,
+     10
+    ]
+   },
+   "issues": []
+  },
+  {
+   "name": "several issues in order",
+   "doc": {
+    "number": "",
+    "issue": [
+     2082,
+     5,
+     10
+    ],
+    "lines": [
+     {
+      "description": "",
+      "qtyMilli": 0,
+      "unitPaisa": -1
+     }
+    ],
+    "vatMode": "exclusive",
+    "paidPaisa": -1,
+    "vatBasisPoints": 20000,
+    "due": [
+     2081,
+     1,
+     1
+    ]
+   },
+   "issues": [
+    {
+     "code": "EMPTY_NUMBER"
+    },
+    {
+     "code": "EMPTY_DESCRIPTION",
+     "line": 0
+    },
+    {
+     "code": "BAD_QUANTITY",
+     "line": 0
+    },
+    {
+     "code": "BAD_UNIT_PRICE",
+     "line": 0
+    },
+    {
+     "code": "BAD_VAT_RATE"
+    },
+    {
+     "code": "BAD_PAID"
+    },
+    {
+     "code": "DUE_BEFORE_ISSUE"
+    }
+   ]
+  }
+ ]
+}
