@@ -3,5 +3,6 @@ library;
 
 export 'src/calendar.dart';
 export 'src/date_picker.dart';
+export 'src/fields.dart';
 export 'src/range_picker.dart';
 export 'src/theme.dart';

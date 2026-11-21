@@ -74,6 +74,40 @@ when the parent changes them the picker follows without calling `onChanged`. An
 end before the start throws `InvalidDataException`. The view opens on the month
 of the end.
 
+## `JhiguMoneyField` and `JhiguPhoneField`
+
+Text fields over the headless `MoneyInput` and `PhoneInput`. They are plain
+`TextField`s with a formatter, so `decoration`, `style`, `focusNode`, `enabled`
+and `autofocus` work as you expect.
+
+```dart
+JhiguMoneyField(
+  decoration: const InputDecoration(labelText: 'Amount', prefixText: 'Rs. '),
+  onChanged: (Npr? amount) => setState(() => _amount = amount),
+)
+
+JhiguPhoneField(
+  language: 'ne',
+  decoration: const InputDecoration(labelText: 'Mobile'),
+  onChanged: (String? e164) => setState(() => _phone = e164), // null unless valid
+)
+```
+
+- **Money:** lakh grouping as you type (`12,34,567.50`), caret kept by counting
+  digits, Devanagari digits accepted (shown as ASCII, or Devanagari with
+  `digits: MoneyDigits.native`), a leading `Rs.`, `NPR` or `रु` dropped, two
+  decimals at most, padded to two when the field loses focus. An amount past the
+  largest safe integer paisa is ignored. `allowNegative` allows a leading minus.
+  The value is `Npr` (integer paisa), never a float.
+- **Phone:** `984-1234567` for mobiles and `01-4123456` for landlines, Devanagari
+  digits and `+977` or `00977` accepted. The carrier shows as helper text and the
+  error as error text (your own `helperText` or `errorText` wins). "Too short" is
+  only reported after the field loses focus; "too long" at once, without cutting
+  digits. `onStateChanged` gives every new `PhoneInputState`. Carrier prefixes are
+  not an official list (see `data/PHONE_NOTES.md`).
+- `value` is optional. When the parent changes it, the field follows without
+  calling the callbacks; a parent that does not pass it keeps what was typed.
+
 See [`example/`](example) for a working app (web) and
 [`../data/PICKER_NOTES.md`](../data/PICKER_NOTES.md) for what was and was not
 verified.

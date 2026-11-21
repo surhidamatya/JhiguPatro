@@ -108,6 +108,24 @@ class _HomeState extends State<Home> {
                     _note('range: ${a?.toIsoString()} to ${b?.toIsoString()}'),
               ),
             ]),
+            SizedBox(
+              width: 340,
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('JhiguMoneyField and JhiguPhoneField'),
+                const SizedBox(height: 8),
+                JhiguMoneyField(
+                  decoration: const InputDecoration(
+                      labelText: 'Amount', prefixText: 'Rs. ', border: OutlineInputBorder()),
+                  onChanged: (a) => _note('money: ${a?.paisa}'),
+                ),
+                const SizedBox(height: 16),
+                JhiguPhoneField(
+                  decoration: const InputDecoration(
+                      labelText: 'Mobile', border: OutlineInputBorder()),
+                  onChanged: (e) => _note('phone: $e'),
+                ),
+              ]),
+            ),
             SizedBox(width: 340, child: Text(_log.isEmpty ? '(events appear here)' : _log, key: const Key('log'))),
           ],
         ),
