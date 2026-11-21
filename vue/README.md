@@ -100,6 +100,8 @@ headers under `ts/src/elements/`.
   hydration warnings, from the production build (`node .output/server/index.mjs`) and from
   `nuxt dev`. The calendar data is imported from `jhigu-patro-utils-ts/nepali_calendar_data.json`
   and initialised in the page's setup, so the same code runs on the server and in the browser.
-- **Not checked:** Vue 3.3 and 3.4 (only 3.5 was installed), other frameworks (Quasar, Astro),
+- All 74 tests pass, and `tsc --noEmit` is clean, on Vue 3.3.13 and 3.4.38 as well as 3.5.46 (the
+  peer range is `>=3.3`). The example apps were run on 3.5 only.
+- **Not checked:** the example apps on Vue 3.3 and 3.4, other frameworks (Quasar, Astro),
   Vue 2, Safari, Firefox, touch and screen readers (the same limits as the web components
   themselves).
