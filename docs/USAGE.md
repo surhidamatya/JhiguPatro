@@ -355,7 +355,7 @@ Dart has the model, validation and totals for receipts, the SMS gateway interfac
 
 ### Flutter widgets
 
-`flutter/` is a Flutter package (`jhigu_patro_flutter`, depends on `dart/` by path) with `JhiguDatePicker`, an inline BS date picker built on the same `DatePicker` state machine as the web component:
+`flutter/` is a Flutter package (`jhigu_patro_flutter`, depends on `dart/` by path) with `JhiguDatePicker` and `JhiguCalendar`. The date picker is an inline BS date picker built on the same `DatePicker` state machine as the web component:
 
 ```dart
 JhiguDatePicker(
@@ -366,7 +366,16 @@ JhiguDatePicker(
 )
 ```
 
-Style it with a `JhiguTheme` in `ThemeData.extensions`; anything left null falls back to your `ColorScheme`. Only the date picker exists so far (no calendar, range, address, phone or money widgets, and nothing for React Native). See `flutter/README.md`.
+`JhiguCalendar` is the display version: marked days with a dot and an events list for the selected day.
+
+```dart
+JhiguCalendar(
+  events: {'2082-06-03': ['Laxmi Puja']},   // BS date text to titles
+  onSelect: (date, titles) => print('$date $titles'),
+)
+```
+
+Style them with a `JhiguTheme` in `ThemeData.extensions`; anything left null falls back to your `ColorScheme`. Only these two widgets exist so far (no range, address, phone or money widgets, and nothing for React Native). See `flutter/README.md`.
 
 ### PDF receipts
 

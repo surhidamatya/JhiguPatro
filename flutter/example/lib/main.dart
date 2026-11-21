@@ -24,7 +24,7 @@ class ExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: 'Jhigu date picker',
+        title: 'Jhigu widgets',
         theme: ThemeData(colorSchemeSeed: const Color(0xFF1D4ED8), useMaterial3: true),
         darkTheme: ThemeData(
           colorSchemeSeed: const Color(0xFF1D4ED8),
@@ -53,7 +53,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final today = NepaliDate.checked(2082, 5, 10);
     return Scaffold(
-      appBar: AppBar(title: const Text('JhiguDatePicker')),
+      appBar: AppBar(title: const Text('Jhigu widgets')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Wrap(
@@ -83,6 +83,21 @@ class _HomeState extends State<Home> {
                   setState(() => _ne = d);
                   _note('ne: ${d?.toIsoString()}');
                 },
+              ),
+            ]),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text('JhiguCalendar with events'),
+              JhiguCalendar(
+                today: today,
+                year: 2082,
+                month: 5,
+                events: const {
+                  '2082-05-12': ['Teej'],
+                  '2082-05-15': ['Fulpati', 'Holiday'],
+                  '2082-06-03': ['Laxmi Puja'],
+                },
+                onSelect: (d, e) => _note('cal: ${d.toIsoString()} $e'),
+                onMonthChanged: (y, m) => _note('month: $y-$m'),
               ),
             ]),
             SizedBox(width: 340, child: Text(_log.isEmpty ? '(events appear here)' : _log, key: const Key('log'))),

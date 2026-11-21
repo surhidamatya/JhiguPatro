@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jhigu_patro_utils/jhigu_patro_utils.dart';
 
+import 'picker_parts.dart';
 import 'theme.dart';
 
 /// A Bikram Sambat date picker, drawn inline (put it in a dialog or a popup
@@ -158,26 +159,10 @@ class _JhiguDatePickerState extends State<JhiguDatePicker> {
 
   // ── Keyboard ───────────────────────────────────────────────────────────────
 
-  static String? _keyName(LogicalKeyboardKey k) {
-    if (k == LogicalKeyboardKey.arrowLeft) return 'ArrowLeft';
-    if (k == LogicalKeyboardKey.arrowRight) return 'ArrowRight';
-    if (k == LogicalKeyboardKey.arrowUp) return 'ArrowUp';
-    if (k == LogicalKeyboardKey.arrowDown) return 'ArrowDown';
-    if (k == LogicalKeyboardKey.home) return 'Home';
-    if (k == LogicalKeyboardKey.end) return 'End';
-    if (k == LogicalKeyboardKey.pageUp) return 'PageUp';
-    if (k == LogicalKeyboardKey.pageDown) return 'PageDown';
-    if (k == LogicalKeyboardKey.enter || k == LogicalKeyboardKey.numpadEnter) {
-      return 'Enter';
-    }
-    if (k == LogicalKeyboardKey.space) return ' ';
-    return null;
-  }
-
   KeyEventResult _onKey(FocusNode node, KeyEvent event) {
     if (event is KeyUpEvent) return KeyEventResult.ignored;
     if (_picker.state.view != PickerView.days) return KeyEventResult.ignored;
-    final name = _keyName(event.logicalKey);
+    final name = pickerKeyName(event.logicalKey);
     if (name == null) return KeyEventResult.ignored;
     final action =
         keyAction(name, shift: HardwareKeyboard.instance.isShiftPressed);
@@ -229,11 +214,11 @@ class _JhiguDatePickerState extends State<JhiguDatePicker> {
       case PickerView.days:
         body = _days(s, t);
       case PickerView.months:
-        body = _choices(
-          t,
-          [
+        body = PickerChoices(
+          theme: t,
+          items: [
             for (final m in s.months)
-              _Choice(
+              PickerChoice(
                 label: m.label,
                 selected: m.month == s.visibleMonth,
                 disabled: m.disabled,
@@ -245,11 +230,11 @@ class _JhiguDatePickerState extends State<JhiguDatePicker> {
           ],
         );
       case PickerView.years:
-        body = _choices(
-          t,
-          [
+        body = PickerChoices(
+          theme: t,
+          items: [
             for (final y in s.years)
-              _Choice(
+              PickerChoice(
                 label: y.label,
                 selected: y.year == s.visibleYear,
                 disabled: y.disabled,
@@ -434,44 +419,4 @@ class _JhiguDatePickerState extends State<JhiguDatePicker> {
     _focus.requestFocus();
     _guard(() => _picker.select(d));
   }
-
-  Widget _choices(ResolvedJhiguTheme t, List<_Choice> items) {
-    return Wrap(
-      children: [
-        for (final c in items)
-          SizedBox(
-            width: 340 / 3 - 8,
-            child: Padding(
-              padding: const EdgeInsets.all(2),
-              child: c.selected
-                  ? FilledButton(
-                      onPressed: c.disabled ? null : c.onTap,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: t.primary,
-                        foregroundColor: t.onPrimary,
-                      ),
-                      child: Text(c.label),
-                    )
-                  : TextButton(
-                      onPressed: c.disabled ? null : c.onTap,
-                      child: Text(c.label),
-                    ),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _Choice {
-  final String label;
-  final bool selected;
-  final bool disabled;
-  final VoidCallback onTap;
-  const _Choice({
-    required this.label,
-    required this.selected,
-    required this.disabled,
-    required this.onTap,
-  });
 }
