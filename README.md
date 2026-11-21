@@ -65,7 +65,8 @@ jhigu_patro_utils/
 │   └── test/
 │       └── nepali_calendar_test.dart
 │
-└── cli/                               Command-line tool (jhigu-patro)
+├── cli/                               Command-line tool (jhigu-patro)
+└── react/                             React components for the web components (jhigu-patro-react)
     ├── src/
     │   └── index.ts
     ├── dist/

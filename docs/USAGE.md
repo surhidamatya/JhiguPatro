@@ -266,6 +266,17 @@ setInterval(() => scheduler.runOnce(), 60_000);
 
 It is one JSON file shared by the TypeScript and Dart stores. Each write goes to a temporary file and is renamed over the real one, so a crash does not leave a torn file; calls in one process run one at a time. It is for **one process only** (no locking: two processes on one file can overwrite each other). A missing file is an empty store; a damaged one throws `SmsStoreError` (`CORRUPT_FILE`, `UNSUPPORTED_VERSION`, `INVALID_REMINDER`, `READ_FAILED`, `WRITE_FAILED`) and is never reset. The file holds phone numbers: the TypeScript store creates it as owner-only (0600); the Dart one cannot set permissions, so keep it in a private folder. Errors from a gateway use the codes `AUTH`, `BALANCE`, `BAD_NUMBER`, `RATE_LIMIT`, `SERVER`, `NETWORK`, `UNKNOWN`.
 
+## React
+
+`react/` is a small package of React components for the web components above (`jhigu-patro-react`, in this repo it depends on `ts/` by path): `JhiguDatePicker`, `JhiguDateRangePicker`, `JhiguCalendar`, `JhiguAddressSelect`, `JhiguMoneyInput` and `JhiguPhoneInput`.
+
+```jsx
+<JhiguDatePicker name="dob" language="ne" value={dob} onChange={d => setDob(d.bs)} />
+<JhiguMoneyInput name="amount" symbol="Rs." label="Amount" onChange={d => console.log(d.paisa)} />
+```
+
+Load the calendar data once first. A prop is written to the element only when it changes, so a rerender does not reset what the user typed; the fields post in a normal `<form>`. It is client only (a server render has an empty wrapper). See `react/README.md` for the props, what was checked (React 19 in Chromium, the tests on React 18 too) and what was not.
+
 ## Headless pickers and inputs
 
 Each widget has a framework-free state machine: `getState()`, `subscribe(listener)`, and `actions`. They never touch the DOM, so you can drive them from React, Vue, a terminal or a test. Entry points: `jhigu-patro-utils-ts/date-picker`, `/range-picker`, `/address-picker`, `/money-input`, `/phone-input`.
@@ -460,5 +471,5 @@ await shareReceipt(doc);    // share sheet, or a download on the web
 - **Shared vectors** in `testdata/` are mostly hand-derived or produced by independent Python models, not copied from official sources.
 - **Nepali text** (month aliases, labels, error messages, SMS templates) is unreviewed by a native speaker. Short Nepali month names are ambiguous.
 - **Phone** carrier and active flags, **addresses** (names, ward counts) and **amount in words** (English only) are best effort. Notes: `data/PHONE_NOTES.md`, `data/ADDRESS_NOTES.md`, `data/MONEY_NOTES.md`.
-- **Not built:** a Flutter in-app PDF preview, React Native widgets, framework wrappers for the web components, Nepali amount in words, a database-backed SMS reminder store, multi-process locking for the file store.
+- **Not built:** a Flutter in-app PDF preview, React Native widgets, wrappers for frameworks other than React, Nepali amount in words, a database-backed SMS reminder store, multi-process locking for the file store.
 - Design notes per area: `data/DATES_NOTES.md`, `data/PICKER_NOTES.md`, `data/RECEIPT_NOTES.md`, `data/SMS_NOTES.md`, `data/STRINGS_NOTES.md`.

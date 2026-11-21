@@ -20,6 +20,7 @@ jobs:
           cache-dependency-path: |
             ts/package-lock.json
             cli/package-lock.json
+            react/package-lock.json
       - run: npm ci
         working-directory: ts
       - run: npm run build
@@ -30,3 +31,5 @@ jobs:
         working-directory: cli
       - run: npm test
         working-directory: cli
+      - run: npm ci && npm run build && npm test
+        working-directory: react
