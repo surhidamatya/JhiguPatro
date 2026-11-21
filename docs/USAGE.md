@@ -33,6 +33,8 @@ initializeCalendar(new InlineCalendarDataSource(
 ));
 ```
 
+When the package is installed from npm, the data file ships with it, so there is no path to adjust: `import data from 'jhigu-patro-utils-ts/nepali_calendar_data.json' with { type: 'json' }` (or read it with `createRequire(import.meta.url).resolve(...)`). The tithi data for BS 2081 is `jhigu-patro-utils-ts/2081_tithi.json`. In a TypeScript project that imports JSON, turn on `resolveJsonModule`.
+
 In a browser, serve the JSON as a static file and use `JsonCalendarDataSource`:
 
 ```js
@@ -476,6 +478,7 @@ await shareReceipt(doc);    // share sheet, or a download on the web
 - **Shared vectors** in `testdata/` are mostly hand-derived or produced by independent Python models, not copied from official sources.
 - **Nepali text** (month aliases, labels, error messages, SMS templates) is unreviewed by a native speaker. Short Nepali month names are ambiguous.
 - **Phone** carrier and active flags, **addresses** (names, ward counts) and **amount in words** (English only) are best effort. Notes: `data/PHONE_NOTES.md`, `data/ADDRESS_NOTES.md`, `data/MONEY_NOTES.md`.
-- **Browsers:** the web components were checked in Chromium and WebKit (23 checks each, `tools/browser-check/`); Firefox, iOS Safari, touch and screen readers were not.
+- **Release readiness:** `tools/pack-check/` packs the four npm packages, installs the tarballs in a scratch project, and imports and runs them (0 failures; one warning: there is no LICENSE file yet, which the owner has to add, along with a copyright holder). Nothing has been published, and the package names and versions were not reviewed for availability.
+- **Browsers and accessibility:** the web components were checked in Chromium and WebKit (25 checks each) and audited with axe-core in 34 page states (`tools/browser-check/`); Firefox, iOS Safari, touch, real screen readers and keyboard-only use by a person were not. One axe finding is known and documented there (the small AD number on date cells).
 - **Not built:** React Native widgets, wrappers for frameworks other than React and Vue, Nepali amount in words, a database-backed SMS reminder store, multi-process locking for the file store.
 - Design notes per area: `data/DATES_NOTES.md`, `data/PICKER_NOTES.md`, `data/RECEIPT_NOTES.md`, `data/SMS_NOTES.md`, `data/STRINGS_NOTES.md`.

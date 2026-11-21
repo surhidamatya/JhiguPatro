@@ -13,25 +13,31 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "sideEffects": true,
   "scripts": {
     "build": "tsc",
     "test": "vitest run"
   },
   "peerDependencies": {
-    "react": ">=18"
-  },
-  "dependencies": {
-    "jhigu-patro-utils-ts": "file:../ts"
+    "react": ">=18",
+    "jhigu-patro-utils-ts": ">=1.0.0 <2"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "jhigu-patro-utils-ts": "file:../ts",
     "jsdom": "^25.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "typescript": "^5.0.0",
     "vitest": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/surhidamatya/JhiguPatro.git",
+    "directory": "react"
   }
 }

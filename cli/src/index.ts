@@ -22,8 +22,7 @@
  */
 
 import { readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import chalk from 'chalk';
 import {
   initializeCalendar,
@@ -44,17 +43,17 @@ import {
   formatEnglishDate,
   formatNepaliDateWithDay,
   toNepalTime,
-} from '../../ts/dist/index.js';
-import { InlineCalendarDataSource, JhiguError } from '../../ts/dist/index.js';
-import type { CalendarJson } from '../../ts/dist/index.js';
+} from 'jhigu-patro-utils-ts';
+import { InlineCalendarDataSource, JhiguError } from 'jhigu-patro-utils-ts';
+import type { CalendarJson } from 'jhigu-patro-utils-ts';
 import { CliError, TOOLS } from './tools.js';
 
 // ============================================================================
 // BOOTSTRAP
 // ============================================================================
 
-const __dir = dirname(fileURLToPath(import.meta.url));
-const dataPath = join(__dir, '../../data/nepali_calendar_data.json');
+// The calendar data ships inside the utils package, next to its code.
+const dataPath = createRequire(import.meta.url).resolve('jhigu-patro-utils-ts/nepali_calendar_data.json');
 const calData: CalendarJson = JSON.parse(readFileSync(dataPath, 'utf8'));
 
 initializeCalendar(

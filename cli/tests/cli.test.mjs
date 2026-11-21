@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { initializeCalendar, InlineCalendarDataSource } from '../../ts/dist/index.js';
+import { initializeCalendar, InlineCalendarDataSource } from 'jhigu-patro-utils-ts';
 import { TOOLS, CliError } from '../dist/tools.js';
 
 const here = dirname(fileURLToPath(import.meta.url));

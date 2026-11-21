@@ -3,8 +3,13 @@
 React components for the Jhigu Patro web components: BS date picker, date range
 picker, calendar with events, address select, money input and phone input.
 
-Not published; in this repo it depends on `../ts` (`jhigu-patro-utils-ts`) by path.
-React 18 and later.
+Not published yet. `jhigu-patro-utils-ts` is a **peer dependency** (install it next to this package, so the
+app and the elements share one copy of the calendar state); in this repo it is linked from `../ts` for
+development. React 18 and later.
+
+```bash
+npm install jhigu-patro-react jhigu-patro-utils-ts react
+```
 
 ```tsx
 import { initializeCalendar, InlineCalendarDataSource } from 'jhigu-patro-utils-ts';

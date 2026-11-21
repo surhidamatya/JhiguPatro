@@ -2,6 +2,7 @@ name: jhigu_patro_flutter
 description: Flutter widgets, dialogs and PDF receipt helpers for Bikram Sambat dates, built on the jhigu_patro_utils state machines.
 version: 0.1.0
 publish_to: none
+repository: https://github.com/surhidamatya/JhiguPatro/tree/dev/flutter
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

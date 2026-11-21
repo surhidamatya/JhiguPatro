@@ -12,14 +12,14 @@ import {
   Npr, MoneyError, amountInWords, vatExclusive, vatInclusive,
   parsePhone, PhoneError,
   JhiguError, parseNepaliDate, formatDate, formatPreset, fiscalYear, NepaliDate,
-} from '../../ts/dist/index.js';
-import type { DatePreset, Language } from '../../ts/dist/index.js';
+} from 'jhigu-patro-utils-ts';
+import type { DatePreset, Language } from 'jhigu-patro-utils-ts';
 import {
   AddressError, formatAddress, searchAddress, getLocalLevel, getDistrict, getProvince,
-} from '../../ts/dist/address.js';
+} from 'jhigu-patro-utils-ts/address';
 import {
   SmsTemplateError, smsTemplateKeys, getSmsTemplate, templatePlaceholders, renderSmsTemplate, smsSegments,
-} from '../../ts/dist/sms.js';
+} from 'jhigu-patro-utils-ts/sms';
 
 export class CliError extends Error {
   constructor(

@@ -78,7 +78,8 @@ describe('docs/USAGE.md samples', () => {
   it('every package.json export points at a source file', () => {
     for (const key of Object.keys(pkg.exports)) {
       const spec = key === '.' ? pkg.name : `${pkg.name}/${key.slice(2)}`;
-      const file = sourceFor(spec)!;
+      // The data files are shipped as they are, next to package.json.
+      const file = key.endsWith('.json') ? join(here, '..', key.slice(2)) : sourceFor(spec)!;
       expect(existsSync(file), `${spec} -> ${file}`).toBe(true);
     }
   });

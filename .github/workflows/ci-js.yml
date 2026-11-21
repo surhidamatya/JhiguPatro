@@ -36,3 +36,22 @@ jobs:
         working-directory: react
       - run: npm ci && npm run build && npm test
         working-directory: vue
+
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci && npm run build
+        working-directory: ts
+      - run: npm ci && npm run build
+        working-directory: cli
+      - run: npm ci && npm run build
+        working-directory: react
+      - run: npm ci && npm run build
+        working-directory: vue
+      # Packs the four npm packages, installs the tarballs in a scratch project, imports and runs
+      # them. WARNs (no LICENSE yet) do not fail it; a FAIL would break a consumer.
+      - run: node tools/pack-check/check.mjs

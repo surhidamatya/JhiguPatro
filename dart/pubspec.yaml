@@ -1,7 +1,9 @@
 name: jhigu_patro_utils
 description: Bikram Sambat (Nepali) calendar, money, phone, address, receipt and SMS utilities. Offline-first; the only dependency is the pdf package, used by receipt_pdf.dart.
 version: 1.0.0
-homepage: https://github.com/your-org/jhigu_patro_utils
+homepage: https://github.com/surhidamatya/JhiguPatro
+repository: https://github.com/surhidamatya/JhiguPatro/tree/dev/dart
+issue_tracker: https://github.com/surhidamatya/JhiguPatro/issues
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

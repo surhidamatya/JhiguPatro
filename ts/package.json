@@ -3,83 +3,96 @@
   "version": "1.0.0",
   "description": "TypeScript/JavaScript Bikram Sambat (Nepali) calendar utilities",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/surhidamatya/JhiguPatro.git",
+    "directory": "ts"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "nepali_calendar_data.json",
+    "2081_tithi.json",
+    "README.md"
+  ],
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./address": {
-      "import": "./dist/address.js",
-      "types": "./dist/address.d.ts"
+      "types": "./dist/address.d.ts",
+      "import": "./dist/address.js"
     },
     "./address-picker": {
-      "import": "./dist/addressPicker.js",
-      "types": "./dist/addressPicker.d.ts"
+      "types": "./dist/addressPicker.d.ts",
+      "import": "./dist/addressPicker.js"
     },
     "./date-picker": {
-      "import": "./dist/datePicker.js",
-      "types": "./dist/datePicker.d.ts"
+      "types": "./dist/datePicker.d.ts",
+      "import": "./dist/datePicker.js"
     },
     "./range-picker": {
-      "import": "./dist/rangePicker.js",
-      "types": "./dist/rangePicker.d.ts"
+      "types": "./dist/rangePicker.d.ts",
+      "import": "./dist/rangePicker.js"
     },
     "./money-input": {
-      "import": "./dist/moneyInput.js",
-      "types": "./dist/moneyInput.d.ts"
+      "types": "./dist/moneyInput.d.ts",
+      "import": "./dist/moneyInput.js"
     },
     "./phone-input": {
-      "import": "./dist/phoneInput.js",
-      "types": "./dist/phoneInput.d.ts"
+      "types": "./dist/phoneInput.d.ts",
+      "import": "./dist/phoneInput.js"
     },
     "./receipt": {
-      "import": "./dist/receipt.js",
-      "types": "./dist/receipt.d.ts"
+      "types": "./dist/receipt.d.ts",
+      "import": "./dist/receipt.js"
     },
     "./sms": {
-      "import": "./dist/sms.js",
-      "types": "./dist/sms.d.ts"
+      "types": "./dist/sms.d.ts",
+      "import": "./dist/sms.js"
     },
     "./receipt-html": {
-      "import": "./dist/receiptHtml.js",
-      "types": "./dist/receiptHtml.d.ts"
+      "types": "./dist/receiptHtml.d.ts",
+      "import": "./dist/receiptHtml.js"
     },
     "./date-picker-element": {
-      "import": "./dist/elements/datePickerElement.js",
-      "types": "./dist/elements/datePickerElement.d.ts"
+      "types": "./dist/elements/datePickerElement.d.ts",
+      "import": "./dist/elements/datePickerElement.js"
     },
     "./field-elements": {
-      "import": "./dist/elements/fieldElements.js",
-      "types": "./dist/elements/fieldElements.d.ts"
+      "types": "./dist/elements/fieldElements.d.ts",
+      "import": "./dist/elements/fieldElements.js"
     },
     "./address-element": {
-      "import": "./dist/elements/addressElement.js",
-      "types": "./dist/elements/addressElement.d.ts"
+      "types": "./dist/elements/addressElement.d.ts",
+      "import": "./dist/elements/addressElement.js"
     },
     "./range-picker-element": {
-      "import": "./dist/elements/rangePickerElement.js",
-      "types": "./dist/elements/rangePickerElement.d.ts"
+      "types": "./dist/elements/rangePickerElement.d.ts",
+      "import": "./dist/elements/rangePickerElement.js"
     },
     "./calendar-element": {
-      "import": "./dist/elements/calendarElement.js",
-      "types": "./dist/elements/calendarElement.d.ts"
+      "types": "./dist/elements/calendarElement.d.ts",
+      "import": "./dist/elements/calendarElement.js"
     },
     "./sms-file-store": {
-      "import": "./dist/smsFileStore.js",
-      "types": "./dist/smsFileStore.d.ts"
+      "types": "./dist/smsFileStore.d.ts",
+      "import": "./dist/smsFileStore.js"
     },
     "./element-binding": {
-      "import": "./dist/elementBinding.js",
-      "types": "./dist/elementBinding.d.ts"
+      "types": "./dist/elementBinding.d.ts",
+      "import": "./dist/elementBinding.js"
     },
     "./element-bindings": {
-      "import": "./dist/elementBindings.js",
-      "types": "./dist/elementBindings.d.ts"
-    }
+      "types": "./dist/elementBindings.d.ts",
+      "import": "./dist/elementBindings.js"
+    },
+    "./nepali_calendar_data.json": "./nepali_calendar_data.json",
+    "./2081_tithi.json": "./2081_tithi.json"
   },
   "scripts": {
     "build": "tsc",

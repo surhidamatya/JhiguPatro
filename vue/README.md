@@ -3,8 +3,13 @@
 Vue 3 components for the Jhigu Patro web components: BS date picker, date range
 picker, calendar with events, address select, money input and phone input.
 
-Not published; in this repo it depends on `../ts` (`jhigu-patro-utils-ts`) by path.
-Vue 3.3 and later. Built on the same framework-neutral core as `jhigu-patro-react`
+Not published yet. `jhigu-patro-utils-ts` is a **peer dependency** (install it next to this package, so the
+app and the elements share one copy of the calendar state); in this repo it is linked from `../ts` for
+development. Vue 3.3 and later.
+
+```bash
+npm install jhigu-patro-vue jhigu-patro-utils-ts vue
+``` Built on the same framework-neutral core as `jhigu-patro-react`
 (`ElementBinding` and the prop tables in `jhigu-patro-utils-ts`).
 
 ```vue
