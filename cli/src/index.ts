@@ -8,7 +8,17 @@
  *   bs2ad  <YYYY-MM-DD>       Convert BS date → AD date
  *   month  [BS-YYYY] [1-12]   Print a monthly calendar grid
  *   info   <YYYY-MM-DD>       Full info about any date (both calendars)
+ *   money  <amount>           Format an amount (lakh grouping), VAT, words
+ *   phone  <number>           Validate and format a Nepal phone number
+ *   address <id> <ward>       Format an address; `address search <text>` finds places
+ *   sms    <template> ...     Render an SMS template and count its segments
+ *   fmt    <date> <format>    Format a BS date (preset or token pattern)
+ *   parse  <date text>        Read a date written in many ways (BS and AD out)
+ *   fiscal <date>             Fiscal year of a BS date
  *   help                      Show this help
+ *
+ * The money, phone, address, sms, fmt, parse and fiscal commands take --lang en|ne
+ * and --json (machine-readable output). See tools.ts.
  */
 
 import { readFileSync } from 'node:fs';
@@ -37,6 +47,7 @@ import {
 } from '../../ts/dist/index.js';
 import { InlineCalendarDataSource, JhiguError } from '../../ts/dist/index.js';
 import type { CalendarJson } from '../../ts/dist/index.js';
+import { CliError, TOOLS } from './tools.js';
 
 // ============================================================================
 // BOOTSTRAP
@@ -47,7 +58,7 @@ const dataPath = join(__dir, '../../data/nepali_calendar_data.json');
 const calData: CalendarJson = JSON.parse(readFileSync(dataPath, 'utf8'));
 
 initializeCalendar(
-  new InlineCalendarDataSource(calData.years, calData.supportedRange.start, calData.supportedRange.end)
+  new InlineCalendarDataSource(calData.years, calData.supportedRange.start, calData.supportedRange.end, calData.verifiedThrough)
 );
 
 // ============================================================================
@@ -277,6 +288,26 @@ function cmdHelp(): void {
   console.log(chalk.white('  ' + chalk.bold('info') + ' <YYYY-MM-DD>'));
   console.log(chalk.dim('    Show full info for a date (auto-detects AD vs BS by year range)\n'));
 
+  console.log(chalk.white('  ' + chalk.bold('money') + ' <amount> [--vat excl|incl] [--rate 13] [--words]'));
+  console.log(chalk.dim('    Format an amount with lakh grouping; add or split VAT; English words\n'));
+
+  console.log(chalk.white('  ' + chalk.bold('phone') + ' <number>'));
+  console.log(chalk.dim('    Validate a Nepal phone number; show E.164, national form and carrier\n'));
+
+  console.log(chalk.white('  ' + chalk.bold('address') + ' <localLevelId> <ward>  |  ' + chalk.bold('address search') + ' <text>'));
+  console.log(chalk.dim('    Format an address, or look up provinces, districts and local levels\n'));
+
+  console.log(chalk.white('  ' + chalk.bold('sms') + ' keys  |  ' + chalk.bold('sms') + ' <template> [name=value ...]'));
+  console.log(chalk.dim('    List the built-in SMS templates, or render one and count its segments\n'));
+
+  console.log(chalk.white('  ' + chalk.bold('fmt') + ' <BS date> <preset|pattern>'));
+  console.log(chalk.dim('    Format a BS date, e.g. fmt 2082-05-10 "D MMMM YYYY" --lang ne\n'));
+
+  console.log(chalk.white('  ' + chalk.bold('parse') + ' <date text>   ' + chalk.bold('fiscal') + ' <BS date>'));
+  console.log(chalk.dim('    Read a date written many ways; find its fiscal year\n'));
+
+  console.log(chalk.dim('  The commands from money on take --lang en|ne and --json.\n'));
+
   console.log(chalk.white('  ' + chalk.bold('help')));
   console.log(chalk.dim('    Show this help\n'));
 
@@ -287,6 +318,11 @@ function cmdHelp(): void {
   console.log(chalk.dim('    jhigu-patro month 2082 11'));
   console.log(chalk.dim('    jhigu-patro month'));
   console.log(chalk.dim('    jhigu-patro info 2082-11-08'));
+  console.log(chalk.dim('    jhigu-patro money 1234567.5 --vat excl --words'));
+  console.log(chalk.dim('    jhigu-patro phone 9841234567'));
+  console.log(chalk.dim('    jhigu-patro address search Bhaktapur'));
+  console.log(chalk.dim('    jhigu-patro sms appointment name=Ram date=2082-05-10 time=9:00 sender=Shop'));
+  console.log(chalk.dim('    jhigu-patro fmt 2082-05-10 dual --json'));
   printDivider();
 }
 
@@ -295,6 +331,27 @@ function cmdHelp(): void {
 // ============================================================================
 
 const [,, cmd, arg1, arg2] = process.argv;
+
+/** Run one of the tools commands: print its result, or its error, and exit. */
+function runTool(name: string, rawArgs: string[]): void {
+  const json = rawArgs.includes('--json');
+  const args = rawArgs.filter(a => a !== '--json');
+  try {
+    const out = TOOLS[name](args);
+    if (json) console.log(JSON.stringify(out.data, null, 2));
+    else for (const line of out.lines) console.log(line);
+  } catch (e) {
+    if (!(e instanceof CliError)) throw e;
+    if (json) console.error(JSON.stringify({ error: { code: e.code, message: e.message } }));
+    else console.error(chalk.red(`✖ ${e.message}`));
+    process.exit(e.exit);
+  }
+}
+
+if (cmd !== undefined && Object.prototype.hasOwnProperty.call(TOOLS, cmd)) {
+  runTool(cmd, process.argv.slice(3));
+  process.exit(0);
+}
 
 try {
   switch (cmd) {

@@ -95,8 +95,50 @@ jhigu-patro ad2bs  <YYYY-MM-DD>
 jhigu-patro bs2ad  <YYYY-MM-DD>
 jhigu-patro month  [BS-YYYY] [1-12]
 jhigu-patro info   <YYYY-MM-DD>
+jhigu-patro money  <amount> [--vat excl|incl] [--rate 13] [--words]
+jhigu-patro phone  <number> [--allow-inactive]
+jhigu-patro address <localLevelId> <ward> [--tole T] [--street S]
+jhigu-patro address search <text> [--limit 10] [--in auto|en|ne]
+jhigu-patro sms keys
+jhigu-patro sms <template> [name=value ...]
+jhigu-patro fmt    <BS date> <preset|pattern> [--digits native|ascii]
+jhigu-patro parse  <date text>
+jhigu-patro fiscal <BS date>
 jhigu-patro help
 ```
+
+The commands from `money` on take `--lang en|ne` (the language of labels and error messages) and `--json` (print the result as JSON; an error is JSON on stderr). Exit codes: `0` ok, `1` the input was rejected (bad amount, phone, date, ...), `2` the command was used wrongly. Errors are one line, never a stack trace. A negative amount can be given as is (`money -1500`).
+
+```
+$ jhigu-patro money 1234567.5 --vat excl --words
+Amount:       Rs. 12,34,567.50
+Paisa:        123456750
+Devanagari:   रु १२,३४,५६७.५०
+In words:     Rupees Twelve Lakh Thirty-Four Thousand Five Hundred Sixty-Seven and Fifty Paisa Only (English only)
+
+VAT 13% (added to the price):
+  Subtotal:   Rs. 12,34,567.50
+  VAT:        Rs. 1,60,493.78
+  Total:      Rs. 13,95,061.28
+
+$ jhigu-patro phone 9841234567 --json
+{
+  "e164": "+9779841234567",
+  "national": "984-1234567",
+  "type": "mobile",
+  "carrier": "NTC",
+  "areaCode": null
+}
+
+$ jhigu-patro address 274 3 --lang ne
+वडा नं. ३, भक्तपुर नगरपालिका, भक्तपुर, बाग्मती
+
+$ jhigu-patro sms appointment name=Ram date=2082-05-10 time=9:00 sender=Shop
+Dear Ram, reminder: your appointment is on 2082-05-10 at 9:00. - Shop
+gsm7, 69 units, 1 segment
+```
+
+`fmt` takes a preset (`full long iso slash dmy short monthYear gate dual fiscal`) or a token pattern such as `"D MMMM YYYY"`. `parse` reads a date written many ways and prints both BS and AD. A date that does not exist (like Poush 30, 2081) is a `PARSE_ERROR`, since it cannot be read from text. Carrier names are not an official list (`data/PHONE_NOTES.md`); amount in words is English only.
 
 ### Examples
 
@@ -192,6 +234,8 @@ Or run everything from the root:
 npm run build      # builds ts/ and cli/
 npm run test:run   # runs ts/ tests
 ```
+
+CLI tests (after building `ts/` and `cli/`): `cd cli && npm test`.
 
 ### Browser (Vite / Next.js / React)
 
