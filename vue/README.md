@@ -72,7 +72,8 @@ headers under `ts/src/elements/`.
   a normal `<form>` and `FormData` (the date as `YYYY-MM-DD`, money as integer paisa,
   phone as E.164, the range as `name_start` and `name_end`).
 - **Client only.** The element is created on mount, so server rendering gives the empty
-  wrapper (`<div style="display: contents">`) and the field appears on hydration.
+  wrapper (`<div style="display: contents">`) and the field appears on hydration. In Nuxt this
+  needs no `<ClientOnly>`.
 
 ## Checked and not checked
 
@@ -92,6 +93,13 @@ headers under `ts/src/elements/`.
   changes the element's class (not the wrapper's); switching `language` re-renders in
   Nepali with values kept; a themed `style` custom property changes the colour; the form
   submits `dob`, `stay_start`, `stay_end`, `amount` and `phone`.
-- **Not checked:** Vue 3.3 and 3.4 (only 3.5 was installed), Nuxt or any server rendering
-  and hydration in a real framework, Vue 2, Safari, Firefox, touch and screen readers
-  (the same limits as the web components themselves).
+- Seen in Nuxt 4.6.4 (Vue 3.5, Nitro server) in `example-nuxt/`: a page with all five kinds of
+  field is server-rendered (the HTML has five empty wrappers and no custom elements). In Chromium,
+  after hydration each element exists once, the date picker draws its 31 days, typing in the money
+  field formats it, and the form gives `dob` and `amount` (paisa). The console has no errors and no
+  hydration warnings, from the production build (`node .output/server/index.mjs`) and from
+  `nuxt dev`. The calendar data is imported from `jhigu-patro-utils-ts/nepali_calendar_data.json`
+  and initialised in the page's setup, so the same code runs on the server and in the browser.
+- **Not checked:** Vue 3.3 and 3.4 (only 3.5 was installed), other frameworks (Quasar, Astro),
+  Vue 2, Safari, Firefox, touch and screen readers (the same limits as the web components
+  themselves).
