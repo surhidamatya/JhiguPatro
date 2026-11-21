@@ -207,7 +207,6 @@ class _JhiguDatePickerState extends State<JhiguDatePicker> {
     final s = _picker.state;
     final t = JhiguTheme.of(context);
     final strings = getStrings(s.language).picker;
-    final textStyle = Theme.of(context).textTheme.bodyMedium;
 
     Widget body;
     switch (s.view) {
@@ -248,43 +247,22 @@ class _JhiguDatePickerState extends State<JhiguDatePicker> {
     }
 
     final paging = s.view == PickerView.days;
-    final header = Row(
-      children: [
-        if (paging)
-          IconButton(
-            icon: const Icon(Icons.chevron_left),
-            tooltip: strings.previousMonth,
-            onPressed: s.canGoPrev ? () => _guard(_picker.prevMonth) : null,
-          )
-        else
-          const SizedBox(width: 48),
-        Expanded(
-          child: Semantics(
-            liveRegion: true,
-            child: TextButton(
-              onPressed: _cycleView,
-              child: Text(
-                s.title,
-                style: textStyle?.copyWith(
-                    fontWeight: FontWeight.w600, color: t.text),
-              ),
-            ),
-          ),
-        ),
-        if (paging)
-          IconButton(
-            icon: const Icon(Icons.chevron_right),
-            tooltip: strings.nextMonth,
-            onPressed: s.canGoNext ? () => _guard(_picker.nextMonth) : null,
-          )
-        else
-          const SizedBox(width: 48),
-      ],
+    final header = PickerHeader(
+      theme: t,
+      title: s.title,
+      paging: paging,
+      canGoPrev: s.canGoPrev,
+      canGoNext: s.canGoNext,
+      previousLabel: strings.previousMonth,
+      nextLabel: strings.nextMonth,
+      onPrev: () => _guard(_picker.prevMonth),
+      onNext: () => _guard(_picker.nextMonth),
+      onTitle: _cycleView,
     );
 
     final footer = widget.showFooter
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ? Wrap(
+            alignment: WrapAlignment.spaceBetween,
             children: [
               TextButton(
                 onPressed: () => _guard(_picker.selectToday),

@@ -100,6 +100,14 @@ class _HomeState extends State<Home> {
                 onMonthChanged: (y, m) => _note('month: $y-$m'),
               ),
             ]),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text('JhiguRangePicker'),
+              JhiguRangePicker(
+                today: today,
+                onChanged: (a, b) =>
+                    _note('range: ${a?.toIsoString()} to ${b?.toIsoString()}'),
+              ),
+            ]),
             SizedBox(width: 340, child: Text(_log.isEmpty ? '(events appear here)' : _log, key: const Key('log'))),
           ],
         ),

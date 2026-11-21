@@ -69,3 +69,70 @@ class PickerChoices extends StatelessWidget {
     );
   }
 }
+
+/// The header row: previous and next month arrows (days view only) around a
+/// title button that cycles the view.
+class PickerHeader extends StatelessWidget {
+  final ResolvedJhiguTheme theme;
+  final String title;
+  final bool paging;
+  final bool canGoPrev;
+  final bool canGoNext;
+  final String previousLabel;
+  final String nextLabel;
+  final VoidCallback onPrev;
+  final VoidCallback onNext;
+  final VoidCallback onTitle;
+
+  const PickerHeader({
+    super.key,
+    required this.theme,
+    required this.title,
+    required this.paging,
+    required this.canGoPrev,
+    required this.canGoNext,
+    required this.previousLabel,
+    required this.nextLabel,
+    required this.onPrev,
+    required this.onNext,
+    required this.onTitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.bodyMedium;
+    return Row(
+      children: [
+        if (paging)
+          IconButton(
+            icon: const Icon(Icons.chevron_left),
+            tooltip: previousLabel,
+            onPressed: canGoPrev ? onPrev : null,
+          )
+        else
+          const SizedBox(width: 48),
+        Expanded(
+          child: Semantics(
+            liveRegion: true,
+            child: TextButton(
+              onPressed: onTitle,
+              child: Text(
+                title,
+                style: textStyle?.copyWith(
+                    fontWeight: FontWeight.w600, color: theme.text),
+              ),
+            ),
+          ),
+        ),
+        if (paging)
+          IconButton(
+            icon: const Icon(Icons.chevron_right),
+            tooltip: nextLabel,
+            onPressed: canGoNext ? onNext : null,
+          )
+        else
+          const SizedBox(width: 48),
+      ],
+    );
+  }
+}

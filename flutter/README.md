@@ -51,6 +51,29 @@ JhiguCalendar(
 that are not `YYYY-MM-DD` and blank titles are ignored. The events list can be
 long, so give the calendar room or put it in a scroll view.
 
+## `JhiguRangePicker`
+
+An inline range picker over the headless `RangePicker`, with the same rules as
+the web `<jhigu-date-range-picker>`: the first tap sets the start, a second tap
+on or after it sets the end, a second tap before the start restarts, and a tap on
+a complete range starts a new one. While choosing the end, days up to the hovered
+(or keyboard-focused) day are previewed. A summary line shows "start – end".
+
+```dart
+JhiguRangePicker(
+  start: _start,
+  end: _end,
+  min: NepaliDate.checked(2082, 1, 1),
+  onChanged: (start, end) => setState(() { _start = start; _end = end; }),
+)
+```
+
+`onChanged` is called with a start and no end after the first tap, with both
+after the second, and with two nulls after Clear. `start` and `end` are optional;
+when the parent changes them the picker follows without calling `onChanged`. An
+end before the start throws `InvalidDataException`. The view opens on the month
+of the end.
+
 See [`example/`](example) for a working app (web) and
 [`../data/PICKER_NOTES.md`](../data/PICKER_NOTES.md) for what was and was not
 verified.
