@@ -62,6 +62,9 @@ theming: `style={{ '--jhigu-color-primary': '#b91c1c' }}`), `id`, `title`, `hidd
 - **Form fields work.** The elements are form-associated, so `name` puts their value
   in a normal `<form>` and in `FormData` (the date as `YYYY-MM-DD`, money as integer
   paisa, phone as E.164, the range as `name_start` and `name_end`).
+- **Built on a shared core.** The attribute mapping, property and event wiring are in
+  `ElementBinding` and the prop tables in `jhigu-patro-utils-ts` (`element-binding`,
+  `element-bindings`); the Vue package uses the same ones.
 - **The element is created by hand,** not by React, with its attributes set before it
   is connected (one build, not one per attribute). React 18 and 19 treat props on
   custom elements differently; this avoids the difference. The component renders one
@@ -73,13 +76,12 @@ theming: `style={{ '--jhigu-color-primary': '#b91c1c' }}`), `id`, `title`, `hidd
 
 ## Checked and not checked
 
-- 66 tests (`npm test`) with stub elements in jsdom: attribute kinds, writing only
+- 74 tests (`npm test`; 8 of them test the shared core's lifecycle directly) with stub elements in jsdom: attribute kinds, writing only
   what changed, attributes set before connecting, events and the latest callback,
   refs, host props, StrictMode, server render, and for every component that each
   attribute it writes is one the real element observes, that each event it listens
   for is dispatched in the element's source, and that it covers every observed
-  attribute. They pass on React 19.2 and on React 18.3.1. Twenty-two mutations were
-  caught (four only after tests were added).
+  attribute. All 74 pass on React 19.2 and on React 18.3.1 (rerun after the move to the shared core). Twenty-two mutations were caught (four only after tests were added), and nine more on the shared core after the refactor (one only after a test was added).
 - Seen in Chromium (React 19, Vite, StrictMode) with the real elements in
   `example/`: all six render, one element each; real clicks reach the callbacks;
   typing into the money and phone fields formats them and survives a parent

@@ -20,21 +20,17 @@
  * Client only: the elements are created after the first render, so a server render
  * has the empty wrapper. Nothing here depends on the React version (18 and later).
  */
-import { defineJhiguDatePicker } from 'jhigu-patro-utils-ts/date-picker-element';
 import type { JhiguChangeDetail, JhiguDatePicker as DatePickerElement } from 'jhigu-patro-utils-ts/date-picker-element';
-import { defineJhiguDateRangePicker } from 'jhigu-patro-utils-ts/range-picker-element';
 import type { JhiguRangeChangeDetail, JhiguDateRangePicker as RangePickerElement } from 'jhigu-patro-utils-ts/range-picker-element';
-import { defineJhiguCalendar } from 'jhigu-patro-utils-ts/calendar-element';
 import type { JhiguCalendar as CalendarElement, JhiguMonthChangeDetail, JhiguSelectDetail } from 'jhigu-patro-utils-ts/calendar-element';
-import { defineJhiguAddressSelect } from 'jhigu-patro-utils-ts/address-element';
 import type { JhiguAddressChangeDetail, JhiguAddressSelect as AddressElement } from 'jhigu-patro-utils-ts/address-element';
-import { defineJhiguMoneyInput, defineJhiguPhoneInput } from 'jhigu-patro-utils-ts/field-elements';
 import type {
   JhiguMoneyChangeDetail, JhiguMoneyInput as MoneyElement,
   JhiguPhoneChangeDetail, JhiguPhoneInput as PhoneElement,
 } from 'jhigu-patro-utils-ts/field-elements';
+import { elementBindings as b } from 'jhigu-patro-utils-ts/element-bindings';
 import { createJhiguComponent } from './wrap.js';
-import type { AttrSpec, HostProps } from './wrap.js';
+import type { HostProps } from './wrap.js';
 
 export { createJhiguComponent } from './wrap.js';
 export type { AttrKind, AttrSpec, ComponentSpec, HostProps } from './wrap.js';
@@ -47,10 +43,6 @@ export type {
 type Language = 'en' | 'ne';
 type Theme = 'light' | 'dark';
 type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
-
-const str = (attr: string): AttrSpec => ({ attr, kind: 'string' });
-const bool = (attr: string): AttrSpec => ({ attr, kind: 'boolean' });
-const off = (attr: string): AttrSpec => ({ attr, kind: 'falseOnly' });
 
 /** The callback gets the event's detail, then the DOM event. */
 type Handler<D> = (detail: D, event: CustomEvent<D>) => void;
@@ -82,19 +74,7 @@ export interface JhiguDatePickerProps extends HostProps {
   onClose?: PlainHandler;
 }
 
-export const JhiguDatePicker = createJhiguComponent<DatePickerElement, JhiguDatePickerProps>(
-  'jhigu-date-picker',
-  defineJhiguDatePicker,
-  {
-    attrs: {
-      value: str('value'), min: str('min'), max: str('max'), language: str('language'),
-      weekStartsOn: str('week-starts-on'), showAd: off('show-ad'), name: str('name'),
-      disabled: bool('disabled'), required: bool('required'), popup: bool('popup'),
-      theme: str('theme'), today: str('today'),
-    },
-    events: { onChange: 'jhiguChange', onOpen: 'jhiguOpen', onClose: 'jhiguClose' },
-  },
-);
+export const JhiguDatePicker = createJhiguComponent<DatePickerElement, JhiguDatePickerProps>(b.datePicker.tag, b.datePicker.define, b.datePicker.spec);
 
 // ── Range picker ─────────────────────────────────────────────────────────────
 
@@ -119,19 +99,7 @@ export interface JhiguDateRangePickerProps extends HostProps {
   onClose?: PlainHandler;
 }
 
-export const JhiguDateRangePicker = createJhiguComponent<RangePickerElement, JhiguDateRangePickerProps>(
-  'jhigu-date-range-picker',
-  defineJhiguDateRangePicker,
-  {
-    attrs: {
-      start: str('start'), end: str('end'), min: str('min'), max: str('max'), language: str('language'),
-      weekStartsOn: str('week-starts-on'), showAd: off('show-ad'), name: str('name'),
-      disabled: bool('disabled'), required: bool('required'), popup: bool('popup'),
-      theme: str('theme'), today: str('today'),
-    },
-    events: { onChange: 'jhiguChange', onOpen: 'jhiguOpen', onClose: 'jhiguClose' },
-  },
-);
+export const JhiguDateRangePicker = createJhiguComponent<RangePickerElement, JhiguDateRangePickerProps>(b.dateRangePicker.tag, b.dateRangePicker.define, b.dateRangePicker.spec);
 
 // ── Calendar ─────────────────────────────────────────────────────────────────
 
@@ -153,18 +121,7 @@ export interface JhiguCalendarProps extends HostProps {
   onMonthChange?: Handler<JhiguMonthChangeDetail>;
 }
 
-export const JhiguCalendar = createJhiguComponent<CalendarElement, JhiguCalendarProps>(
-  'jhigu-calendar',
-  defineJhiguCalendar,
-  {
-    attrs: {
-      year: str('year'), month: str('month'), language: str('language'), weekStartsOn: str('week-starts-on'),
-      showAd: off('show-ad'), theme: str('theme'), today: str('today'),
-    },
-    properties: ['events'],
-    events: { onSelect: 'jhiguSelect', onMonthChange: 'jhiguMonthChange' },
-  },
-);
+export const JhiguCalendar = createJhiguComponent<CalendarElement, JhiguCalendarProps>(b.calendar.tag, b.calendar.define, b.calendar.spec);
 
 // ── Address ──────────────────────────────────────────────────────────────────
 
@@ -184,17 +141,7 @@ export interface JhiguAddressSelectProps extends HostProps {
   onChange?: Handler<JhiguAddressChangeDetail>;
 }
 
-export const JhiguAddressSelect = createJhiguComponent<AddressElement, JhiguAddressSelectProps>(
-  'jhigu-address-select',
-  defineJhiguAddressSelect,
-  {
-    attrs: {
-      value: str('value'), ward: str('ward'), language: str('language'), showWard: off('show-ward'),
-      name: str('name'), required: bool('required'), disabled: bool('disabled'), theme: str('theme'),
-    },
-    events: { onChange: 'jhiguChange' },
-  },
-);
+export const JhiguAddressSelect = createJhiguComponent<AddressElement, JhiguAddressSelectProps>(b.addressSelect.tag, b.addressSelect.define, b.addressSelect.spec);
 
 // ── Money and phone ──────────────────────────────────────────────────────────
 
@@ -218,19 +165,7 @@ export interface JhiguMoneyInputProps extends HostProps {
   onChange?: Handler<JhiguMoneyChangeDetail>;
 }
 
-export const JhiguMoneyInput = createJhiguComponent<MoneyElement, JhiguMoneyInputProps>(
-  'jhigu-money-input',
-  defineJhiguMoneyInput,
-  {
-    attrs: {
-      valuePaisa: str('value-paisa'), symbol: str('symbol'), devanagari: bool('devanagari'),
-      allowNegative: bool('allow-negative'), name: str('name'), placeholder: str('placeholder'),
-      label: str('label'), language: str('language'), disabled: bool('disabled'),
-      readonly: bool('readonly'), required: bool('required'), theme: str('theme'),
-    },
-    events: { onChange: 'jhiguChange' },
-  },
-);
+export const JhiguMoneyInput = createJhiguComponent<MoneyElement, JhiguMoneyInputProps>(b.moneyInput.tag, b.moneyInput.define, b.moneyInput.spec);
 
 export interface JhiguPhoneInputProps extends HostProps {
   /** The text in the field. Setting it again from the parent changes the field. */
@@ -247,15 +182,4 @@ export interface JhiguPhoneInputProps extends HostProps {
   onChange?: Handler<JhiguPhoneChangeDetail>;
 }
 
-export const JhiguPhoneInput = createJhiguComponent<PhoneElement, JhiguPhoneInputProps>(
-  'jhigu-phone-input',
-  defineJhiguPhoneInput,
-  {
-    attrs: {
-      value: str('value'), allowInactive: bool('allow-inactive'), name: str('name'),
-      placeholder: str('placeholder'), label: str('label'), language: str('language'),
-      disabled: bool('disabled'), readonly: bool('readonly'), required: bool('required'), theme: str('theme'),
-    },
-    events: { onChange: 'jhiguChange' },
-  },
-);
+export const JhiguPhoneInput = createJhiguComponent<PhoneElement, JhiguPhoneInputProps>(b.phoneInput.tag, b.phoneInput.define, b.phoneInput.spec);

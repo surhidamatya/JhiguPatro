@@ -277,6 +277,10 @@ It is one JSON file shared by the TypeScript and Dart stores. Each write goes to
 
 Load the calendar data once first. A prop is written to the element only when it changes, so a rerender does not reset what the user typed; the fields post in a normal `<form>`. It is client only (a server render has an empty wrapper). See `react/README.md` for the props, what was checked (React 19 in Chromium, the tests on React 18 too) and what was not.
 
+`vue/` is the same for Vue 3 (`jhigu-patro-vue`): `<JhiguDatePicker :value="dob" @change="d => (dob = d.bs)" />`, with Vue events (`@change`, `@select`, `@month-change`) and the same behaviour. See `vue/README.md`.
+
+Both are thin layers over a framework-neutral core in `jhigu-patro-utils-ts/element-binding` (`ElementBinding`: create the element, set its attributes before it connects, write only what changed, forward its events) and the prop tables in `jhigu-patro-utils-ts/element-bindings` (`elementBindings.datePicker.spec` and so on, with each element's tag and `define`). Use these directly to wrap the elements for another framework.
+
 ## Headless pickers and inputs
 
 Each widget has a framework-free state machine: `getState()`, `subscribe(listener)`, and `actions`. They never touch the DOM, so you can drive them from React, Vue, a terminal or a test. Entry points: `jhigu-patro-utils-ts/date-picker`, `/range-picker`, `/address-picker`, `/money-input`, `/phone-input`.

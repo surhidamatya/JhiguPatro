@@ -71,6 +71,14 @@
     "./sms-file-store": {
       "import": "./dist/smsFileStore.js",
       "types": "./dist/smsFileStore.d.ts"
+    },
+    "./element-binding": {
+      "import": "./dist/elementBinding.js",
+      "types": "./dist/elementBinding.d.ts"
+    },
+    "./element-bindings": {
+      "import": "./dist/elementBindings.js",
+      "types": "./dist/elementBindings.d.ts"
     }
   },
   "scripts": {
