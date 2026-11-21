@@ -16,6 +16,7 @@
  *   initializeCalendar(source);
  */
 
+import { JhiguError } from './errors.js';
 import { getStrings } from './generated/strings.js';
 import type { NepaliCalendarDataSource, NepaliDateFields } from './types.js';
 
@@ -200,6 +201,12 @@ export const BASE_DAY_NUMBER = BASE_UTC / 86_400_000;
 export function daysSinceBaseToBS(daysSinceBase: number): NepaliDateFields {
   let remaining = daysSinceBase;
   const src = ds();
+  // Past either end of the data there is no BS date: refuse, do not clamp.
+  const lastYear = src.supportedEndYear;
+  const total = (_yearOffset.get(lastYear) ?? 0) + getTotalDaysInBSYear(lastYear);
+  if (!Number.isInteger(daysSinceBase) || daysSinceBase < 0 || daysSinceBase >= total) {
+    throw new JhiguError('OUT_OF_RANGE', 'Date is outside the calendar data', daysSinceBase);
+  }
 
   // Binary-search the year using precomputed cumulative offsets.
   let lo = src.supportedStartYear;
@@ -226,8 +233,15 @@ export function daysSinceBaseToBS(daysSinceBase: number): NepaliDateFields {
 
 /** Days from the reference date to a valid BS date. Throws for an invalid date. */
 export function bsToDaysSinceBase(bsYear: number, bsMonth: number, bsDay: number): number {
+  if (!Number.isInteger(bsYear) || !Number.isInteger(bsMonth) || !Number.isInteger(bsDay)) {
+    throw new JhiguError('INVALID_DATE', 'Invalid BS date', { year: bsYear, month: bsMonth, day: bsDay });
+  }
   if (!isValidBSDate(bsYear, bsMonth, bsDay)) {
-    throw new Error(`Invalid BS date: ${bsYear}/${bsMonth}/${bsDay}`);
+    const { start, end } = getSupportedBSRange();
+    if (bsYear < start || bsYear > end) {
+      throw new JhiguError('OUT_OF_RANGE', 'BS year is outside the calendar data', { year: bsYear, month: bsMonth, day: bsDay });
+    }
+    throw new JhiguError('INVALID_DATE', 'Invalid BS date', { year: bsYear, month: bsMonth, day: bsDay });
   }
   // O(1): year offset + month offset from precomputed tables.
   const yearOff  = _yearOffset.get(bsYear) ?? 0;
@@ -237,6 +251,9 @@ export function bsToDaysSinceBase(bsYear: number, bsMonth: number, bsDay: number
 
 /** Convert a JS Date (AD) to a Nepali (BS) date. */
 export function convertADToBS(adDate: Date): NepaliDateFields {
+  if (!(adDate instanceof Date) || Number.isNaN(adDate.getTime())) {
+    throw new JhiguError('INVALID_DATE', 'Invalid Date', adDate);
+  }
   const adUTC = Date.UTC(adDate.getFullYear(), adDate.getMonth(), adDate.getDate());
   return daysSinceBaseToBS(Math.round((adUTC - BASE_UTC) / 86_400_000));
 }

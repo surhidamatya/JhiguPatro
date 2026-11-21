@@ -4,8 +4,26 @@
     {
       "name": "ts-static",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "5174", "--directory", "ts"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5174",
+        "--directory",
+        "ts"
+      ],
       "port": 5174
+    },
+    {
+      "name": "flutter-web",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5175",
+        "--directory",
+        "flutter/example/build/web"
+      ],
+      "port": 5175
     }
   ]
 }

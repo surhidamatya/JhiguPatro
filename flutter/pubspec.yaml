@@ -1,0 +1,19 @@
+name: jhigu_patro_flutter
+description: Flutter widgets for Bikram Sambat dates, built on the jhigu_patro_utils state machines. Starts with a date picker.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  jhigu_patro_utils:
+    path: ../dart
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0

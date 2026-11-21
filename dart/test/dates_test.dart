@@ -224,6 +224,40 @@ void nepaliDateTests() {
     }
   });
 
+  group('convertADToBS and convertBSToAD errors and edges (shared vectors)',
+      () {
+    final ce = _v['convertErrors'] as Map<String, dynamic>;
+    DateTime ad(List l) => DateTime(l[0] as int, l[1] as int, l[2] as int);
+    for (final t in (ce['ad'] as List).cast<Map<String, dynamic>>()) {
+      test('AD ${(t['date'] as List).join('-')} is ${t['code']}', () {
+        expect(
+            _codeOf(() => NepaliCalendar.convertADToBS(ad(t['date'] as List))),
+            t['code']);
+      });
+    }
+    for (final t in (ce['bs'] as List).cast<Map<String, dynamic>>()) {
+      test('BS ${(t['date'] as List).join('/')} is ${t['code']}', () {
+        final d = t['date'] as List;
+        expect(
+            _codeOf(() => NepaliCalendar.convertBSToAD(
+                d[0] as int, d[1] as int, d[2] as int)),
+            t['code']);
+      });
+    }
+    for (final t in (ce['edges'] as List).cast<Map<String, dynamic>>()) {
+      test(
+          'edge AD ${(t['ad'] as List).join('-')} is BS ${(t['bs'] as List).join('/')}',
+          () {
+        final b = t['bs'] as List;
+        final got = NepaliCalendar.convertADToBS(ad(t['ad'] as List));
+        expect([got.year, got.month, got.day], b);
+        final back =
+            NepaliCalendar.convertBSToAD(b[0] as int, b[1] as int, b[2] as int);
+        expect([back.year, back.month, back.day], t['ad']);
+      });
+    }
+  });
+
   group('NepaliDate behaviour', () {
     test('prints ISO and compares by value', () {
       final d = NepaliDate.checked(2081, 1, 5);

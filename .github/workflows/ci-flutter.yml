@@ -1,0 +1,24 @@
+name: ci-flutter
+on:
+  pull_request:
+  push:
+    branches: [main, dev]
+jobs:
+  flutter:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter pub get
+        working-directory: flutter/example
+      - run: flutter analyze
+        working-directory: flutter/example

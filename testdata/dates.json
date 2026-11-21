@@ -5752,5 +5752,118 @@
    7,
    1.5
   ]
+ },
+ "convertErrors": {
+  "_note": "Old-style converters (convertADToBS, convertBSToAD). Dates are [year, month, day]. AD edges are the first and last day of the BS 2000..2100 data.",
+  "ad": [
+   {
+    "date": [
+     1943,
+     4,
+     13
+    ],
+    "code": "OUT_OF_RANGE"
+   },
+   {
+    "date": [
+     1900,
+     1,
+     1
+    ],
+    "code": "OUT_OF_RANGE"
+   },
+   {
+    "date": [
+     2044,
+     4,
+     14
+    ],
+    "code": "OUT_OF_RANGE"
+   },
+   {
+    "date": [
+     2100,
+     1,
+     1
+    ],
+    "code": "OUT_OF_RANGE"
+   }
+  ],
+  "bs": [
+   {
+    "date": [
+     1999,
+     12,
+     30
+    ],
+    "code": "OUT_OF_RANGE"
+   },
+   {
+    "date": [
+     2101,
+     1,
+     1
+    ],
+    "code": "OUT_OF_RANGE"
+   },
+   {
+    "date": [
+     2082,
+     13,
+     1
+    ],
+    "code": "INVALID_DATE"
+   },
+   {
+    "date": [
+     2082,
+     0,
+     1
+    ],
+    "code": "INVALID_DATE"
+   },
+   {
+    "date": [
+     2082,
+     1,
+     32
+    ],
+    "code": "INVALID_DATE"
+   },
+   {
+    "date": [
+     2082,
+     1,
+     0
+    ],
+    "code": "INVALID_DATE"
+   }
+  ],
+  "edges": [
+   {
+    "ad": [
+     1943,
+     4,
+     14
+    ],
+    "bs": [
+     2000,
+     1,
+     1
+    ]
+   },
+   {
+    "ad": [
+     2044,
+     4,
+     13
+    ],
+    "bs": [
+     2100,
+     12,
+     31
+    ]
+   }
+  ]
  }
 }

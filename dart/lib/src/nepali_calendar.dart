@@ -10,6 +10,7 @@
 library;
 
 import 'generated/strings.dart';
+import 'errors.dart';
 import 'types.dart';
 
 // ============================================================================
@@ -150,15 +151,22 @@ class NepaliCalendar {
   // CONVERSION
   // ============================================================================
 
-  /// Convert a Gregorian [DateTime] (AD) to a [NepaliDate] (BS).
+  /// Convert a Gregorian [DateTime] (AD) to a [NepaliDate] (BS). Throws
+  /// [OutOfRangeException] for a day before the first or after the last day of
+  /// the calendar data.
   static NepaliDate convertADToBS(DateTime adDate) {
     final adUtc = DateTime.utc(adDate.year, adDate.month, adDate.day);
     int remaining = adUtc.difference(_bsBaseDate).inDays;
+    if (remaining < 0) {
+      throw OutOfRangeException('Date is outside the calendar data', remaining);
+    }
 
+    final lastYear = _ds.supportedEndYear;
     int year = _bsBaseYear;
     int month = 1;
 
     while (remaining > 0) {
+      if (year > lastYear) break;
       final diy = getTotalDaysInBSYear(year);
       if (remaining >= diy) {
         remaining -= diy;
@@ -166,6 +174,10 @@ class NepaliCalendar {
       } else {
         break;
       }
+    }
+    // Used up the last year of data and still days left, or exactly at its end.
+    if (year > lastYear) {
+      throw OutOfRangeException('Date is outside the calendar data', adUtc);
     }
 
     while (remaining > 0) {
@@ -181,10 +193,18 @@ class NepaliCalendar {
     return NepaliDate(year: year, month: month, day: remaining + 1);
   }
 
-  /// Convert a BS date to a Gregorian [DateTime] (AD).
+  /// Convert a BS date to a Gregorian [DateTime] (AD). Throws
+  /// [OutOfRangeException] for a year outside the calendar data and
+  /// [InvalidDateException] for a date that does not exist.
   static DateTime convertBSToAD(int bsYear, int bsMonth, int bsDay) {
     if (!isValidBSDate(bsYear, bsMonth, bsDay)) {
-      throw ArgumentError('Invalid BS date: $bsYear/$bsMonth/$bsDay');
+      final r = getSupportedBSRange();
+      if (bsYear < r.start || bsYear > r.end) {
+        throw OutOfRangeException('BS year is outside the calendar data',
+            (year: bsYear, month: bsMonth, day: bsDay));
+      }
+      throw InvalidDateException(
+          'Invalid BS date', (year: bsYear, month: bsMonth, day: bsDay));
     }
 
     int total = 0;

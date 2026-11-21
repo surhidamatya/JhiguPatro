@@ -88,7 +88,7 @@ describe('fiscalYear shared vectors', () => {
 
 // ── NepaliDate class ─────────────────────────────────────────────────────────
 
-import { NepaliDate, convertADToBS, convertBSToAD } from '../src/index.js';
+import { NepaliDate, convertADToBS, convertBSToAD, JhiguError } from '../src/index.js';
 
 const nd = (t: number[]) => new NepaliDate(t[0], t[1], t[2]);
 const fields = (d: NepaliDate) => [d.year, d.month, d.day];
@@ -476,5 +476,39 @@ describe('getRelativeTimeInNepali', () => {
     expect(getRelativeTimeInNepali(ago(18 * 3_600_000))).toBe('३० चैत्र २०८०');
     // 17.5 h earlier is 2024-04-13 00:15 in Nepal: today, so hours.
     expect(getRelativeTimeInNepali(ago(17.5 * 3_600_000))).toBe('१७ घण्टा अगाडि');
+  });
+});
+
+describe('convertADToBS and convertBSToAD errors and edges (shared vectors)', () => {
+  const ce = v.convertErrors;
+  const code = (fn: () => unknown) => {
+    try { fn(); } catch (e) { return e instanceof JhiguError ? e.code : `other:${(e as Error).message}`; }
+    return 'no error';
+  };
+  for (const t of ce.ad) {
+    it(`AD ${t.date.join('-')} is ${t.code}`, () => {
+      expect(code(() => convertADToBS(new Date(t.date[0], t.date[1] - 1, t.date[2])))).toBe(t.code);
+    });
+  }
+  for (const t of ce.bs) {
+    it(`BS ${t.date.join('/')} is ${t.code}`, () => {
+      expect(code(() => convertBSToAD(t.date[0], t.date[1], t.date[2]))).toBe(t.code);
+    });
+  }
+  for (const t of ce.edges) {
+    it(`edge AD ${t.ad.join('-')} is BS ${t.bs.join('/')}`, () => {
+      expect(convertADToBS(new Date(t.ad[0], t.ad[1] - 1, t.ad[2]))).toEqual({ year: t.bs[0], month: t.bs[1], day: t.bs[2] });
+      const back = convertBSToAD(t.bs[0], t.bs[1], t.bs[2]);
+      expect([back.getFullYear(), back.getMonth() + 1, back.getDate()]).toEqual(t.ad);
+    });
+  }
+  it('an invalid Date object and non-integer parts are INVALID_DATE', () => {
+    expect(code(() => convertADToBS(new Date('nope')))).toBe('INVALID_DATE');
+    expect(code(() => convertBSToAD(2082, 1.5, 1))).toBe('INVALID_DATE');
+    expect(code(() => convertBSToAD(NaN, 1, 1))).toBe('INVALID_DATE');
+  });
+  it('NepaliDate.fromAD still agrees at the edges', () => {
+    expect(NepaliDate.fromAD(new Date(1943, 3, 14)).toString()).toBe('2000-01-01');
+    expect(() => NepaliDate.fromAD(new Date(2044, 3, 14))).toThrow(JhiguError);
   });
 });

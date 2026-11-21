@@ -35,7 +35,7 @@ import {
   formatNepaliDateWithDay,
   toNepalTime,
 } from '../../ts/dist/index.js';
-import { InlineCalendarDataSource } from '../../ts/dist/index.js';
+import { InlineCalendarDataSource, JhiguError } from '../../ts/dist/index.js';
 import type { CalendarJson } from '../../ts/dist/index.js';
 
 // ============================================================================
@@ -296,39 +296,45 @@ function cmdHelp(): void {
 
 const [,, cmd, arg1, arg2] = process.argv;
 
-switch (cmd) {
-  case 'today':
-  case undefined:
-    cmdToday();
-    break;
+try {
+  switch (cmd) {
+    case 'today':
+    case undefined:
+      cmdToday();
+      break;
 
-  case 'ad2bs':
-    if (!arg1) die('Usage: jhigu-patro ad2bs <YYYY-MM-DD>');
-    cmdAD2BS(arg1);
-    break;
+    case 'ad2bs':
+      if (!arg1) die('Usage: jhigu-patro ad2bs <YYYY-MM-DD>');
+      cmdAD2BS(arg1);
+      break;
 
-  case 'bs2ad':
-    if (!arg1) die('Usage: jhigu-patro bs2ad <YYYY-MM-DD>');
-    cmdBS2AD(arg1);
-    break;
+    case 'bs2ad':
+      if (!arg1) die('Usage: jhigu-patro bs2ad <YYYY-MM-DD>');
+      cmdBS2AD(arg1);
+      break;
 
-  case 'month':
-    cmdMonth(arg1, arg2);
-    break;
+    case 'month':
+      cmdMonth(arg1, arg2);
+      break;
 
-  case 'info':
-    if (!arg1) die('Usage: jhigu-patro info <YYYY-MM-DD>');
-    cmdInfo(arg1);
-    break;
+    case 'info':
+      if (!arg1) die('Usage: jhigu-patro info <YYYY-MM-DD>');
+      cmdInfo(arg1);
+      break;
 
-  case 'help':
-  case '--help':
-  case '-h':
-    cmdHelp();
-    break;
+    case 'help':
+    case '--help':
+    case '-h':
+      cmdHelp();
+      break;
 
-  default:
-    console.error(chalk.red(`✖ Unknown command: "${cmd}"`));
-    console.error(chalk.dim('  Run: jhigu-patro help'));
-    process.exit(1);
+    default:
+      console.error(chalk.red(`✖ Unknown command: "${cmd}"`));
+      console.error(chalk.dim('  Run: jhigu-patro help'));
+      process.exit(1);
+  }
+} catch (e) {
+  // A date outside the calendar data or an invalid date: say so, no stack trace.
+  if (e instanceof JhiguError) die(e.message);
+  throw e;
 }

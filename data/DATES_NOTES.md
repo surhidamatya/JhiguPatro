@@ -125,3 +125,11 @@ The guide's other vector groups (`adToBs`, `format`, `grid`, time-zone matrix) a
 - Dart `getRelativeTimeInNepali` gained an optional `now:` for tests.
 - Not changed: `toNepaliDigits`, `formatNepalDateTime`, the `NEPALI_DIGITS` table, and the demo UI's own
   formatting strings in `calendar_section.ts` (it reads the constants above, so its English labels change).
+
+## Old converters now refuse out-of-range dates
+`convertADToBS` and `convertBSToAD` (TS) and `NepaliCalendar.convertADToBS` / `convertBSToAD` (Dart) used to give nonsense outside BS 2000..2100: a day before 1943-04-14 gave a day number at or below 0, a day after 2044-04-13 gave a day past the end of the month (TS) or an `ArgumentError` (Dart), and an invalid BS date threw a plain `Error` or `ArgumentError`. They now throw the typed errors the rest of the library uses:
+- `OUT_OF_RANGE`: an AD day outside the data (first day 1943-04-14, last day 2044-04-13), or a BS year outside the data.
+- `INVALID_DATE`: a BS date that does not exist, non-integer parts, or an invalid `Date` object.
+Shared vectors: `convertErrors` in `testdata/dates.json` (4 AD, 6 BS, 2 edge pairs), run by both languages.
+**Behaviour change:** code that caught `ArgumentError` (Dart) or relied on the old output must now catch `JhiguException` / `JhiguError`. Two old Dart tests were updated for this. The CLI catches `JhiguError` and prints one line.
+The CLI still decides BS or AD from the first number (BS if it is 2000 or more); that was not changed.

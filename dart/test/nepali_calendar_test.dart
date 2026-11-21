@@ -73,10 +73,10 @@ void main() {
     });
 
     test('throws on invalid date', () {
-      expect(
-          () => NepaliCalendar.convertBSToAD(2082, 13, 1), throwsArgumentError);
-      expect(
-          () => NepaliCalendar.convertBSToAD(2082, 1, 32), throwsArgumentError);
+      expect(() => NepaliCalendar.convertBSToAD(2082, 13, 1),
+          throwsA(isA<InvalidDateException>()));
+      expect(() => NepaliCalendar.convertBSToAD(2082, 1, 32),
+          throwsA(isA<InvalidDateException>()));
     });
   });
 

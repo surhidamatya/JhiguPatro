@@ -351,7 +351,22 @@ parsePhone('9841234567').e164;                // +9779841234567
 computeTotals(doc).total;                     // receipt totals, to the paisa
 ```
 
-Dart has the model, validation and totals for receipts, the SMS gateway interface, templates and scheduler, the headless pickers and inputs, and PDF receipts. It does not have Flutter widgets yet.
+Dart has the model, validation and totals for receipts, the SMS gateway interface, templates and scheduler, the headless pickers and inputs, and PDF receipts. Flutter widgets live in a separate package, `flutter/` (see below).
+
+### Flutter widgets
+
+`flutter/` is a Flutter package (`jhigu_patro_flutter`, depends on `dart/` by path) with `JhiguDatePicker`, an inline BS date picker built on the same `DatePicker` state machine as the web component:
+
+```dart
+JhiguDatePicker(
+  value: _date,
+  language: 'ne',
+  min: NepaliDate.checked(2080, 1, 1),
+  onChanged: (d) => setState(() => _date = d),
+)
+```
+
+Style it with a `JhiguTheme` in `ThemeData.extensions`; anything left null falls back to your `ColorScheme`. Only the date picker exists so far (no calendar, range, address, phone or money widgets, and nothing for React Native). See `flutter/README.md`.
 
 ### PDF receipts
 
@@ -384,5 +399,5 @@ It uses `dart:io`, so it is not for the web, and no font is bundled. If the prog
 - **Shared vectors** in `testdata/` are mostly hand-derived or produced by independent Python models, not copied from official sources.
 - **Nepali text** (month aliases, labels, error messages, SMS templates) is unreviewed by a native speaker. Short Nepali month names are ambiguous.
 - **Phone** carrier and active flags, **addresses** (names, ward counts) and **amount in words** (English only) are best effort. Notes: `data/PHONE_NOTES.md`, `data/ADDRESS_NOTES.md`, `data/MONEY_NOTES.md`.
-- **Not built:** a Flutter or atlas Devanagari renderer for PDFs, Flutter print/share helpers, Flutter and React Native widgets, framework wrappers for the web components, Nepali amount in words, a file-backed SMS reminder store.
+- **Not built:** a Flutter or atlas Devanagari renderer for PDFs, Flutter print/share helpers, the other Flutter widgets (only the date picker exists), React Native widgets, framework wrappers for the web components, Nepali amount in words, a file-backed SMS reminder store.
 - Design notes per area: `data/DATES_NOTES.md`, `data/PICKER_NOTES.md`, `data/RECEIPT_NOTES.md`, `data/SMS_NOTES.md`, `data/STRINGS_NOTES.md`.
