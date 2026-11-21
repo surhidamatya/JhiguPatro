@@ -208,6 +208,32 @@ ship. The picture is transparent, 1.6 times the font size tall with the baseline
 1.0 times (as the command renderer), and ignores the user's text-scale setting.
 Errors are a `DevanagariRenderException` that never contains the text.
 
+## Print and share receipts
+
+A separate entry point, because it needs the `printing` package (which has platform
+plugins; the main library does not):
+
+```dart
+import 'package:jhigu_patro_flutter/receipt_print.dart';
+
+await printReceipt(doc);   // system print dialog; false if cancelled
+await shareReceipt(doc);   // share sheet (a download on the web); false if cancelled
+```
+
+Both build the PDF with `buildReceiptPdf` and draw Nepali text with
+`FlutterDevanagariRenderer` unless you pass `renderer:`. Pass `onWarnings:` to hear
+about text that could not be drawn (it falls back to `[?]` or English) instead of
+printing it by surprise. The print dialog starts with the receipt's own paper (A4,
+A5 or an 80 mm roll) and does not reflow the PDF. `shareReceipt` names the file
+from the receipt number with unsafe characters replaced (`2082/83-001` becomes
+`2082_83-001.pdf`); `filename`, `subject`, `body` and `bounds` (the iPad popover)
+are yours to set. `buildReceiptPdfWithFlutter`, `receiptPageFormat` and
+`receiptFileName` are there if you want the pieces. The entry point re-exports the
+`receipt_pdf.dart` API.
+
+There is no in-app preview widget: `printing`'s `PdfPreview` needs extra setup on
+the web, so it was left out.
+
 See [`example/`](example) for a working app (web) and
 [`../data/PICKER_NOTES.md`](../data/PICKER_NOTES.md) for what was and was not
 verified.

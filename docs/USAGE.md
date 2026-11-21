@@ -435,6 +435,13 @@ In a Flutter app (all platforms, the web included) use `FlutterDevanagariRendere
 await buildReceiptPdf(doc, options: ReceiptPdfOptions(renderer: FlutterDevanagariRenderer()));
 ```
 
+To print or share straight from a Flutter app, use `package:jhigu_patro_flutter/receipt_print.dart` (it needs the `printing` package):
+
+```dart
+await printReceipt(doc);    // system print dialog
+await shareReceipt(doc);    // share sheet, or a download on the web
+```
+
 ## Accuracy and limits
 
 - **Calendar data:** BS 2000 to 2100 is in the data file. Years up to 2083 are cross-checked; BS 2062 and 2084 to 2099 are not verified against the official calendar. See `data/CALENDAR_NOTES.md`.

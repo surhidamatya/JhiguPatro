@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jhigu_patro_flutter/jhigu_patro_flutter.dart';
+import 'package:jhigu_patro_flutter/receipt_print.dart';
 import 'package:jhigu_patro_utils/jhigu_patro_utils.dart';
-import 'package:jhigu_patro_utils/receipt_pdf.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,6 +49,30 @@ class _HomeState extends State<Home> {
   String _log = '';
   Uint8List? _png;
   String _pdfNote = '';
+
+  Future<void> _share() async {
+    final doc = ReceiptDocument(
+      kind: ReceiptKind.invoice,
+      number: '2082/83-001',
+      issueDate: NepaliDate.checked(2082, 5, 10),
+      business: const Business(name: 'हिमाल ट्रेडर्स', address: 'ठमेल'),
+      customer: const Party(name: 'राम श्रेष्ठ'),
+      lines: [
+        ReceiptLine(
+            description: 'चामल',
+            qtyMilli: 1000,
+            unit: 'kg',
+            unitPrice: Npr.fromPaisa(10000)),
+      ],
+      vatMode: VatMode.none,
+      paid: Npr.zero,
+      language: ReceiptLanguage.ne,
+      pageSize: PageSize.a4,
+    );
+    final ok = await shareReceipt(doc,
+        onWarnings: (w) => _note('receipt warnings: $w'));
+    _note('share: $ok');
+  }
 
   Future<void> _renderNepali() async {
     final renderer = FlutterDevanagariRenderer();
@@ -214,6 +238,11 @@ class _HomeState extends State<Home> {
                 const SizedBox(height: 8),
                 FilledButton(
                     onPressed: _renderNepali, child: const Text('Render Nepali + build PDF')),
+                const SizedBox(height: 8),
+                FilledButton(
+                    key: const Key('share'),
+                    onPressed: _share,
+                    child: const Text('Share Nepali receipt PDF')),
                 if (_png != null) ...[
                   const SizedBox(height: 8),
                   Container(
