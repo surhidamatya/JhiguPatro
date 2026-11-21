@@ -96,7 +96,7 @@ jhigu-patro today
 jhigu-patro ad2bs  <YYYY-MM-DD>
 jhigu-patro bs2ad  <YYYY-MM-DD>
 jhigu-patro month  [BS-YYYY] [1-12]
-jhigu-patro info   <YYYY-MM-DD>
+jhigu-patro info   <YYYY-MM-DD> [--ad|--bs]
 jhigu-patro money  <amount> [--vat excl|incl] [--rate 13] [--words]
 jhigu-patro phone  <number> [--allow-inactive]
 jhigu-patro address <localLevelId> <ward> [--tole T] [--street S]
@@ -108,6 +108,8 @@ jhigu-patro parse  <date text>
 jhigu-patro fiscal <BS date>
 jhigu-patro help
 ```
+
+`info` accepts a date in either calendar. A year under 2000 can only be AD and a year over 2044 can only be BS; **2000 to 2044 is valid in both, and is read as AD** (BS 2000 to 2044 are historical dates, AD 1943 to 1988), with a note saying so. Pass `--bs` to read it as BS, or `--ad` to force AD. (Before, every year from 2000 up was read as BS, so `info 2025-08-26` printed "26 Mansir 2025"; that is changed.) `ad2bs` rejects a day that does not exist (`2025-02-30`) instead of rolling it over to March 2.
 
 The commands from `money` on take `--lang en|ne` (the language of labels and error messages) and `--json` (print the result as JSON; an error is JSON on stderr). Exit codes: `0` ok, `1` the input was rejected (bad amount, phone, date, ...), `2` the command was used wrongly. Errors are one line, never a stack trace. A negative amount can be given as is (`money -1500`).
 
