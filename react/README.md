@@ -104,6 +104,11 @@ theming: `style={{ '--jhigu-color-primary': '#b91c1c' }}`), `id`, `title`, `hidd
   data is imported from `jhigu-patro-utils-ts/nepali_calendar_data.json` and initialised at module
   level, so the same code runs on the server and in the browser. In a monorepo with linked packages,
   set `turbopack.root` to the repo root (see `example-next/next.config.mjs`).
-- **Not checked:** the example in a browser with React 18; the Pages Router and webpack builds of
+- Seen in Chromium with React 18.3.1 (the `example/` app, StrictMode, after clearing Vite's dependency
+  cache so that 18 was really served): all six elements once, 31 days in the calendar, a parent-set date
+  reaches the picker, switching `language` works, the money field keeps `1,234.50` through a parent
+  rerender, the themed `style` custom property applies, and the form gives `dob` and `amount` (paisa).
+  No console errors.
+- **Not checked:** the Pages Router and webpack builds of
   Next.js, and other frameworks (Remix, Astro); Safari, Firefox, touch and
   screen readers (the same limits as the web components themselves).
