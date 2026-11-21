@@ -12,8 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1
+      # The Devanagari command renderer tests need rsvg-convert and a Devanagari font;
+      # without them those tests skip. (Not yet seen running on GitHub Actions.)
+      - run: sudo apt-get update && sudo apt-get install -y librsvg2-bin fonts-noto-core
+        working-directory: .
       - run: dart pub get
       - run: dart analyze
       # generated files are written by tools/gen-data and are not dart-formatted
-      - run: dart format --set-exit-if-changed lib/jhigu_patro_utils.dart lib/src/types.dart lib/src/nepali_calendar.dart lib/src/phone.dart lib/src/address.dart lib/src/address_picker.dart lib/src/money.dart lib/src/errors.dart lib/src/date_parser.dart lib/src/fiscal.dart lib/src/date_format.dart lib/src/month_grid.dart lib/src/date_picker.dart lib/src/range_picker.dart lib/src/input_caret.dart lib/src/money_input.dart lib/src/phone_input.dart lib/src/receipt.dart lib/src/sms.dart lib/src/data_sources test
+      - run: dart format --set-exit-if-changed lib/jhigu_patro_utils.dart lib/src/types.dart lib/src/nepali_calendar.dart lib/src/phone.dart lib/src/address.dart lib/src/address_picker.dart lib/src/money.dart lib/src/errors.dart lib/src/date_parser.dart lib/src/fiscal.dart lib/src/date_format.dart lib/src/month_grid.dart lib/src/date_picker.dart lib/src/range_picker.dart lib/src/input_caret.dart lib/src/money_input.dart lib/src/phone_input.dart lib/src/receipt.dart lib/src/sms.dart lib/receipt_pdf.dart lib/devanagari_command_renderer.dart lib/src/data_sources test
       - run: dart test

@@ -1,10 +1,15 @@
 name: jhigu_patro_utils
-description: Bikram Sambat (Nepali) calendar utilities — zero dependencies, offline-first, works in any Dart/Flutter environment.
+description: Bikram Sambat (Nepali) calendar, money, phone, address, receipt and SMS utilities. Offline-first; the only dependency is the pdf package, used by receipt_pdf.dart.
 version: 1.0.0
 homepage: https://github.com/your-org/jhigu_patro_utils
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  # Used only by package:jhigu_patro_utils/receipt_pdf.dart. The rest of the
+  # package needs no runtime dependencies.
+  pdf: ^3.13.1
 
 dev_dependencies:
   test: ^1.24.0

@@ -351,7 +351,32 @@ parsePhone('9841234567').e164;                // +9779841234567
 computeTotals(doc).total;                     // receipt totals, to the paisa
 ```
 
-Dart has the model, validation and totals for receipts, the SMS gateway interface, templates and scheduler, and the headless pickers and inputs. It does not have a PDF renderer or Flutter widgets yet.
+Dart has the model, validation and totals for receipts, the SMS gateway interface, templates and scheduler, the headless pickers and inputs, and PDF receipts. It does not have Flutter widgets yet.
+
+### PDF receipts
+
+PDF output is a separate entry point because it needs the `pdf` package, the only runtime dependency of the Dart package:
+
+```dart
+import 'package:jhigu_patro_utils/receipt_pdf.dart';
+
+final result = await buildReceiptPdf(doc);          // A4, A5 or 80 mm roll, from doc.pageSize
+File('invoice.pdf').writeAsBytesSync(result.bytes);
+for (final w in result.warnings) { print(w); }
+```
+
+Latin text and digits are real, selectable PDF text. The PDF library cannot shape Devanagari, so any string that contains it must be drawn as an image by a `DevanagariRenderer` you supply (for example one built on Flutter's `TextPainter`, or an external command). Without one, Nepali labels fall back to English and Devanagari text from the document (names, notes) is replaced by `[?]`, and `result.warnings` says so. Amount in words is English only, so it is left out for `ne` receipts.
+
+For servers and command-line tools there is a ready renderer that calls an external program (`rsvg-convert` by default, which shapes Devanagari correctly). Install it and a Devanagari font such as Noto Sans Devanagari, then:
+
+```dart
+import 'package:jhigu_patro_utils/devanagari_command_renderer.dart';
+
+final renderer = CommandDevanagariRenderer(fontFamily: "'Noto Sans Devanagari'");
+final result = await buildReceiptPdf(doc, options: ReceiptPdfOptions(renderer: renderer));
+```
+
+It uses `dart:io`, so it is not for the web, and no font is bundled. If the program fails, the PDF is still produced, the affected text becomes `[?]` and `result.warnings` says so.
 
 ## Accuracy and limits
 
@@ -359,5 +384,5 @@ Dart has the model, validation and totals for receipts, the SMS gateway interfac
 - **Shared vectors** in `testdata/` are mostly hand-derived or produced by independent Python models, not copied from official sources.
 - **Nepali text** (month aliases, labels, error messages, SMS templates) is unreviewed by a native speaker. Short Nepali month names are ambiguous.
 - **Phone** carrier and active flags, **addresses** (names, ward counts) and **amount in words** (English only) are best effort. Notes: `data/PHONE_NOTES.md`, `data/ADDRESS_NOTES.md`, `data/MONEY_NOTES.md`.
-- **Not built:** PDF receipts in Dart, Flutter and React Native widgets, framework wrappers for the web components, Nepali amount in words, a file-backed SMS reminder store.
+- **Not built:** a Flutter or atlas Devanagari renderer for PDFs, Flutter print/share helpers, Flutter and React Native widgets, framework wrappers for the web components, Nepali amount in words, a file-backed SMS reminder store.
 - Design notes per area: `data/DATES_NOTES.md`, `data/PICKER_NOTES.md`, `data/RECEIPT_NOTES.md`, `data/SMS_NOTES.md`, `data/STRINGS_NOTES.md`.

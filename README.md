@@ -3,7 +3,7 @@
 Bikram Sambat (BS / Nepali) calendar utilities.
 Converts between BS and AD (Gregorian), formats Nepali dates, handles Nepal timezone (GMT+5:45), and provides relative time strings in Nepali.
 
-**Zero external dependencies. Offline-first. Works everywhere.**
+**Offline-first. No runtime dependencies in the TypeScript package; the Dart package's only dependency is `pdf`, used just by the optional `receipt_pdf.dart`.**
 
 ## The toolkit
 
@@ -15,7 +15,7 @@ This repository is growing from a calendar library into one toolkit for apps in 
 | Money | `Npr` (integer paisa), lakh grouping, VAT, allocation, amount in words (English) |
 | Phone | Parse and validate Nepali mobile and landline numbers, carrier names |
 | Address | Provinces, districts, local levels and wards; search and formatting |
-| Receipts | Model, validation and totals (TS and Dart); HTML template for print or PDF (TS) |
+| Receipts | Model, validation and totals (TS and Dart); HTML template for print or PDF (TS); PDF output (Dart) |
 | SMS | Gateway interface (bring your own provider), templates, segment counter, retrying scheduler |
 | Headless widgets | Framework-free state machines for date, range, address, money and phone inputs |
 | Web components | `<jhigu-date-picker>`, `-date-range-picker`, `-calendar`, `-address-select`, `-money-input`, `-phone-input` |
