@@ -130,6 +130,13 @@ const PAGES = {
       // (A submit would be blocked: the popup picker is required and now empty again.)
       ok(!(await keys()).includes('inline'), 'inline still has a value after reset');
     }],
+    ['a day cell is named by its visible day, and the title button by its visible title', async page => {
+      const label = await page.locator(cell('#inline', '15 Bhadra')).getAttribute('aria-label');
+      ok(/(^|\D)15(\D|$)/.test(label), `cell name ${label}`);
+      eq(await page.locator('#inline .ad').first().getAttribute('aria-hidden'), 'true', 'the AD number is hidden from the name');
+      const name = await page.locator('#inline [data-act=title]').getAttribute('aria-label');
+      ok(name.startsWith('Bhadra 2082'), `title name ${name}`);
+    }],
     ['the popup shows Nepali digits', async page => {
       await page.click('#popup .trigger');
       const title = await page.locator('#popup [data-act=title]').textContent();
@@ -233,6 +240,22 @@ const PAGES = {
     }],
     ['required fields are invalid while empty', async page => {
       eq(await page.evaluate(() => document.getElementById('f').checkValidity()), false, 'empty required');
+    }],
+    ['a host aria-label names the inner input, and changing it does not reset what was typed', async page => {
+      await page.evaluate(() => {
+        const m = document.createElement('jhigu-money-input');
+        m.id = 'extra';
+        m.setAttribute('aria-label', 'Deposit');
+        document.getElementById('f').appendChild(m);
+      });
+      eq(await page.locator('#extra input').getAttribute('aria-label'), 'Deposit', 'named from the host aria-label');
+      await page.locator('#extra input').pressSequentially('1234');
+      await page.evaluate(() => document.getElementById('extra').setAttribute('aria-label', 'Deposit amount'));
+      eq(await page.locator('#extra input').getAttribute('aria-label'), 'Deposit amount', 'renamed');
+      eq(await page.locator('#extra input').inputValue(), '1,234', 'the typed text survives');
+      // `label` wins over `aria-label` when both are given.
+      await page.evaluate(() => document.getElementById('extra').setAttribute('label', 'Label wins'));
+      eq(await page.locator('#extra input').getAttribute('aria-label'), 'Label wins', 'label wins');
     }],
     ['a wrong phone number shows its message', async page => {
       await page.locator('#phone input').pressSequentially('98412345678');

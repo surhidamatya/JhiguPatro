@@ -11,7 +11,8 @@
  *
  * Money: attributes `value-paisa` (integer), `symbol` (`Rs.`, `रु`; shown beside
  * the field, not inside it), `devanagari`, `allow-negative`, `name`, `placeholder`,
- * `label` (accessible name), `disabled`, `readonly`, `required`, `theme`. The form
+ * `label` (accessible name; a plain `aria-label` on the element is used when there is no
+ * `label`, so the inner input always has a name), `disabled`, `readonly`, `required`, `theme`. The form
  * value is the integer paisa as text (`''` when empty). Property `valuePaisa` is a
  * number or null. Event `jhiguChange`: `detail: { paisa, value, text }`.
  *
@@ -124,7 +125,7 @@ abstract class FieldBase extends Base {
   protected abstract restoreFromState(state: string): void;
 
   static get observedAttributes(): string[] {
-    return ['disabled', 'readonly', 'required', 'placeholder', 'label', 'theme', 'language'];
+    return ['disabled', 'readonly', 'required', 'placeholder', 'label', 'aria-label', 'theme', 'language'];
   }
 
   protected get language(): Language {
@@ -140,6 +141,8 @@ abstract class FieldBase extends Base {
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
     if (oldValue === newValue || !this.connectedOnce) return;
     this.applyCommon();
+    // A new accessible name needs no rebuild (and a rebuild would reset what was typed).
+    if (name === 'aria-label') return;
     this.attributeChanged(name);
   }
 
@@ -170,7 +173,10 @@ abstract class FieldBase extends Base {
     i.readOnly = this.hasAttribute('readonly');
     i.required = this.hasAttribute('required');
     i.placeholder = this.getAttribute('placeholder') ?? '';
-    const label = this.getAttribute('label');
+    // `label` is the accessible name; a plain `aria-label` on the host (what the React and
+    // Vue components pass through) is used when there is no `label`, so the inner input is
+    // never left without a name.
+    const label = this.getAttribute('label') || this.getAttribute('aria-label');
     if (label) i.setAttribute('aria-label', label); else i.removeAttribute('aria-label');
   }
 

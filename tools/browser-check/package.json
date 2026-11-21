@@ -3,6 +3,11 @@
   "private": true,
   "type": "module",
   "description": "Cross-browser check of the Jhigu Patro web components (not part of CI)",
-  "scripts": { "check": "node check.mjs" },
-  "dependencies": { "playwright-core": "^1.62.1" }
+  "scripts": {
+    "check": "node check.mjs"
+  },
+  "dependencies": {
+    "axe-core": "^4.14.1",
+    "playwright-core": "1.62.1"
+  }
 }

@@ -49,7 +49,7 @@ property: pass a stable object (state, a constant, `useMemo`).
 
 Every component also takes `className`, `style` (CSS custom properties work, for
 theming: `style={{ '--jhigu-color-primary': '#b91c1c' }}`), `id`, `title`, `hidden`,
-`slot`, and `data-*` / `aria-*` attributes. A `ref` is the custom element itself, so
+`slot`, and `data-*` / `aria-*` attributes (an `aria-label` on `JhiguMoneyInput` or `JhiguPhoneInput` names the inner input when there is no `label`). A `ref` is the custom element itself, so
 `ref.current.open()` works on a popup picker. The elements' CSS variables and
 `::part`s are documented in their headers under `ts/src/elements/`.
 
@@ -76,12 +76,14 @@ theming: `style={{ '--jhigu-color-primary': '#b91c1c' }}`), `id`, `title`, `hidd
 
 ## Checked and not checked
 
-- 74 tests (`npm test`; 8 of them test the shared core's lifecycle directly) with stub elements in jsdom: attribute kinds, writing only
+- 56 tests (`npm test`; 8 of them test the shared core's lifecycle directly) with stub elements in jsdom: attribute kinds, writing only
   what changed, attributes set before connecting, events and the latest callback,
-  refs, host props, StrictMode, server render, and for every component that each
-  attribute it writes is one the real element observes, that each event it listens
-  for is dispatched in the element's source, and that it covers every observed
-  attribute. All 74 pass on React 19.2 and on React 18.3.1 (rerun after the move to the shared core). Twenty-two mutations were caught (four only after tests were added), and nine more on the shared core after the refactor (one only after a test was added).
+  refs, host props, StrictMode, server render, and that each component writes each of its props as
+  the right attribute. That every mapped attribute and event matches the real elements (observed
+  attributes, events dispatched in their source, every observed attribute covered) is checked once for
+  all frameworks in `ts/tests/elementBindings.test.ts`. All 56 pass on React 19.2 and on React 18.3.1.
+  Twenty-two mutations were caught (four only after tests were added), and nine more on the shared core
+  after the refactor (one only after a test was added).
 - Seen in Chromium (React 19, Vite, StrictMode) with the real elements in
   `example/`: all six render, one element each; real clicks reach the callbacks;
   typing into the money and phone fields formats them and survives a parent

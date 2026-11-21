@@ -64,8 +64,11 @@ function daysView(state: CalendarState, o: MarkupOptions): string {
           const titles = o.marks?.get(cell.bs.toString());
           const marked = !!titles && titles.length > 0;
           const label = marked ? `${p['aria-label']}. ${titles!.join(', ')}` : p['aria-label'];
-          const dot = marked ? '<span class="dot" part="mark"></span>' : '';
-          const ad = state.showAd && cell.ad ? `<span class="ad" part="ad">${cell.ad.getDate()}</span>` : '';
+          // The AD number and the dot are in the cell's label already (the AD date, and the titles), so they are
+          // hidden from the accessible name: a cell's visible text is then just its BS day, which the label
+          // contains (WCAG 2.5.3, label in name; voice control says "click 3").
+          const dot = marked ? '<span class="dot" part="mark" aria-hidden="true"></span>' : '';
+          const ad = state.showAd && cell.ad ? `<span class="ad" part="ad" aria-hidden="true">${cell.ad.getDate()}</span>` : '';
           return `<div role="gridcell" class="${cls}${marked ? ' marked' : ''}" part="${part}${marked ? ' marked' : ''}" tabindex="${p.tabIndex}" ` +
             `aria-selected="${selected}" aria-disabled="${p['aria-disabled']}" aria-label="${esc(label)}" ` +
             `data-act="day" data-date="${cell.bs.toString()}"><span class="bs">${dayLabel(cell.bs.day, ne)}</span>${ad}${dot}</div>`;
@@ -112,7 +115,8 @@ export function renderCalendarMarkup(state: CalendarState, o: MarkupOptions): st
       (o.showClear === false ? '' : `<button type="button" class="link" part="clear-button" data-act="clear">${esc(s.clear)}</button>`) + `</div>`;
   return `<div class="header" part="header">` +
     (paging ? nav('prev', s.previousMonth, '&#8249;', !state.canGoPrev) : '<span class="nav-gap"></span>') +
-    `<button type="button" class="title" part="title" data-act="title" aria-label="${esc(titleLabel)}" aria-live="polite">${esc(state.title)}</button>` +
+    // The visible title is part of the name (label in name), with what the button does after it.
+    `<button type="button" class="title" part="title" data-act="title" aria-label="${esc(`${state.title}, ${titleLabel}`)}" aria-live="polite">${esc(state.title)}</button>` +
     (paging ? nav('next', s.nextMonth, '&#8250;', !state.canGoNext) : '<span class="nav-gap"></span>') +
     `</div>${body}${footer}`;
 }
@@ -187,6 +191,8 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .day.range-end { border-top-left-radius: 0; border-bottom-left-radius: 0; }
 .day.preview { background: color-mix(in srgb, var(--jhigu-color-primary) 12%, transparent); border-radius: 0; }
 .day.selected .bs, .day.selected .ad { color: var(--jhigu-color-on-primary); }
+/* The small AD number on the range band: the muted grey is under 4.5:1 on the tinted band. */
+.day.range-middle .ad, .day.preview .ad { color: var(--jhigu-color-text); opacity: 0.8; }
 .day:focus-visible, button:focus-visible { outline: 2px solid var(--jhigu-color-primary); outline-offset: 1px; }
 .picks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
 .cell { padding: 10px 4px; border-radius: var(--jhigu-radius); }

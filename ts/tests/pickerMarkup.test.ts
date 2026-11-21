@@ -44,6 +44,52 @@ describe('renderCalendarMarkup', () => {
     for (const l of labels) expect(l).toContain(p.getState().title.split(' ')[0]);
   });
 
+  describe('accessible names (WCAG 2.5.3, label in name)', () => {
+    it('the small AD number and the marked-day dot are hidden from the accessible name', () => {
+      const p = createDatePicker({ today: T });
+      const marks = new Map([['2082-05-12', ['Teej']]]);
+      const html = renderCalendarMarkup(p.getState(), { getCellProps: c => p.getCellProps(c), marks });
+      const ads = count(html, /<span class="ad"[^>]*>/g);
+      expect(ads).toBeGreaterThan(28);
+      expect(count(html, /<span class="ad"[^>]*aria-hidden="true"/g)).toBe(ads);
+      expect(count(html, /<span class="dot"[^>]*aria-hidden="true"/g)).toBe(1);
+    });
+
+    it('a day cell\'s name contains its visible BS day', () => {
+      const { html } = markup();
+      for (const m of html.matchAll(/aria-label="([^"]+)"[^>]*data-act="day"[^>]*><span class="bs">(\d+)<\/span>/g)) {
+        expect(m[1]).toMatch(new RegExp(`(^|[^\\d])${m[2]}([^\\d]|$)`));
+      }
+    });
+
+    it('the title button\'s name starts with its visible text, then says what it does', () => {
+      const { p, html } = markup();
+      const title = p.getState().title;
+      expect(html).toContain(`aria-label="${title}, Select month"`);
+      expect(html).toContain(`>${title}</button>`);
+    });
+
+    it('the title label follows the view: month list and year list', () => {
+      const p = createDatePicker({ today: T });
+      p.actions.setView('months');
+      const months = renderCalendarMarkup(p.getState(), { getCellProps: c => p.getCellProps(c) });
+      expect(months).toContain(`aria-label="${p.getState().title}, Select year"`);
+      p.actions.setView('years');
+      const years = renderCalendarMarkup(p.getState(), { getCellProps: c => p.getCellProps(c) });
+      expect(years).toContain(`aria-label="${p.getState().title}, Select month"`);
+    });
+
+    it('Nepali: the day number in the cell is in the name too', () => {
+      const { html } = markup({ language: 'ne' });
+      const m = /aria-label="([^"]+)"[^>]*data-act="day"[^>]*><span class="bs">([^<]+)<\/span>/.exec(html)!;
+      expect(m[1]).toContain(m[2]);
+    });
+
+    it('the AD number on the range band uses the text colour (contrast on the tinted band)', () => {
+      expect(PICKER_CSS).toMatch(/\.day\.range-middle \.ad, \.day\.preview \.ad \{ color: var\(--jhigu-color-text\)/);
+    });
+  });
+
   it('selected cell gets the selected part; disabled cells are marked', () => {
     const { html } = markup({ value: T, min: { year: 2082, month: 5, day: 5 }, max: { year: 2082, month: 5, day: 20 } });
     expect(html).toMatch(/part="day[^"]* selected[^"]*"/);

@@ -31,8 +31,9 @@ const cases: Case[] = [
   // `marked` is the calendar's JSON attribute; the binding takes `events` as a property instead.
   { name: 'calendar', observed: JhiguCalendar.observedAttributes, unobserved: [], skipped: ['marked'], file: 'calendarElement.ts', define: 'defineJhiguCalendar' },
   { name: 'addressSelect', observed: JhiguAddressSelect.observedAttributes, unobserved: [], skipped: [], file: 'addressElement.ts', define: 'defineJhiguAddressSelect' },
-  { name: 'moneyInput', observed: JhiguMoneyInput.observedAttributes, unobserved: ['name'], skipped: [], file: 'fieldElements.ts', define: 'defineJhiguMoneyInput' },
-  { name: 'phoneInput', observed: JhiguPhoneInput.observedAttributes, unobserved: ['name'], skipped: [], file: 'fieldElements.ts', define: 'defineJhiguPhoneInput' },
+  // `aria-label` is passed through by the wrappers as an `aria-*` host attribute, not as a mapped prop.
+  { name: 'moneyInput', observed: JhiguMoneyInput.observedAttributes, unobserved: ['name'], skipped: ['aria-label'], file: 'fieldElements.ts', define: 'defineJhiguMoneyInput' },
+  { name: 'phoneInput', observed: JhiguPhoneInput.observedAttributes, unobserved: ['name'], skipped: ['aria-label'], file: 'fieldElements.ts', define: 'defineJhiguPhoneInput' },
 ];
 
 describe('attributeText', () => {
