@@ -252,7 +252,19 @@ await scheduler.runOnce(); // => { due: 1, sent: 1, retrying: 0, failed: 0 }
 mock.sent.length; // => 1
 ```
 
-The scheduler only runs while your process runs: for real use call `runOnce()` from a server job. Delivery is at-least-once. Errors from a gateway use the codes `AUTH`, `BALANCE`, `BAD_NUMBER`, `RATE_LIMIT`, `SERVER`, `NETWORK`, `UNKNOWN`.
+The scheduler only runs while your process runs: for real use call `runOnce()` from a server job. Delivery is at-least-once.
+
+To keep reminders across restarts, use the file-backed store (Node only; Dart has the same in `package:jhigu_patro_utils/sms_file_store.dart`):
+
+```js
+import { FileReminderStore } from 'jhigu-patro-utils-ts/sms-file-store';
+
+const store = new FileReminderStore('/var/lib/myapp/reminders.json');
+const scheduler = new ReminderScheduler({ gateway, store });
+setInterval(() => scheduler.runOnce(), 60_000);
+```
+
+It is one JSON file shared by the TypeScript and Dart stores. Each write goes to a temporary file and is renamed over the real one, so a crash does not leave a torn file; calls in one process run one at a time. It is for **one process only** (no locking: two processes on one file can overwrite each other). A missing file is an empty store; a damaged one throws `SmsStoreError` (`CORRUPT_FILE`, `UNSUPPORTED_VERSION`, `INVALID_REMINDER`, `READ_FAILED`, `WRITE_FAILED`) and is never reset. The file holds phone numbers: the TypeScript store creates it as owner-only (0600); the Dart one cannot set permissions, so keep it in a private folder. Errors from a gateway use the codes `AUTH`, `BALANCE`, `BAD_NUMBER`, `RATE_LIMIT`, `SERVER`, `NETWORK`, `UNKNOWN`.
 
 ## Headless pickers and inputs
 
@@ -448,5 +460,5 @@ await shareReceipt(doc);    // share sheet, or a download on the web
 - **Shared vectors** in `testdata/` are mostly hand-derived or produced by independent Python models, not copied from official sources.
 - **Nepali text** (month aliases, labels, error messages, SMS templates) is unreviewed by a native speaker. Short Nepali month names are ambiguous.
 - **Phone** carrier and active flags, **addresses** (names, ward counts) and **amount in words** (English only) are best effort. Notes: `data/PHONE_NOTES.md`, `data/ADDRESS_NOTES.md`, `data/MONEY_NOTES.md`.
-- **Not built:** Flutter print/share helpers, React Native widgets, framework wrappers for the web components, Nepali amount in words, a file-backed SMS reminder store.
+- **Not built:** a Flutter in-app PDF preview, React Native widgets, framework wrappers for the web components, Nepali amount in words, a database-backed SMS reminder store, multi-process locking for the file store.
 - Design notes per area: `data/DATES_NOTES.md`, `data/PICKER_NOTES.md`, `data/RECEIPT_NOTES.md`, `data/SMS_NOTES.md`, `data/STRINGS_NOTES.md`.
