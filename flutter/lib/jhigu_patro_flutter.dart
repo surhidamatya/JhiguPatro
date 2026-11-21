@@ -2,6 +2,7 @@
 library;
 
 export 'src/calendar.dart';
+export 'src/address_picker.dart';
 export 'src/date_picker.dart';
 export 'src/fields.dart';
 export 'src/range_picker.dart';

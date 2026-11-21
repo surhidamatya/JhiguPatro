@@ -108,6 +108,32 @@ JhiguPhoneField(
 - `value` is optional. When the parent changes it, the field follows without
   calling the callbacks; a parent that does not pass it keeps what was typed.
 
+## `JhiguAddressPicker`
+
+Four dropdowns (province, district, local level, ward) over the headless
+`AddressPicker`, with the same rules as the web `<jhigu-address-select>`:
+choosing a level clears the ones below it, a dropdown is disabled until the one
+above it has a choice, and the ward list is `1..wards` of the local level.
+
+```dart
+JhiguAddressPicker(
+  language: 'ne',
+  localLevelId: _localLevelId,   // optional: restore a saved address
+  ward: _ward,
+  onChanged: (s) => setState(() { _localLevelId = s.localLevelId; _ward = s.ward; }),
+)
+```
+
+`onChanged` gets the whole `AddressPickerState` (ids, `complete`, `selection`);
+turn a complete one into text with `formatAddress`. `showWard: false` hides the
+ward (it is then never reported). A saved `localLevelId` fills in the district and
+province; an unknown id or a ward outside the local level throws
+`AddressException`. When the parent changes the saved values the picker follows
+without calling `onChanged`; a parent that does not pass them keeps the choice.
+`decoration`, `enabled` and `spacing` style the dropdowns. Names are from the
+shared address data; the Nepali province names are the old numbered form for
+provinces 1 and 2 (see `data/ADDRESS_NOTES.md`).
+
 See [`example/`](example) for a working app (web) and
 [`../data/PICKER_NOTES.md`](../data/PICKER_NOTES.md) for what was and was not
 verified.

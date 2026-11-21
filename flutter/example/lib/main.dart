@@ -126,6 +126,19 @@ class _HomeState extends State<Home> {
                 ),
               ]),
             ),
+            SizedBox(
+              width: 340,
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('JhiguAddressPicker'),
+                const SizedBox(height: 8),
+                JhiguAddressPicker(
+                  decoration: const InputDecoration(border: OutlineInputBorder()),
+                  onChanged: (s) => _note(s.complete
+                      ? 'address: ${formatAddress(localLevelId: s.localLevelId!, ward: s.ward ?? 1)}'
+                      : 'address: ${s.provinceId} ${s.districtId} ${s.localLevelId} ${s.ward}'),
+                ),
+              ]),
+            ),
             SizedBox(width: 340, child: Text(_log.isEmpty ? '(events appear here)' : _log, key: const Key('log'))),
           ],
         ),

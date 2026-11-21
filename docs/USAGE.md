@@ -355,7 +355,7 @@ Dart has the model, validation and totals for receipts, the SMS gateway interfac
 
 ### Flutter widgets
 
-`flutter/` is a Flutter package (`jhigu_patro_flutter`, depends on `dart/` by path) with `JhiguDatePicker`, `JhiguCalendar`, `JhiguRangePicker`, `JhiguMoneyField` and `JhiguPhoneField`. The date picker is an inline BS date picker built on the same `DatePicker` state machine as the web component:
+`flutter/` is a Flutter package (`jhigu_patro_flutter`, depends on `dart/` by path) with `JhiguDatePicker`, `JhiguCalendar`, `JhiguRangePicker`, `JhiguMoneyField`, `JhiguPhoneField` and `JhiguAddressPicker`. The date picker is an inline BS date picker built on the same `DatePicker` state machine as the web component:
 
 ```dart
 JhiguDatePicker(
@@ -388,7 +388,13 @@ JhiguMoneyField(onChanged: (amount) => print(amount?.paisa))      // 12,34,567.5
 JhiguPhoneField(onChanged: (e164) => print(e164))                 // 984-1234567 -> +9779841234567
 ```
 
-Style the pickers with a `JhiguTheme` in `ThemeData.extensions`; anything left null falls back to your `ColorScheme`. Only these widgets exist so far (no address widget, and nothing for React Native). See `flutter/README.md`.
+`JhiguAddressPicker` is the province, district, local level and ward dropdowns:
+
+```dart
+JhiguAddressPicker(onChanged: (s) => print(s.selection))   // ids when complete, else null
+```
+
+Style the pickers with a `JhiguTheme` in `ThemeData.extensions`; anything left null falls back to your `ColorScheme`. There is nothing for React Native. See `flutter/README.md`.
 
 ### PDF receipts
 
