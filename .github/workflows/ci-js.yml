@@ -55,3 +55,51 @@ jobs:
       # Packs the four npm packages, installs the tarballs in a scratch project, imports and runs
       # them. WARNs (no LICENSE yet) do not fail it; a FAIL would break a consumer.
       - run: node tools/pack-check/check.mjs
+
+  # Server rendering and hydration of the React and Vue packages in Next.js and Nuxt, in Chromium.
+  examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci && npm run build
+        working-directory: ts
+      - run: npm ci && npm run build
+        working-directory: react
+      - run: npm ci && npm run build
+        working-directory: vue
+      - run: npm ci
+        working-directory: react/example-next
+      - run: npm ci
+        working-directory: vue/example-nuxt
+      - run: npm ci
+        working-directory: tools/browser-check
+      - run: npx playwright-core install --with-deps chromium
+        working-directory: tools/browser-check
+      - run: node tools/ssr-check/check.mjs
+
+  # The Vue package declares vue >=3.3: run its tests and type check on the oldest minors too.
+  vue-versions:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        vue: [3.3.13, 3.4.38]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci && npm run build
+        working-directory: ts
+      - run: npm ci
+        working-directory: vue
+      - run: npm install --no-save vue@${{ matrix.vue }}
+        working-directory: vue
+      - run: node -p "'vue ' + require('vue/package.json').version"
+        working-directory: vue
+      - run: npx tsc --noEmit -p .
+        working-directory: vue
+      - run: npm test
+        working-directory: vue
