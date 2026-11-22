@@ -74,8 +74,8 @@ installed is skipped and reported. It is not in CI because the browsers are larg
 
 | Browser | Result |
 |---|---|
-| Chromium 151 (Playwright 1.62.1) | 25 of 25 |
-| WebKit 26.5 (Playwright build 2327, the engine of Safari) | 25 of 25 |
+| Chromium 151 (Playwright 1.62.1) | 28 of 28 |
+| WebKit 26.5 (Playwright build 2327, the engine of Safari) | 25 of 25 at the earlier run, before the three tithi checks were added; not rerun (not installed now) |
 | Firefox 152 | **not run**: it would not start inside the tool sandbox the checks were run from (its content process was refused, then its software compositor could not map a framebuffer). Run `node check.mjs --browsers firefox` in a normal terminal. |
 
 WebKit here is Playwright's build of the engine, not Safari itself, and it runs headless on

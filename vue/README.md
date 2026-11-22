@@ -56,8 +56,8 @@ off); the other booleans are on when present (`required`, `popup`, `devanagari`,
 `class`, `style` (CSS custom properties work, for theming:
 `:style="{ '--jhigu-color-primary': '#b91c1c' }"`), `id`, `title`, `hidden`, `slot`,
 `data-*` and `aria-*` go to the custom element itself, not to the wrapper (an `aria-label` on `JhiguMoneyInput` or `JhiguPhoneInput` names the inner input when there is no `label`). A template
-ref is the component; `ref.value.element` is the custom element, so `.open()` works on
-a popup picker. The elements' CSS variables and `::part`s are documented in their
+ref is the component; `ref.value.element` is the custom element, so `.show()` and
+`.hide()` work on a popup picker. The elements' CSS variables and `::part`s are documented in their
 headers under `ts/src/elements/`.
 
 ## How it behaves

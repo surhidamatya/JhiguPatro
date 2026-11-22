@@ -1,490 +1,91 @@
-# jhigu_patro_utils
+# Jhigu Patro Kit
 
-Bikram Sambat (BS / Nepali) calendar utilities.
-Converts between BS and AD (Gregorian), formats Nepali dates, handles Nepal timezone (GMT+5:45), and provides relative time strings in Nepali.
+A toolkit for apps in Nepal: Bikram Sambat (BS) dates, Nepali money, phone numbers, addresses, receipts and
+SMS reminders. It comes as a TypeScript/JavaScript library, a Dart library, web components, React and Vue
+wrappers, Flutter widgets and a command-line tool. The TypeScript and Dart libraries share their data and their
+test vectors, so the same input gives the same output in both.
 
-**Offline-first. No runtime dependencies in the TypeScript package; the Dart package's only dependency is `pdf`, used just by the optional `receipt_pdf.dart`.**
+Offline-first. The TypeScript package has no runtime dependencies. The Dart package's only dependency is `pdf`,
+used just by the optional receipt PDF output.
 
-## The toolkit
+**Status: not published to npm or pub.dev yet.** Install from this repository (see [Install](#install)).
 
-This repository is growing from a calendar library into one toolkit for apps in Nepal, in TypeScript/JavaScript and Dart, with shared data and shared test vectors so both give the same answers:
+- [What you get](#what-you-get)
+- [Install](#install)
+- [Quick start](#quick-start)
+- [Feature guides](#feature-guides)
+- [Packages in this repository](#packages-in-this-repository)
+- [Calendar data and accuracy](#calendar-data-and-accuracy)
+- [Design rules](#design-rules)
+- [Build, test and CI](#build-test-and-ci)
+- [Known gaps](#known-gaps)
+- [Documentation map](#documentation-map)
+- [Quick reference: BS months](#quick-reference-bs-months)
+- [License](#license)
 
-| Area | What you get |
-|------|--------------|
-| Dates | `NepaliDate`, BS/AD conversion, token formatter, parser, fiscal year, month grid |
-| Money | `Npr` (integer paisa), lakh grouping, VAT, allocation, amount in words (English; Nepali, not yet reviewed by a native speaker) |
-| Phone | Parse and validate Nepali mobile and landline numbers, carrier names |
-| Address | Provinces, districts, local levels and wards; search and formatting |
-| Receipts | Model, validation and totals (TS and Dart); HTML template for print or PDF (TS); PDF output (Dart) |
-| SMS | Gateway interface (bring your own provider), templates, segment counter, retrying scheduler |
-| Headless widgets | Framework-free state machines for date, range, address, money and phone inputs |
-| Web components | `<jhigu-date-picker>`, `-date-range-picker`, `-calendar`, `-address-select`, `-money-input`, `-phone-input` |
+## What you get
 
-**Start with [docs/USAGE.md](docs/USAGE.md).** Its JavaScript samples are run by the test suite. Design notes and known gaps are in `data/*_NOTES.md`; the plan is in `docs/PRD.md` and `docs/IMPLEMENTATION_GUIDE.md`. The sections below describe the original calendar library and CLI, which still work as described.
+| Area | What it does | Guide |
+|---|---|---|
+| Calendar data | The BS month-length table (BS 2000 to 2100), data sources, loading it in every environment, accuracy flags | [calendar-data](docs/features/calendar-data/README.md) |
+| Dates | `NepaliDate`, BS and AD conversion, token formatter and presets, date parser, fiscal year, month grid | [dates](docs/features/dates/README.md) |
+| Tithi | Lunar-day (panchang) data for BS 2081 and 2082, a loader, and tithi in the calendar widgets | [tithi](docs/features/tithi/README.md) |
+| Money | `Npr` in integer paisa, lakh grouping, VAT, allocation, amount in words (English, and Nepali under review) | [money](docs/features/money/README.md) |
+| Phone | Parse and validate Nepali mobile and landline numbers, carrier names, E.164 | [phone](docs/features/phone/README.md) |
+| Address | Provinces, districts, local levels and wards; search and formatting | [address](docs/features/address/README.md) |
+| Receipts | Receipt model, totals and validation; HTML for print (TS); PDF output (Dart) | [receipts](docs/features/receipts/README.md) |
+| SMS | Gateway interface (bring your own provider), templates, segment counter, retrying reminder scheduler | [sms](docs/features/sms/README.md) |
+| Headless widgets | Framework-free state machines for date, range, address, money and phone inputs | [headless-widgets](docs/features/headless-widgets/README.md) |
+| Web components | `<jhigu-date-picker>`, `<jhigu-date-range-picker>`, `<jhigu-calendar>`, `<jhigu-address-select>`, `<jhigu-money-input>`, `<jhigu-phone-input>` | [web-components](docs/features/web-components/README.md) |
+| React | One component per web component | [react](react/README.md) |
+| Vue 3 | One component per web component | [vue](vue/README.md) |
+| Flutter | Date picker, range picker, calendar and more, on the Dart state machines | [flutter](flutter/README.md) |
+| CLI | `jhigu-patro`: dates, money, phone, address, SMS from the terminal | [cli](cli/README.md) |
 
----
+## Install
 
-## What's inside (original layout)
-
-The tree shows the calendar-era layout. Newer code is in `ts/src/` (dates, money, phone, address, receipts, SMS, pickers, `elements/`), `dart/lib/src/`, `data/` (shared JSON and notes), `testdata/` (shared vectors), `tools/` (generators and checks) and `docs/`.
-
-```
-jhigu_patro_utils/
-├── data/                              Shared calendar data (BS 2000–2100)
-│   ├── nepali_calendar_data.json
-│   ├── 2081_tithi.json                Panchang / lunar (tithi) data for 2081
-│   └── 2082_tithi.json                ... and for 2082
-│
-├── ts/                                TypeScript / JavaScript library + browser demo
-│   ├── src/
-│   │   ├── types.ts
-│   │   ├── nepaliCalendar.ts          Core engine
-│   │   ├── consts.ts                  Weekday header constants
-│   │   ├── calendar_models.ts         CalendarDay, CalendarEvent models
-│   │   ├── calendar_controller.ts     Business logic for interactive calendar
-│   │   ├── calendar_section.ts        Vanilla DOM renderer (no framework)
-│   │   ├── calendar_styles.ts         CSS-in-JS styles
-│   │   ├── calendar_demo.ts           Browser demo entry point
-│   │   ├── data_sources/
-│   │   │   ├── InlineCalendarDataSource.ts   In-memory (Node / server / test)
-│   │   │   ├── JsonCalendarDataSource.ts     fetch()-based (browser / Vite)
-│   │   │   └── PanchangDataSource.ts         Tithi / lunar data loader
-│   │   └── index.ts                   Barrel export
-│   ├── index.html                     Browser demo page
-│   └── tests/
-│       └── nepaliCalendar.test.ts
-│
-├── dart/                              Dart / Flutter library
-│   ├── lib/
-│   │   ├── jhigu_patro_utils.dart     Library entry point
-│   │   └── src/
-│   │       ├── types.dart
-│   │       ├── nepali_calendar.dart   Core engine (NepaliCalendar static class)
-│   │       └── data_sources/
-│   │           └── inline_calendar_data_source.dart
-│   ├── pubspec.yaml
-│   └── test/
-│       └── nepali_calendar_test.dart
-│
-├── cli/                               Command-line tool (jhigu-patro)
-├── react/                             React components for the web components (jhigu-patro-react)
-└── vue/                               Vue 3 components for the web components (jhigu-patro-vue)
-    ├── src/
-    │   └── index.ts
-    ├── dist/
-    │   └── index.js                   Compiled executable
-    ├── package.json
-    └── tsconfig.json
-```
-
----
-
-## CLI — `jhigu-patro`
-
-### Install globally
+Nothing is published yet, so build from a clone:
 
 ```bash
-cd cli
-npm install
-npm run build
-npm install -g .
+git clone git@github.com:surhidamatya/JhiguPatro.git
+cd JhiguPatro
+
+# TypeScript library
+cd ts && npm ci && npm run build
+
+# Dart library
+cd ../dart && dart pub get
+
+# CLI (needs the TypeScript library built first)
+cd ../cli && npm ci && npm run build && npm install -g .
 ```
 
-### Commands
+`react/` and `vue/` link the TypeScript library from `../ts` for development. In an app, install
+`jhigu-patro-utils-ts` next to them (it is a peer dependency, so the app and the elements share one copy of the
+calendar state). Flutter depends on `../dart` by path.
 
-```
-jhigu-patro today
-jhigu-patro ad2bs  <YYYY-MM-DD>
-jhigu-patro bs2ad  <YYYY-MM-DD>
-jhigu-patro month  [BS-YYYY] [1-12]
-jhigu-patro info   <YYYY-MM-DD> [--ad|--bs]
-jhigu-patro money  <amount> [--vat excl|incl] [--rate 13] [--words] [--lang en|ne]
-jhigu-patro phone  <number> [--allow-inactive]
-jhigu-patro address <localLevelId> <ward> [--tole T] [--street S]
-jhigu-patro address search <text> [--limit 10] [--in auto|en|ne]
-jhigu-patro sms keys
-jhigu-patro sms <template> [name=value ...]
-jhigu-patro fmt    <BS date> <preset|pattern> [--digits native|ascii]
-jhigu-patro parse  <date text>
-jhigu-patro fiscal <BS date>
-jhigu-patro help
-```
+## Quick start
 
-`info` accepts a date in either calendar. A year under 2000 can only be AD and a year over 2044 can only be BS; **2000 to 2044 is valid in both, and is read as AD** (BS 2000 to 2044 are historical dates, AD 1943 to 1988), with a note saying so. Pass `--bs` to read it as BS, or `--ad` to force AD. (Before, every year from 2000 up was read as BS, so `info 2025-08-26` printed "26 Mansir 2025"; that is changed.) `ad2bs` rejects a day that does not exist (`2025-02-30`) instead of rolling it over to March 2.
+### TypeScript or JavaScript
 
-The commands from `money` on take `--lang en|ne` (the language of labels and error messages) and `--json` (print the result as JSON; an error is JSON on stderr). Exit codes: `0` ok, `1` the input was rejected (bad amount, phone, date, ...), `2` the command was used wrongly. Errors are one line, never a stack trace. A negative amount can be given as is (`money -1500`).
-
-```
-$ jhigu-patro money 1234567.5 --vat excl --words
-Amount:       Rs. 12,34,567.50
-Paisa:        123456750
-Devanagari:   रु १२,३४,५६७.५०
-In words:     Rupees Twelve Lakh Thirty-Four Thousand Five Hundred Sixty-Seven and Fifty Paisa Only
-
-VAT 13% (added to the price):
-  Subtotal:   Rs. 12,34,567.50
-  VAT:        Rs. 1,60,493.78
-  Total:      Rs. 13,95,061.28
-
-$ jhigu-patro phone 9841234567 --json
-{
-  "e164": "+9779841234567",
-  "national": "984-1234567",
-  "type": "mobile",
-  "carrier": "NTC",
-  "areaCode": null
-}
-
-$ jhigu-patro address 274 3 --lang ne
-वडा नं. ३, भक्तपुर नगरपालिका, भक्तपुर, बाग्मती
-
-$ jhigu-patro sms appointment name=Ram date=2082-05-10 time=9:00 sender=Shop
-Dear Ram, reminder: your appointment is on 2082-05-10 at 9:00. - Shop
-gsm7, 69 units, 1 segment
-```
-
-`fmt` takes a preset (`full long iso slash dmy short monthYear gate dual fiscal`) or a token pattern such as `"D MMMM YYYY"`. `parse` reads a date written many ways and prints both BS and AD. A date that does not exist (like Poush 30, 2081) is a `PARSE_ERROR`, since it cannot be read from text. Carrier names are not an official list (`data/PHONE_NOTES.md`); the Nepali amount in words is unreviewed (`data/MONEY_NOTES.md`).
-
-### Examples
-
-```bash
-$ jhigu-patro today
-────────────────────────────────────────────
-  आजको मिति (Today's Date)
-────────────────────────────────────────────
-  Nepali (BS):        ८ फागुन २०८२, शुक्रबार
-  English (AD):       February 20, 2026
-  BS (numeric):       2082-11-08
-  AD (numeric):       2026-02-20
-  Month (EN):         Falgun
-  Month (NE):         फागुन
-  Day (EN):           Friday
-  Day (NE):           शुक्रबार
-────────────────────────────────────────────
-
-$ jhigu-patro ad2bs 2025-02-20
-────────────────────────────────────────────
-  AD → BS  (2025-02-20)
-────────────────────────────────────────────
-  AD (input):         February 20, 2025
-  BS (result):        Falgun 8, 2081
-  BS (Nepali):        फागुन 8, 2081
-  BS (numeric):       2081-11-08
-  Weekday (EN):       Thursday
-  Weekday (NE):       बिहिबार
-  Relative:           ८ फागुन २०८१
-────────────────────────────────────────────
-
-$ jhigu-patro bs2ad 2082-11-08
-────────────────────────────────────────────
-  BS → AD  (2082-11-08)
-────────────────────────────────────────────
-  BS (input):         Falgun 8, 2082
-  BS (Nepali):        फागुन 8, 2082
-  AD (result):        February 20, 2026
-  AD (numeric):       2026-02-20
-  Weekday (EN):       Friday
-  Weekday (NE):       शुक्रबार
-────────────────────────────────────────────
-
-$ jhigu-patro month 2082 11
-────────────────────────────────────────────
-  फागुन २०८२  (Falgun 2082)
-  2026-02-12 onwards
-────────────────────────────────────────────
-     आइ   सोम   मंग   बुध  बिहि शुक्र   शनि
-  ───────────────────────────────────
-                                1     2
-       3     4     5     6     7     8     9
-      10    11    12    13    14    15    16
-      17    18    19    20    21    22    23
-      24    25    26    27    28    29    30
-────────────────────────────────────────────
-  Total days: 30
-────────────────────────────────────────────
-
-$ jhigu-patro info 2082-11-08
-────────────────────────────────────────────
-  Date Info  (input treated as BS)
-────────────────────────────────────────────
-  BS:                 ८ फागुन २०८२, शुक्रबार
-  BS (Nepali):        फागुन 8, 2082
-  BS (numeric):       2082-11-08
-  AD:                 February 20, 2026
-  AD (numeric):       2026-02-20
-  Weekday (EN):       Friday
-  Weekday (NE):       शुक्रबार
-  Relative (NE):      हालै
-────────────────────────────────────────────
-```
-
-> `info` auto-detects whether the input is BS or AD based on the year value (≥ 2000 → treated as BS).
-
----
-
-## TypeScript / JavaScript Library
-
-### Setup
-
-```bash
-cd ts
-npm install
-npm run build   # outputs to ts/dist/
-npm run test:run
-```
-
-Or run everything from the root:
-
-```bash
-npm run build      # builds ts/ and cli/
-npm run test:run   # runs ts/ tests
-```
-
-CLI tests (after building `ts/` and `cli/`): `cd cli && npm test`.
-
-### Browser (Vite / Next.js / React)
-
-Serve `data/nepali_calendar_data.json` from your `public/` folder, then:
+The calendar data has to be loaded once before dates are converted or validated. Money, phone and SMS
+templates do not need it.
 
 ```ts
-import { JsonCalendarDataSource, initializeCalendar } from 'jhigu-patro-utils-ts';
+import { initializeCalendar, InlineCalendarDataSource, convertADToBS, Npr } from 'jhigu-patro-utils-ts';
+import data from 'jhigu-patro-utils-ts/nepali_calendar_data.json' with { type: 'json' };
 
-const source = new JsonCalendarDataSource();
-await source.initialize('/nepali_calendar_data.json');
-initializeCalendar(source);
+initializeCalendar(new InlineCalendarDataSource(
+  data.years, data.supportedRange.start, data.supportedRange.end, data.verifiedThrough,
+));
+
+convertADToBS(new Date(2025, 7, 26));   // { year: 2082, month: 5, day: 10 }
 ```
 
-### Node.js / Server-side
+In a browser, serve the JSON as a static file and use `JsonCalendarDataSource` instead. Loading in Node, the
+browser, Next.js and Nuxt is covered in the [calendar-data guide](docs/features/calendar-data/README.md).
 
-```ts
-import { readFileSync } from 'node:fs';
-import { InlineCalendarDataSource, initializeCalendar } from 'jhigu-patro-utils-ts';
-import type { CalendarJson } from 'jhigu-patro-utils-ts';
-
-const data: CalendarJson = JSON.parse(readFileSync('data/nepali_calendar_data.json', 'utf8'));
-const source = new InlineCalendarDataSource(data.years, data.supportedRange.start, data.supportedRange.end);
-initializeCalendar(source);
-```
-
-### Panchang / Lunar Data
-
-For tithi (lunar phase) information, use `PanchangDataSource`:
-
-```ts
-import { PanchangDataSource } from 'jhigu-patro-utils-ts';
-
-const panchang = new PanchangDataSource();
-await panchang.load('/2081_tithi.json');
-await panchang.load('/2082_tithi.json');   // one call per year; they stay loaded together
-// No fetch (Node, tests, server rendering): panchang.addYear(parsedJson)
-// panchang.loadedYears → [2081, 2082]
-
-// Get all tithi segments for a given BS year/month/day
-// Returns null if data for that year is not loaded
-const day = panchang.getDay(2081, 11, 8);       // year 2081, month 11, day 8
-// → PanchangDay { bsDay, adDate, tithiSegments: [...] }
-
-// Dominant tithi at sunrise (minute 375 = 6:15 AM Nepal time)
-const tithi = panchang.sunriseTithi(2081, 11, 8);
-// → TithiSegment { tithiNumber, tithiName, paksha, startMinute, endMinute }
-// → null if year doesn't match loaded data
-
-// Tithi at any minute of the day
-const current = panchang.tithiAt(2081, 11, 8, 720);  // noon
-```
-
-### API
-
-```ts
-import {
-  // Setup
-  initializeCalendar,
-
-  // Names / constants
-  NEPALI_MONTHS_EN,
-  NEPALI_MONTHS_NE,
-  ENGLISH_MONTHS,
-  NEPALI_DAYS_EN,
-  NEPALI_DAYS_NE,
-  NEPALI_DIGITS,
-
-  // Conversion
-  convertADToBS,
-  convertBSToAD,
-
-  // Current date
-  getCurrentNepaliDate,
-  getCurrentNepaliDateFormatted,
-
-  // Formatting
-  formatNepaliDate,
-  formatNepaliDateWithDay,
-  formatEnglishDate,
-  formatNepalDateTime,
-  getNepaliMonthName,
-  getNepaliDayName,
-  toNepaliDigits,
-  getRelativeTimeInNepali,
-
-  // Timezone
-  toNepalTime,
-  fromNepalTime,
-
-  // Data helpers
-  getDaysInBSMonth,
-  getTotalDaysInBSYear,
-  isValidBSDate,
-  getAvailableBSYears,
-  getAvailableADYears,
-} from 'jhigu-patro-utils-ts';
-
-// Conversion
-convertADToBS(new Date(2024, 3, 13));
-// → { year: 2081, month: 1, day: 1 }
-
-convertBSToAD(2082, 11, 8);
-// → Date (February 20, 2026)
-
-// Current date
-getCurrentNepaliDate();
-// → { year: 2082, month: 11, day: 8 }
-
-getCurrentNepaliDateFormatted();
-// → "८ फागुन २०८२, शुक्रबार"
-
-// Formatting
-formatNepaliDate({ year: 2082, month: 11, day: 8 }, 'en');
-// → "Falgun 8, 2082"
-
-formatNepaliDate({ year: 2082, month: 11, day: 8 }, 'ne');
-// → "फागुन 8, 2082"
-
-formatNepaliDateWithDay({ year: 2082, month: 11, day: 8 });
-// → "८ फागुन २०८२, शुक्रबार"
-
-formatEnglishDate(new Date(2026, 1, 20));
-// → "February 20, 2026"
-
-formatNepalDateTime(new Date());
-// → "2082-11-08 14:30" (Nepal time)
-
-getNepaliMonthName(11, 'en');
-// → "Falgun"
-
-getNepaliMonthName(11, 'ne');
-// → "फागुन"
-
-getNepaliDayName(new Date(2026, 1, 20), 'en');
-// → "Friday"
-
-// Relative time
-getRelativeTimeInNepali(new Date(Date.now() - 300_000));
-// → "५ मिनेट अगाडि"
-
-// Digits
-toNepaliDigits(2082);
-// → "२०८२"
-
-// Data helpers
-getDaysInBSMonth(2082, 11);
-// → 30
-
-getTotalDaysInBSYear(2082);
-// → 365
-
-isValidBSDate(2082, 11, 8);
-// → true
-
-getAvailableBSYears();
-// → [2000, 2001, ..., 2100]
-
-getAvailableADYears();
-// → [1943, 1944, ..., 2044]
-
-// Timezone
-toNepalTime(new Date());    // Add UTC+5:45 offset
-fromNepalTime(new Date());  // Remove UTC+5:45 offset
-```
-
----
-
-## Browser Demo (Interactive Calendar UI)
-
-The `ts/` package ships a zero-framework interactive calendar UI built with vanilla DOM APIs.
-
-### Run locally
-
-```bash
-cd ts
-npm install
-npm run build
-# Serve ts/ with any static file server, e.g.:
-npx serve .
-# Then open http://localhost:3000
-```
-
-The demo page (`ts/index.html`) renders a two-column layout:
-
-- **Left (60%)** — Monthly calendar grid with navigation arrows, today highlight, and Nepali holidays
-- **Right (35%)** — Detail panel for the selected day, showing events and tithi info
-
-### Embed in your own page
-
-```html
-<div id="calendar-root"></div>
-<div id="day-list-root"></div>
-<script type="module" src="dist/calendar_demo.js"></script>
-```
-
-The calendar includes hardcoded Nepali public holidays for BS 2081–2082:
-नयाँ वर्ष, बुद्ध जयन्ती, गणतन्त्र दिवस, तीज, विजयादशमी, लक्ष्मी पूजा, महाशिवरात्री, and more.
-
----
-
-## Dart / Flutter Library
-
-### Setup
-
-Add to your `pubspec.yaml`:
-
-```yaml
-dependencies:
-  jhigu_patro_utils:
-    path: /path/to/jhigu_patro_utils/dart
-```
-
-### Initialize (Flutter — from assets)
-
-Copy `data/nepali_calendar_data.json` into your Flutter app's `assets/` folder and register it in `pubspec.yaml`:
-
-```yaml
-flutter:
-  assets:
-    - assets/nepali_calendar_data.json
-```
-
-Then initialize before `runApp`:
-
-```dart
-import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'package:jhigu_patro_utils/jhigu_patro_utils.dart';
-
-Future<void> initCalendar() async {
-  final raw = await rootBundle.loadString('assets/nepali_calendar_data.json');
-  final json = jsonDecode(raw) as Map<String, dynamic>;
-  final years = (json['years'] as Map<String, dynamic>).map(
-    (k, v) => MapEntry(int.parse(k), List<int>.from(v as List)),
-  );
-  NepaliCalendar.initialize(InlineCalendarDataSource(
-    years: years,
-    supportedStartYear: json['supportedRange']['start'] as int,
-    supportedEndYear:   json['supportedRange']['end']   as int,
-  ));
-}
-```
-
-### Initialize (Dart CLI / server)
+### Dart
 
 ```dart
 import 'dart:convert';
@@ -492,107 +93,186 @@ import 'dart:io';
 import 'package:jhigu_patro_utils/jhigu_patro_utils.dart';
 
 void main() {
-  final raw = File('data/nepali_calendar_data.json').readAsStringSync();
-  final json = jsonDecode(raw) as Map<String, dynamic>;
-  final years = (json['years'] as Map<String, dynamic>).map(
-    (k, v) => MapEntry(int.parse(k), List<int>.from(v as List)),
-  );
+  final data = jsonDecode(File('../data/nepali_calendar_data.json').readAsStringSync()) as Map<String, dynamic>;
   NepaliCalendar.initialize(InlineCalendarDataSource(
-    years: years,
-    supportedStartYear: json['supportedRange']['start'] as int,
-    supportedEndYear:   json['supportedRange']['end']   as int,
+    years: (data['years'] as Map<String, dynamic>).map((k, v) => MapEntry(int.parse(k), List<int>.from(v as List))),
+    supportedStartYear: (data['supportedRange'] as Map)['start'] as int,
+    supportedEndYear: (data['supportedRange'] as Map)['end'] as int,
+    verifiedThrough: data['verifiedThrough'] as int,
   ));
+  print(NepaliCalendar.convertADToBS(DateTime(2025, 8, 26)));
 }
 ```
 
-### API
+In Flutter, load the JSON from an asset instead of a file. See the [flutter README](flutter/README.md).
 
-```dart
-NepaliCalendar.convertADToBS(DateTime.utc(2024, 4, 13));
-// → NepaliDate(year: 2081, month: 1, day: 1)
-
-NepaliCalendar.convertBSToAD(2082, 11, 8);
-// → DateTime.utc(2026, 2, 20)
-
-NepaliCalendar.getCurrentNepaliDateFormatted();
-// → "८ फागुन २०८२, शुक्रबार"
-
-NepaliCalendar.formatNepaliDate(
-  NepaliDate(year: 2082, month: 11, day: 8),
-  nepali: true,
-);
-// → "फागुन 8, 2082"
-
-NepaliCalendar.getRelativeTimeInNepali(
-  DateTime.now().subtract(Duration(minutes: 5)),
-);
-// → "५ मिनेट अगाडि"
-
-NepaliCalendar.toNepaliDigits(2082);
-// → "२०८२"
-
-NepaliCalendar.getDaysInBSMonth(2082, 11);
-// → 30
-```
-
-### Run Dart tests
+### Command line
 
 ```bash
-cd dart
-dart pub get
-dart test
+jhigu-patro ad2bs 2025-08-26
+jhigu-patro money 1234567.5 --vat excl --words
+jhigu-patro phone 9841234567 --json
+jhigu-patro month 2082 5
 ```
 
----
+### In a web page, React or Vue
 
-## Calendar data
-
-`data/nepali_calendar_data.json` is the single source of truth used by all three implementations.
-
-- Covers **BS 2000–2100** (AD 1943–2044)
-- Each year entry is a 12-element array: `[daysInBaisakh, daysInJestha, ..., daysInChaitra]`
-- Reference point: **BS 2000/1/1 = AD 1943-04-14**
-
-```json
-{
-  "version": "1.0",
-  "supportedRange": { "start": 2000, "end": 2100 },
-  "referencePoint": { "bsYear": 2000, "bsMonth": 1, "bsDay": 1,
-                      "adYear": 1943, "adMonth": 4, "adDay": 14 },
-  "years": {
-    "2082": [31, 31, 32, 31, 31, 31, 30, 29, 30, 29, 30, 30],
-    ...
-  }
-}
+```html
+<script type="module">
+  import { initializeCalendar, InlineCalendarDataSource } from 'jhigu-patro-utils-ts';
+  import { defineJhiguDatePicker } from 'jhigu-patro-utils-ts/date-picker-element';
+  // ... initializeCalendar(...) with the data, then:
+  defineJhiguDatePicker();
+</script>
+<jhigu-date-picker name="dob" language="ne" required></jhigu-date-picker>
 ```
 
-`data/2081_tithi.json` and `data/2082_tithi.json` hold Panchang (lunar phase) data for BS 2081 and 2082, with per-day tithi segments including tithi number, name, paksha (शुक्ल/कृष्ण), and start/end minutes within the Nepal day.
+The element is form-associated: `name` puts its value (`YYYY-MM-DD`) in the surrounding form. All six elements,
+their attributes, events and theming are in the [web-components guide](docs/features/web-components/README.md).
+React and Vue wrap the same elements: [react](react/README.md), [vue](vue/README.md).
 
-Checked by `node tools/check-tithi/validate.mjs` (month lengths and AD dates against the calendar, segments contiguous, tithi order and names). Known gaps in the source, not fixed because the right values need a source: no tithi on the 32nd day of 2081 month 2, 2081 month 4 and 2082 month 3; doubtful tithi on 2081-5-17, 2082-2-14, and 2082-8-18/19; some days end with a leftover segment past minute 1440 that the readers ignore. Where the data came from is not recorded in the files ([SOURCE NEEDED]).
+## Feature guides
 
----
+Each guide has an overview, setup, TypeScript and Dart quick starts, an API table, recipes, errors, known gaps
+and how the feature is tested. The JavaScript samples in them are run by the test suite, so they are known to
+work.
 
-## Quick reference
+1. [Calendar data](docs/features/calendar-data/README.md)
+2. [Dates](docs/features/dates/README.md)
+3. [Tithi (panchang)](docs/features/tithi/README.md)
+4. [Money](docs/features/money/README.md)
+5. [Phone numbers](docs/features/phone/README.md)
+6. [Addresses](docs/features/address/README.md)
+7. [Receipts](docs/features/receipts/README.md)
+8. [SMS](docs/features/sms/README.md)
+9. [Headless widgets](docs/features/headless-widgets/README.md)
+10. [Web components](docs/features/web-components/README.md)
 
-| BS Month | English name | Approx. AD period |
-|----------|-------------|-------------------|
-| 1  बैशाख | Baisakh  | Apr–May  |
-| 2  जेठ   | Jestha   | May–Jun  |
-| 3  असार  | Ashadh   | Jun–Jul  |
-| 4  साउन  | Shrawan  | Jul–Aug  |
-| 5  भदौ   | Bhadra   | Aug–Sep  |
-| 6  असोज  | Ashwin   | Sep–Oct  |
-| 7  कार्तिक | Kartik | Oct–Nov  |
-| 8  मंसिर | Mangsir  | Nov–Dec  |
-| 9  पौष   | Poush    | Dec–Jan  |
-| 10 माघ   | Magh     | Jan–Feb  |
-| 11 फागुन | Falgun   | Feb–Mar  |
-| 12 चैत्र | Chaitra  | Mar–Apr  |
+For one long page that covers the JavaScript API in order, see [docs/USAGE.md](docs/USAGE.md).
 
-BS is approximately **56–57 years ahead** of AD.
+## Packages in this repository
 
----
+| Directory | Package | What it is |
+|---|---|---|
+| `ts/` | `jhigu-patro-utils-ts` 1.0.0 | TypeScript library, headless widgets and web components. Subpath entry points (`/address`, `/sms`, `/money-input`, `/date-picker-element`, ...) keep bundles small. See [ts/README.md](ts/README.md). |
+| `dart/` | `jhigu_patro_utils` 1.0.0 | Dart library with the same features. No Flutter needed. |
+| `flutter/` | `jhigu_patro_flutter` 0.1.0 | Flutter widgets, dialogs and PDF receipt helpers. See [flutter/README.md](flutter/README.md). |
+| `react/` | `jhigu-patro-react` 0.1.0 | React 18 and 19 components for the web components. |
+| `vue/` | `jhigu-patro-vue` 0.1.0 | Vue 3.3, 3.4 and 3.5 components for the web components. |
+| `cli/` | `jhigu-patro` 1.0.0 | Command-line tool. |
+| `data/` | | Source of truth for shared data, plus a notes file per feature (`data/*_NOTES.md`). |
+| `testdata/` | | Shared test vectors that the TypeScript and Dart tests both read. |
+| `tools/` | | Generators and checks (data validators, browser and server-rendering checks, pack check). |
+| `docs/` | | Feature guides, usage guide, product requirements and implementation guide. |
+
+The directory `react/` also holds a Vite example and a Next.js example; `vue/` holds a Vite example and a Nuxt
+example.
+
+## Calendar data and accuracy
+
+The BS month lengths for BS 2000 to 2100 live in `data/nepali_calendar_data.json`. BS has no formula, so the
+table is data, not code.
+
+- Up to the `verifiedThrough` year in the file (2083), the published tables compared in
+  `data/CALENDAR_NOTES.md` agree with this one. That is agreement between sources, not an official
+  verification. BS 2084 to 2099 are in the table and convert normally, but the sources disagree there, so
+  they are treated as unverified. Use `isVerifiedYear` or `getDateAccuracy` to find out which a date is.
+- Known disagreements between sources, and how they were handled, are in
+  [`data/CALENDAR_NOTES.md`](data/CALENDAR_NOTES.md).
+- Dates are calendar fields only. No time zone enters a conversion; `today` uses the date in Nepal (GMT+5:45).
+- Tithi data exists only for BS 2081 and 2082, and has known gaps listed in the [tithi guide](docs/features/tithi/README.md).
+
+## Design rules
+
+These come from [CLAUDE.md](CLAUDE.md) and are checked by tests and CI.
+
+- `data/` is the source of truth. The copies in `ts/` are checked against it in CI.
+- The same input gives the same output in TypeScript and Dart. Shared vectors live in `testdata/`.
+- Money is integer paisa, never a float. Dates ignore time zones.
+- Errors are typed (`JhiguError`, `MoneyError`, `PhoneError`, ...), with stable codes. User-facing labels
+  come from `data/strings.en.json` and `data/strings.ne.json`, not from the code.
+- Nothing about the calendar, phone prefixes or provider APIs is guessed. Open facts are marked `[SOURCE NEEDED]`.
+
+## Build, test and CI
+
+```bash
+# TypeScript: build, then the whole test suite (includes the docs samples)
+cd ts && npm ci && npm run build && npm run test:run
+
+# Dart
+cd dart && dart pub get && dart test
+
+# React, Vue, CLI
+cd react && npm ci && npm test
+cd vue && npm ci && npm test
+cd cli && npm test
+
+# Data checks (calendar, tithi, phone, address, strings, generated files)
+node tools/check-calendar/validate.mjs
+node tools/check-tithi/validate.mjs
+node tools/gen-data/gen.mjs --check
+```
+
+Four GitHub Actions workflows run on every push: `ci-data` (data validators, generated files and the copies in
+`ts/` match `data/`), `ci-js` (TypeScript tests in four time zones, package pack check, the Next.js and Nuxt
+examples, the Vue 3.3 and 3.4 matrix), `ci-dart` and `ci-flutter`.
+
+Browser checks are run by hand with Playwright: `tools/browser-check` drives the web components in real
+browsers and runs an axe accessibility audit; `tools/ssr-check` builds the Next.js and Nuxt examples and checks
+server rendering and hydration. See their READMEs for what each covers.
+
+## Known gaps
+
+These are the open items that matter when you depend on the toolkit. Each is also noted in the guide or notes
+file for its feature.
+
+- **Nothing is published**, and the packages have no `LICENSE` file inside them yet (they declare MIT).
+- **Calendar:** BS 2084 to 2099 cannot be verified against an official source. For BS 2062, months 1 and 2,
+  this table has 30 and 32 days; one other package and one calendar website give 31 and 31. The data was not
+  changed pending an official calendar.
+- **Tithi:** only BS 2081 and 2082. Three days have no tithi, four are doubtful, and where the data came from is
+  not recorded.
+- **Nepali words for numbers:** the 100-word table was taken from one package and compared with three web
+  tables; 38 of the 100 words are disputed between sources, and no native speaker has reviewed it. The scale
+  spellings अर्ब and खर्ब are unresolved.
+- **Phone:** carrier names and prefixes are best effort, not an official list.
+- **SMS:** no gateway is built in; you plug in your own provider. A Sandesh gateway is not built, because its
+  API details are [SOURCE NEEDED].
+- **Browsers:** the web components were checked in Chromium only. Firefox, Safari, touch devices and real screen
+  readers are not verified.
+- **React Native:** not supported. Only the web components, through React DOM, are covered.
+- **Angular and Svelte wrappers:** not built.
+
+## Documentation map
+
+- Feature guides: [docs/features/](docs/features/calendar-data/README.md) (list above)
+- Usage guide, one page: [docs/USAGE.md](docs/USAGE.md)
+- Design notes and known gaps per feature: `data/CALENDAR_NOTES.md`, `DATES_NOTES.md`, `MONEY_NOTES.md`,
+  `PHONE_NOTES.md`, `ADDRESS_NOTES.md`, `RECEIPT_NOTES.md`, `SMS_NOTES.md`, `PICKER_NOTES.md`, `STRINGS_NOTES.md`
+- Plan: [docs/PRD.md](docs/PRD.md), [docs/IMPLEMENTATION_GUIDE.md](docs/IMPLEMENTATION_GUIDE.md)
+- Shared test vectors: [testdata/README.md](testdata/README.md)
+- Third-party notices and data sources: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+
+## Quick reference: BS months
+
+| BS month | English name | Approx. AD period |
+|---|---|---|
+| 1 बैशाख | Baisakh | Apr to May |
+| 2 जेठ | Jestha | May to Jun |
+| 3 असार | Ashadh | Jun to Jul |
+| 4 साउन | Shrawan | Jul to Aug |
+| 5 भदौ | Bhadra | Aug to Sep |
+| 6 असोज | Ashwin | Sep to Oct |
+| 7 कार्तिक | Kartik | Oct to Nov |
+| 8 मंसिर | Mangsir | Nov to Dec |
+| 9 पौष | Poush | Dec to Jan |
+| 10 माघ | Magh | Jan to Feb |
+| 11 फागुन | Falgun | Feb to Mar |
+| 12 चैत्र | Chaitra | Mar to Apr |
+
+BS is about 56 to 57 years ahead of AD.
 
 ## License
 
-MIT
+MIT. Data and code taken from other projects, and their licences, are listed in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

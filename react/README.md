@@ -56,7 +56,7 @@ properties: pass stable objects (state, a constant, `useMemo`).
 Every component also takes `className`, `style` (CSS custom properties work, for
 theming: `style={{ '--jhigu-color-primary': '#b91c1c' }}`), `id`, `title`, `hidden`,
 `slot`, and `data-*` / `aria-*` attributes (an `aria-label` on `JhiguMoneyInput` or `JhiguPhoneInput` names the inner input when there is no `label`). A `ref` is the custom element itself, so
-`ref.current.open()` works on a popup picker. The elements' CSS variables and
+`ref.current.show()` and `.hide()` work on a popup picker. The elements' CSS variables and
 `::part`s are documented in their headers under `ts/src/elements/`.
 
 ## How it behaves

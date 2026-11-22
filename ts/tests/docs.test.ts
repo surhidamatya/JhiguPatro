@@ -14,7 +14,7 @@
  * Blocks with other info strings (`js`, `ts`, `html`, `dart`, ...) are not run.
  */
 import { describe, it, expect } from 'vitest';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -113,4 +113,67 @@ describe('docs/USAGE.md samples', () => {
     }
     expect(checks).toBeGreaterThan(40);
   });
+});
+
+
+/**
+ * The per-feature guides in docs/features/<name>/README.md follow the same rules as USAGE.md: their
+ * `js test` blocks run in order in one session per file (so each file sets the calendar up itself
+ * where it needs it), and a relative link in any of the Markdown docs must point at a file that exists.
+ */
+const featureDir = join(root, 'docs/features');
+const featureFiles = existsSync(featureDir)
+  ? readdirSync(featureDir, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => `docs/features/${d.name}/README.md`).filter(f => existsSync(join(root, f)))
+  : [];
+
+/** Features that are about markup or another language and so have no runnable JavaScript. */
+const NO_JS_REQUIRED = new Set(['docs/features/web-components/README.md', 'docs/features/flutter/README.md']);
+
+describe('docs/features guides', () => {
+  it('has a guide for every feature', () => {
+    expect(featureFiles.length).toBeGreaterThanOrEqual(10);
+  });
+
+  for (const file of featureFiles) {
+    it(`${file}: runs every \`js test\` block in order`, async () => {
+      const md = readFileSync(join(root, file), 'utf8');
+      const blocks = testBlocks(md);
+      if (!NO_JS_REQUIRED.has(file)) expect(blocks.length, `${file} should have runnable samples`).toBeGreaterThan(0);
+      for (const block of blocks) {
+        const { body, imports } = compile(block.code);
+        const __import = async (i: number) => {
+          const spec = imports[i];
+          const src = sourceFor(spec);
+          return import(/* @vite-ignore */ src ?? spec);
+        };
+        const __check = (actual: unknown, expected: unknown, text: string) => {
+          try { expect(actual).toEqual(expected); }
+          catch (e) { throw new Error(`${file} line ${block.line}: ${text}\n${(e as Error).message}`); }
+        };
+        try {
+          await new AsyncFunction('__import', '__check', body)(__import, __check);
+        } catch (e) {
+          if ((e as Error).message.startsWith(file)) throw e;
+          throw new Error(`${file} block at line ${block.line} threw: ${(e as Error).message}`);
+        }
+      }
+    });
+  }
+});
+
+describe('Markdown links', () => {
+  const docs = ['README.md', 'docs/USAGE.md', 'ts/README.md', 'cli/README.md', 'react/README.md', 'vue/README.md', 'flutter/README.md', ...featureFiles];
+  for (const file of docs) {
+    it(`${file}: relative links point at files that exist`, () => {
+      const md = readFileSync(join(root, file), 'utf8').replace(/^```[\s\S]*?^```$/gm, '');
+      const bad: string[] = [];
+      for (const m of md.matchAll(/\[[^\]]*\]\(([^)\s]+)\)/g)) {
+        const target = m[1];
+        if (/^(https?:|mailto:|#)/.test(target)) continue;
+        const path = target.split('#')[0];
+        if (path && !existsSync(resolve(root, dirname(file), path))) bad.push(target);
+      }
+      expect(bad, `broken links in ${file}`).toEqual([]);
+    });
+  }
 });

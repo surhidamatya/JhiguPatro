@@ -12,7 +12,7 @@
  * Props are the elements' attributes in camelCase (`week-starts-on` becomes
  * `weekStartsOn`). Each callback prop gets the event's `detail` first and the DOM
  * event second. A `ref` is the custom element, so its methods work
- * (`ref.current.open()` on a popup picker). A prop is written to the element only
+ * (`ref.current.show()` on a popup picker). A prop is written to the element only
  * when it changes, so a rerender does not reset a field the user has typed in; to
  * change a field from the parent, change its prop. Style them with `className`,
  * `style` (CSS custom properties work) or the elements' CSS variables and `::part`s.
