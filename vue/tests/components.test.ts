@@ -61,8 +61,8 @@ const cases: Case[] = [
   },
   {
     name: 'JhiguCalendar', Component: JhiguCalendar, tag: 'jhigu-calendar', binding: 'calendar',
-    props: { year: 2082, month: 5, language: 'ne', weekStartsOn: 6, showAd: false, theme: 'dark', today: '2082-05-10' },
-    expectAttrs: { year: '2082', month: '5', language: 'ne', 'week-starts-on': '6', 'show-ad': 'false', theme: 'dark', today: '2082-05-10' },
+    props: { year: 2082, month: 5, language: 'ne', weekStartsOn: 6, showAd: false, showTithi: false, theme: 'dark', today: '2082-05-10' },
+    expectAttrs: { year: '2082', month: '5', language: 'ne', 'week-starts-on': '6', 'show-ad': 'false', 'show-tithi': 'false', theme: 'dark', today: '2082-05-10' },
     events: { onSelect: 'jhiguSelect', onMonthChange: 'jhiguMonthChange' },
   },
   {
@@ -172,5 +172,14 @@ describe('calendar events', () => {
     const e = container.querySelector('jhigu-calendar') as unknown as Element & { events: unknown };
     expect(e.events).toBe(events);
     expect(e.hasAttribute('events')).toBe(false);
+  });
+
+  it('the panchang is a property too', () => {
+    const panchang = { sunriseTithi: () => null };
+    app = createApp({ render: () => h(JhiguCalendar as never, { panchang }) });
+    app.mount(container);
+    const e = container.querySelector('jhigu-calendar') as unknown as Element & { panchang: unknown };
+    expect(e.panchang).toBe(panchang);
+    expect(e.hasAttribute('panchang')).toBe(false);
   });
 });

@@ -359,6 +359,7 @@ Plain custom elements with shadow DOM, no dependencies, built on the state machi
 ```
 
 - The pickers, address, money and phone elements are form-associated: their value posts with a normal `<form>`, and `required` and form reset work. The calendar is display only.
+- Tithi in the calendar: give `<jhigu-calendar>` a `PanchangDataSource` with the years loaded (`cal.panchang = panchang`). Each day then shows its sunrise tithi name, the day's accessible name says "Tithi: ...", and the selected day's list adds the paksha. `show-tithi="false"` hides it; a day or month the data does not hold shows nothing. The names are Nepali in both languages. The Flutter `JhiguCalendar` does not show tithi yet.
 - Events: `jhiguChange` (date picker, range, address, money, phone), `jhiguSelect` and `jhiguMonthChange` (calendar), `jhiguOpen` and `jhiguClose` (popups). Details are in the header comment of each file under `ts/src/elements/`.
 - Theme with CSS variables (`--jhigu-color-primary`, `--jhigu-color-surface`, `--jhigu-color-text`, `--jhigu-color-muted`, `--jhigu-color-holiday`, `--jhigu-color-today`, `--jhigu-radius`, `--jhigu-font-family`, `--jhigu-font-size`), the `theme="light|dark"` attribute, and `::part(...)` selectors. Dark mode follows the system by default.
 - Working pages for each element are in `ts/examples/` (build first with `cd ts && npm run build`, then serve `ts/` over HTTP).

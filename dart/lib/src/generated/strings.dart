@@ -278,6 +278,7 @@ class JhiguStringsPicker {
   final String required;
   final String placeholder;
   final String noEvents;
+  final String tithi;
 
   const JhiguStringsPicker({
     required this.today,
@@ -289,6 +290,7 @@ class JhiguStringsPicker {
     required this.required,
     required this.placeholder,
     required this.noEvents,
+    required this.tithi,
   });
 }
 
@@ -381,6 +383,7 @@ const jhiguStringsEn = JhiguStrings(
     required: 'Select a date',
     placeholder: 'Select a date',
     noEvents: 'No events',
+    tithi: 'Tithi',
   ),
   phone: JhiguStringsPhone(
     empty: 'Enter a phone number',
@@ -521,6 +524,7 @@ const jhiguStringsNe = JhiguStrings(
     required: 'मिति छान्नुहोस्',
     placeholder: 'मिति छान्नुहोस्',
     noEvents: 'कुनै कार्यक्रम छैन',
+    tithi: 'तिथि',
   ),
   phone: JhiguStringsPhone(
     empty: 'फोन नम्बर लेख्नुहोस्',

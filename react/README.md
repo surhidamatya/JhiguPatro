@@ -49,8 +49,9 @@ Props are the elements' attributes in camelCase (`week-starts-on` is
 `weekStartsOn`, `value-paisa` is `valuePaisa`). They are typed, and the detail types
 are exported. `showAd` and `showWard` default to on (pass `false` to turn them off);
 the other booleans (`disabled`, `required`, `popup`, `devanagari`, ...) are on when
-true. The calendar takes `events` (`{ '2082-06-03': ['Laxmi Puja'] }`) as a
-property: pass a stable object (state, a constant, `useMemo`).
+true. The calendar takes `events` (`{ '2082-06-03': ['Laxmi Puja'] }`) and
+`panchang` (a `PanchangDataSource` with its years loaded, for the tithi under each day) as
+properties: pass stable objects (state, a constant, `useMemo`).
 
 Every component also takes `className`, `style` (CSS custom properties work, for
 theming: `style={{ '--jhigu-color-primary': '#b91c1c' }}`), `id`, `title`, `hidden`,

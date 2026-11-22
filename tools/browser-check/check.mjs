@@ -184,6 +184,28 @@ const PAGES = {
       await page.click('#c1 [data-act=next]');
       await waitLog(page, 'jhiguMonthChange c1: {"year":2082,"month":7}');
     }],
+    ['tithi: each day shows its name, the label names it, and the selected day lists it with its paksha', async page => {
+      eq(await page.locator('#c3 .tithi').count(), 31, 'a tithi on each of the 31 days of Baisakh 2082');
+      eq(await page.locator('#c3 [role=gridcell][data-date="2082-01-01"] .tithi').textContent(), 'प्रतिपदा', 'first day');
+      const label = await page.locator('#c3 [role=gridcell][data-date="2082-01-01"]').getAttribute('aria-label');
+      ok(label.includes('Tithi: प्रतिपदा'), label);
+      eq(await page.locator('#c3 [role=gridcell][data-date="2082-01-01"] .tithi').getAttribute('aria-hidden'), 'true', 'hidden from the name');
+      await page.click('#c3 [role=gridcell][data-date="2082-01-01"]');
+      await waitLog(page, 'jhiguSelect c3: {"bs":"2082-01-01","ad":"2025-04-14","events":[],"tithi":"प्रतिपदा"}');
+      const text = await page.locator('#c3 .events').textContent();
+      ok(text.includes('Tithi: प्रतिपदा, कृष्ण'), text);
+    }],
+    ['show-tithi false, or no panchang, shows no tithi', async page => {
+      eq(await page.locator('#c4 .tithi').count(), 0, 'show-tithi false');
+      eq(await page.locator('#c1 .tithi').count(), 0, 'no panchang');
+      await page.evaluate(() => document.getElementById('c4').setAttribute('show-tithi', 'true'));
+      eq(await page.locator('#c4 .tithi').count(), 31, 'turned on again');
+    }],
+    ['a month the panchang does not hold shows no tithi, and nothing breaks', async page => {
+      await page.click('#c3 [data-act=prev]');
+      eq(await page.locator('#c3 .tithi').count(), 0, 'Chaitra 2081 is not loaded');
+      ok((await page.locator('#c3 [role=gridcell]').count()) >= 29, 'the grid is still there');
+    }],
     ['events set from script show up (Nepali, Monday start)', async page => {
       ok(await page.locator('#c2 .dot').count() >= 2, 'dots from the events property');
       eq(await page.locator('#c2 [role=columnheader]').first().textContent(), 'सोम', 'Monday first');

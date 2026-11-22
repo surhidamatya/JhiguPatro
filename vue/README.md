@@ -47,8 +47,9 @@ const dob = ref('2082-05-12');
 
 Props are the elements' attributes in camelCase (`weekStartsOn`, which a template can
 also write `week-starts-on`; `valuePaisa`). The handler gets the event's `detail`, then
-the DOM event. The calendar takes `events` (`{ '2082-06-03': ['Laxmi Puja'] }`) as a
-property: pass a stable object, and a new object to change it (mutating one in place is
+the DOM event. The calendar takes `events` (`{ '2082-06-03': ['Laxmi Puja'] }`) and
+`panchang` (a `PanchangDataSource` with its years loaded, for the tithi under each day) as
+properties: pass stable objects, and a new object to change it (mutating one in place is
 not seen). `showAd` and `showWard` default to on (pass `:show-ad="false"` to turn them
 off); the other booleans are on when present (`required`, `popup`, `devanagari`, ...).
 

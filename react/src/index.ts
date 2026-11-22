@@ -22,7 +22,7 @@
  */
 import type { JhiguChangeDetail, JhiguDatePicker as DatePickerElement } from 'jhigu-patro-utils-ts/date-picker-element';
 import type { JhiguRangeChangeDetail, JhiguDateRangePicker as RangePickerElement } from 'jhigu-patro-utils-ts/range-picker-element';
-import type { JhiguCalendar as CalendarElement, JhiguMonthChangeDetail, JhiguSelectDetail } from 'jhigu-patro-utils-ts/calendar-element';
+import type { JhiguCalendar as CalendarElement, JhiguMonthChangeDetail, JhiguSelectDetail, TithiSource } from 'jhigu-patro-utils-ts/calendar-element';
 import type { JhiguAddressChangeDetail, JhiguAddressSelect as AddressElement } from 'jhigu-patro-utils-ts/address-element';
 import type {
   JhiguMoneyChangeDetail, JhiguMoneyInput as MoneyElement,
@@ -35,7 +35,7 @@ import type { HostProps } from './wrap.js';
 export { createJhiguComponent } from './wrap.js';
 export type { AttrKind, AttrSpec, ComponentSpec, HostProps } from './wrap.js';
 export type {
-  JhiguChangeDetail, JhiguRangeChangeDetail, JhiguSelectDetail, JhiguMonthChangeDetail,
+  JhiguChangeDetail, JhiguRangeChangeDetail, JhiguSelectDetail, JhiguMonthChangeDetail, TithiSource,
   JhiguAddressChangeDetail, JhiguMoneyChangeDetail, JhiguPhoneChangeDetail,
   DatePickerElement, RangePickerElement, CalendarElement, AddressElement, MoneyElement, PhoneElement,
 };
@@ -110,6 +110,10 @@ export interface JhiguCalendarProps extends HostProps {
   language?: Language;
   weekStartsOn?: Weekday;
   showAd?: boolean;
+  /** Show the tithi when `panchang` is set. Default on. */
+  showTithi?: boolean;
+  /** Where the tithi comes from: a `PanchangDataSource` with its years loaded. Pass a stable object. */
+  panchang?: TithiSource | null;
   /**
    * Titles by BS date: `{ '2082-06-03': ['Laxmi Puja'] }`. Pass a stable object
    * (state, a constant or `useMemo`): a new object on every render rewrites the marks.

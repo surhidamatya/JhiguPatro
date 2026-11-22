@@ -41,6 +41,7 @@ export interface Strings {
     readonly required: string;
     readonly placeholder: string;
     readonly noEvents: string;
+    readonly tithi: string;
   };
   readonly phone: {
     readonly empty: string;
@@ -181,6 +182,7 @@ export const stringsEn: Strings = {
     required: "Select a date",
     placeholder: "Select a date",
     noEvents: "No events",
+    tithi: "Tithi",
   },
   phone: {
     empty: "Enter a phone number",
@@ -321,6 +323,7 @@ export const stringsNe: Strings = {
     required: "मिति छान्नुहोस्",
     placeholder: "मिति छान्नुहोस्",
     noEvents: "कुनै कार्यक्रम छैन",
+    tithi: "तिथि",
   },
   phone: {
     empty: "फोन नम्बर लेख्नुहोस्",

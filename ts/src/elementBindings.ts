@@ -64,9 +64,9 @@ export const elementBindings = {
     spec: {
       attrs: {
         year: num('year'), month: num('month'), language: str('language'), weekStartsOn: num('week-starts-on'),
-        showAd: off('show-ad'), theme: str('theme'), today: str('today'),
+        showAd: off('show-ad'), showTithi: off('show-tithi'), theme: str('theme'), today: str('today'),
       },
-      properties: ['events'],
+      properties: ['events', 'panchang'],
       events: { onSelect: 'jhiguSelect', onMonthChange: 'jhiguMonthChange' },
     },
   },

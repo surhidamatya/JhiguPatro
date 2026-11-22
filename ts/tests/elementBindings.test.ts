@@ -119,7 +119,7 @@ describe('the whole table', () => {
   it('default-on attributes use falseOnly; the rest of the booleans use boolean', () => {
     for (const [name, b] of Object.entries(elementBindings)) {
       for (const [prop, a] of Object.entries(b.spec.attrs)) {
-        if (prop === 'showAd' || prop === 'showWard') expect(a.kind, `${name}.${prop}`).toBe('falseOnly');
+        if (prop === 'showAd' || prop === 'showWard' || prop === 'showTithi') expect(a.kind, `${name}.${prop}`).toBe('falseOnly');
         else if (a.type === 'boolean') expect(a.kind, `${name}.${prop}`).toBe('boolean');
       }
     }

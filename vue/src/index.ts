@@ -23,7 +23,7 @@
 import { elementBindings as b } from 'jhigu-patro-utils-ts/element-bindings';
 import type { JhiguChangeDetail, JhiguDatePicker as DatePickerElement } from 'jhigu-patro-utils-ts/date-picker-element';
 import type { JhiguRangeChangeDetail, JhiguDateRangePicker as RangePickerElement } from 'jhigu-patro-utils-ts/range-picker-element';
-import type { JhiguCalendar as CalendarElement, JhiguMonthChangeDetail, JhiguSelectDetail } from 'jhigu-patro-utils-ts/calendar-element';
+import type { JhiguCalendar as CalendarElement, JhiguMonthChangeDetail, JhiguSelectDetail, TithiSource } from 'jhigu-patro-utils-ts/calendar-element';
 import type { JhiguAddressChangeDetail, JhiguAddressSelect as AddressElement } from 'jhigu-patro-utils-ts/address-element';
 import type {
   JhiguMoneyChangeDetail, JhiguMoneyInput as MoneyElement,
@@ -33,7 +33,7 @@ import { createJhiguComponent } from './wrap.js';
 
 export { createJhiguComponent, vueEventName, hostProps, parseStyleText } from './wrap.js';
 export type {
-  JhiguChangeDetail, JhiguRangeChangeDetail, JhiguSelectDetail, JhiguMonthChangeDetail,
+  JhiguChangeDetail, JhiguRangeChangeDetail, JhiguSelectDetail, JhiguMonthChangeDetail, TithiSource,
   JhiguAddressChangeDetail, JhiguMoneyChangeDetail, JhiguPhoneChangeDetail,
   DatePickerElement, RangePickerElement, CalendarElement, AddressElement, MoneyElement, PhoneElement,
 };
@@ -71,6 +71,10 @@ export interface JhiguDateRangePickerProps {
 export interface JhiguCalendarProps {
   /** The month to show first (both needed). Changing them moves the view. */
   year?: number; month?: number; language?: Language; weekStartsOn?: Weekday; showAd?: boolean;
+  /** Show the tithi when `panchang` is set. Default on. */
+  showTithi?: boolean;
+  /** Where the tithi comes from: a `PanchangDataSource` with its years loaded. Pass a stable object (a ref or constant). */
+  panchang?: TithiSource | null;
   /** Titles by BS date: `{ '2082-06-03': ['Laxmi Puja'] }`. Pass a stable object (a ref or constant). */
   events?: Record<string, string | string[]>;
   theme?: Theme; today?: string;

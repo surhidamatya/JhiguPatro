@@ -2,7 +2,7 @@
 
 `check.mjs` opens the example pages in `ts/examples` in Chromium, Firefox and WebKit
 (through Playwright) and drives the six web components with real clicks, key presses
-and typing. 25 checks per browser:
+and typing. 28 checks per browser:
 
 - **Date picker:** three pickers render a month grid; a click selects and reports BS and
   AD; arrows and Enter move and select; the month arrows and month list; the popup opens,
@@ -12,7 +12,9 @@ and typing. 25 checks per browser:
 - **Range picker:** two clicks choose a range and the event says how many days; hover
   preview; the form posts `name_start` and `name_end`; a half-chosen required range is invalid.
 - **Calendar:** marked days show a dot and selecting one lists its titles; month changes
-  are reported; events set from script work (Nepali, Monday start).
+  are reported; events set from script work (Nepali, Monday start); with a panchang each day
+  shows its tithi, the label and the selected-day list carry it, `show-tithi="false"` hides it,
+  and a month the data does not hold shows none.
 - **Address:** the province to ward cascade and its form data; changing the province clears
   what is below; `show-ward="false"` and Nepali labels.
 - **Money and phone:** grouping as you type, padding on blur, integer paisa in the form;

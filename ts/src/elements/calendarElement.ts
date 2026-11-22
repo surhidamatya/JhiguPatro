@@ -10,10 +10,16 @@
  *
  * Attributes: `year` and `month` (the month to show first), `language`,
  * `week-starts-on`, `show-ad` (default on; `"false"` turns it off), `marked`,
- * `theme`, `today` (for tests). `marked` is JSON: an object from BS date
+ * `theme`, `today` (for tests), `show-tithi` (default on; `"false"` hides the tithi when a panchang is set). `marked` is JSON: an object from BS date
  * (`YYYY-MM-DD`) to a title or a list of titles, or a plain array of dates.
  * Property `events` takes the same object form (`Record<string, string |
  * string[]>`) and replaces `marked`.
+ *
+ * Property `panchang` takes a `PanchangDataSource` (or anything with `sunriseTithi(year, month, day)`).
+ * Each day then shows its sunrise tithi name under the day number, the name is added to the day's
+ * ARIA label after "Tithi", and the selected day's panel lists it with its paksha. The tithi names
+ * and pakshas are Nepali whatever the `language`. Without a panchang, or for a day it has no tithi
+ * for, nothing is shown.
  *
  * Marked days show a dot, and their titles are added to the day's ARIA label and
  * listed under the grid when the day is selected. Click or press Enter on a day
@@ -21,7 +27,7 @@
  *
  * Events (bubbling, composed): `jhiguSelect` with `detail: { bs, ad, events }`;
  * `jhiguMonthChange` with `detail: { year, month }`. Parts: as the date picker,
- * plus `mark` (the dot), `events` and `event`.
+ * plus `mark` (the dot), `tithi`, `events` and `event`.
  */
 import { createDatePicker, keyAction } from '../datePicker.js';
 import { formatPreset } from '../dateFormat.js';
@@ -37,6 +43,13 @@ export interface JhiguSelectDetail {
   bs: string;
   ad: string;
   events: string[];
+  /** The sunrise tithi name when a panchang is set and has one for the day. */
+  tithi?: string;
+}
+
+/** What the calendar needs from a panchang: `PanchangDataSource` has it. */
+export interface TithiSource {
+  sunriseTithi(bsYear: number, bsMonth: number, bsDay: number): { tithiName: string; paksha: string } | null;
 }
 
 export interface JhiguMonthChangeDetail {
@@ -51,6 +64,7 @@ const CALENDAR_CSS = `${PICKER_CSS}
 .events h3 { margin: 0 0 4px; font-size: 0.9em; font-weight: 600; }
 .events ul { margin: 0; padding-left: 1.2em; }
 .events .none { color: var(--jhigu-color-muted); }
+.events .tithi-line { margin: 0 0 4px; color: var(--jhigu-color-muted); }
 `;
 
 /** Accept an object of date to title(s), or an array of dates. Unreadable keys are ignored. */
@@ -76,11 +90,12 @@ export function parseMarks(input: unknown): Map<string, string[]> {
 const Base = ((globalThis as { HTMLElement?: typeof HTMLElement }).HTMLElement ?? class {}) as typeof HTMLElement;
 
 export class JhiguCalendar extends Base {
-  static observedAttributes = ['year', 'month', 'language', 'week-starts-on', 'show-ad', 'marked', 'theme', 'today'];
+  static observedAttributes = ['year', 'month', 'language', 'week-starts-on', 'show-ad', 'marked', 'theme', 'today', 'show-tithi'];
 
   private picker: DatePicker | null = null;
   private unsubscribe: (() => void) | null = null;
   private marks = new Map<string, string[]>();
+  private source: TithiSource | null = null;
   private fromProperty = false;
   private markedError = false;
   private fatal: string | null = null;
@@ -115,6 +130,16 @@ export class JhiguCalendar extends Base {
     this.render();
   }
 
+  /** Where the tithi comes from (`PanchangDataSource`), or null for none. Setting it redraws. */
+  get panchang(): TithiSource | null {
+    return this.source;
+  }
+
+  set panchang(value: TithiSource | null | undefined) {
+    this.source = value ?? null;
+    this.render();
+  }
+
   /** The selected day as BS text, `''` when none. */
   get selected(): string {
     return this.picker?.getState().value?.toString() ?? '';
@@ -142,6 +167,7 @@ export class JhiguCalendar extends Base {
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
     if (oldValue === newValue || !this.connectedOnce) return;
+    if (name === 'show-tithi') { this.render(); return; }
     if (name === 'marked') { this.fromProperty = false; this.readMarked(); this.render(); return; }
     if (name === 'year' || name === 'month') {
       try { this.picker?.actions.goTo(this.yearAttr, this.monthAttr); } catch { /* ignore an invalid month */ }
@@ -154,6 +180,16 @@ export class JhiguCalendar extends Base {
   // ── Internals ───────────────────────────────────────────────────────────────
 
   private get language(): Language { return this.getAttribute('language') === 'ne' ? 'ne' : 'en'; }
+
+  private tithiOn(): boolean { return this.source !== null && this.getAttribute('show-tithi') !== 'false'; }
+
+  /** The sunrise tithi of a BS date `YYYY-MM-DD`, or null. A source that throws is treated as having none. */
+  private tithiFor(bs: string): { tithiName: string; paksha: string } | null {
+    if (!this.tithiOn()) return null;
+    const m = BS_TEXT.exec(bs);
+    if (!m) return null;
+    try { return this.source!.sunriseTithi(Number(m[1]), Number(m[2]), Number(m[3])) ?? null; } catch { return null; }
+  }
 
   private get yearAttr(): number { return Number(this.getAttribute('year')); }
   private get monthAttr(): number { return Number(this.getAttribute('month')); }
@@ -220,7 +256,7 @@ export class JhiguCalendar extends Base {
       if (state.value) {
         this.dispatchEvent(new CustomEvent<JhiguSelectDetail>('jhiguSelect', {
           bubbles: true, composed: true,
-          detail: { bs: sel, ad: adIso(state.value), events: [...(this.marks.get(sel) ?? [])] },
+          detail: { bs: sel, ad: adIso(state.value), events: [...(this.marks.get(sel) ?? [])], ...(this.tithiFor(sel) ? { tithi: this.tithiFor(sel)!.tithiName } : {}) },
         }));
       }
     }
@@ -241,12 +277,17 @@ export class JhiguCalendar extends Base {
     const picker = this.picker;
     const state = picker.getState();
     const t = getStrings(state.language);
-    const calendar = renderCalendarMarkup(state, { getCellProps: c => picker.getCellProps(c), marks: this.marks, showClear: false });
+    const calendar = renderCalendarMarkup(state, {
+      getCellProps: c => picker.getCellProps(c), marks: this.marks, showClear: false,
+      tithiOf: this.tithiOn() ? bs => this.tithiFor(bs) : undefined, tithiLabel: t.picker.tithi,
+    });
     const sel = state.value?.toString() ?? '';
     const titles = sel ? this.marks.get(sel) ?? [] : [];
+    const selTithi = sel ? this.tithiFor(sel) : null;
+    const tithiLine = selTithi ? `<p class="tithi-line">${esc(t.picker.tithi)}: ${esc(selTithi.tithiName)}, ${esc(selTithi.paksha)}</p>` : '';
     const list = !sel
       ? ''
-      : `<div class="events" part="events" aria-live="polite"><h3>${esc(formatPreset(state.value!, 'dual', state.language))}</h3>` +
+      : `<div class="events" part="events" aria-live="polite"><h3>${esc(formatPreset(state.value!, 'dual', state.language))}</h3>${tithiLine}` +
         (titles.length
           ? `<ul>${titles.map(x => `<li part="event">${esc(x)}</li>`).join('')}</ul>`
           : `<div class="none">${esc(t.picker.noEvents)}</div>`) + '</div>';

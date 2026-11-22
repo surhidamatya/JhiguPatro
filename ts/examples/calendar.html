@@ -18,15 +18,22 @@
     marked='{"2082-06-03":["Laxmi Puja","Market day"],"2082-06-05":"Bhai Tika","2082-05-29":"Teej"}'></jhigu-calendar></section>
 <section><h2>Nepali, events set from script, Monday start</h2>
   <jhigu-calendar id="c2" language="ne" week-starts-on="1" today="2082-05-10"></jhigu-calendar></section>
+<section><h2>With tithi (BS 2082 Baisakh), set from script; hidden when show-tithi is false</h2>
+  <jhigu-calendar id="c3" year="2082" month="1" today="2082-01-05"></jhigu-calendar>
+  <jhigu-calendar id="c4" year="2082" month="1" today="2082-01-05" show-tithi="false"></jhigu-calendar></section>
 <h2>Events</h2>
 <pre id="log"></pre>
 <script type="module">
-  import { initializeCalendar, InlineCalendarDataSource } from '../dist/index.js';
+  import { initializeCalendar, InlineCalendarDataSource, PanchangDataSource } from '../dist/index.js';
   import { defineJhiguCalendar } from '../dist/elements/calendarElement.js';
   const cal = await (await fetch('../nepali_calendar_data.json')).json();
   initializeCalendar(new InlineCalendarDataSource(cal.years, cal.supportedRange.start, cal.supportedRange.end, cal.verifiedThrough));
   defineJhiguCalendar();
   document.getElementById('c2').events = { '2082-05-12': 'जन्मदिन', '2082-05-14': ['बैठक', 'भोज'] };
+  const panchang = new PanchangDataSource();
+  await panchang.load('../2082_tithi.json');
+  document.getElementById('c3').panchang = panchang;
+  document.getElementById('c4').panchang = panchang;
   const log = document.getElementById('log');
   for (const t of ['jhiguSelect','jhiguMonthChange']) document.addEventListener(t, e => { log.textContent += `${t} ${e.target.id}: ${JSON.stringify(e.detail)}\n`; });
   window.ready = true;

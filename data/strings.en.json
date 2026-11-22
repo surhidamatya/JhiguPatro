@@ -36,7 +36,8 @@
     "nextMonth": "Next month",
     "required": "Select a date",
     "placeholder": "Select a date",
-    "noEvents": "No events"
+    "noEvents": "No events",
+    "tithi": "Tithi"
   },
   "phone": {
     "empty": "Enter a phone number",

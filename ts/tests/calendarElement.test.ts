@@ -59,6 +59,43 @@ describe('marks in the markup', () => {
   });
 });
 
+describe('tithi in the markup', () => {
+  const T = { year: 2082, month: 5, day: 10 };
+  const picker = () => createDatePicker({ today: T });
+  const html = (opts: Partial<Parameters<typeof renderCalendarMarkup>[1]>) => {
+    const p = picker();
+    return renderCalendarMarkup(p.getState(), { getCellProps: c => p.getCellProps(c), showClear: false, ...opts });
+  };
+  const names = (bs: string) => (bs === '2082-05-10' ? { tithiName: 'प्रतिपदा' } : bs === '2082-05-11' ? { tithiName: 'A & <B>' } : null);
+
+  it('a day with a tithi shows its name under the day, hidden from the name, and names it in the ARIA label', () => {
+    const out = html({ tithiOf: names, tithiLabel: 'Tithi' });
+    expect(out).toContain('<span class="tithi" part="tithi" aria-hidden="true">प्रतिपदा</span>');
+    expect(out).toMatch(/aria-label="[^"]*\. Tithi: प्रतिपदा"/);
+    expect((out.match(/class="tithi"/g) ?? []).length).toBe(2);
+  });
+
+  it('escapes the name, and leaves a day without a tithi alone', () => {
+    const out = html({ tithiOf: names, tithiLabel: 'Tithi' });
+    expect(out).toContain('A &amp; &lt;B&gt;');
+    expect(out).not.toContain('<B>');
+    const cell12 = out.match(/<div role="gridcell"[^>]*data-date="2082-05-12">.*?<\/div>/)![0];
+    expect(cell12).not.toContain('tithi');
+    expect(cell12).not.toContain('Tithi');
+  });
+
+  it('with no tithiOf there is nothing of it in the markup', () => {
+    const out = html({});
+    expect(out).not.toContain('class="tithi"');
+    expect(out).not.toContain('Tithi');
+  });
+
+  it('the tithi goes before the event titles in the ARIA label', () => {
+    const out = html({ tithiOf: names, tithiLabel: 'Tithi', marks: new Map([['2082-05-10', ['Teej']]]) });
+    expect(out).toMatch(/aria-label="[^"]*\. Tithi: प्रतिपदा\. Teej"/);
+  });
+});
+
 describe('calendar element in Node', () => {
   it('can be imported without a DOM; defining needs a browser', () => {
     expect(typeof JhiguCalendar).toBe('function');

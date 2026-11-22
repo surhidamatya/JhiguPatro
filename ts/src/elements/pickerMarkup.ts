@@ -27,6 +27,12 @@ export interface MarkupOptions {
   showClear?: boolean;
   /** Event titles by BS date `YYYY-MM-DD`. Marked days get a dot and their titles in the ARIA label. */
   marks?: ReadonlyMap<string, readonly string[]>;
+  /**
+   * The tithi of a BS date `YYYY-MM-DD`, when tithi is shown. A cell then shows its name under the day
+   * number, and the name goes into the ARIA label after `tithiLabel` ("Tithi").
+   */
+  tithiOf?: (bs: string) => { tithiName: string } | null | undefined;
+  tithiLabel?: string;
 }
 
 /** `class` and `part` values for a day cell, from its props. Shared by render and in-place patching. */
@@ -63,15 +69,19 @@ function daysView(state: CalendarState, o: MarkupOptions): string {
           const { cls, part } = dayAttrs(cell, p);
           const titles = o.marks?.get(cell.bs.toString());
           const marked = !!titles && titles.length > 0;
-          const label = marked ? `${p['aria-label']}. ${titles!.join(', ')}` : p['aria-label'];
+          const tithi = o.tithiOf?.(cell.bs.toString());
+          let label = p['aria-label'];
+          if (tithi) label += `. ${o.tithiLabel ? `${o.tithiLabel}: ` : ''}${tithi.tithiName}`;
+          if (marked) label += `. ${titles!.join(', ')}`;
           // The AD number and the dot are in the cell's label already (the AD date, and the titles), so they are
           // hidden from the accessible name: a cell's visible text is then just its BS day, which the label
           // contains (WCAG 2.5.3, label in name; voice control says "click 3").
           const dot = marked ? '<span class="dot" part="mark" aria-hidden="true"></span>' : '';
+          const tithiText = tithi ? `<span class="tithi" part="tithi" aria-hidden="true">${esc(tithi.tithiName)}</span>` : '';
           const ad = state.showAd && cell.ad ? `<span class="ad" part="ad" aria-hidden="true">${cell.ad.getDate()}</span>` : '';
           return `<div role="gridcell" class="${cls}${marked ? ' marked' : ''}" part="${part}${marked ? ' marked' : ''}" tabindex="${p.tabIndex}" ` +
             `aria-selected="${selected}" aria-disabled="${p['aria-disabled']}" aria-label="${esc(label)}" ` +
-            `data-act="day" data-date="${cell.bs.toString()}"><span class="bs">${dayLabel(cell.bs.day, ne)}</span>${ad}${dot}</div>`;
+            `data-act="day" data-date="${cell.bs.toString()}"><span class="bs">${dayLabel(cell.bs.day, ne)}</span>${tithiText}${ad}${dot}</div>`;
         })
         .join('');
       return `<div role="row" class="row">${cells}</div>`;
@@ -178,6 +188,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .day, .blank { min-height: 2.6em; }
 .day { display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: var(--jhigu-radius); cursor: pointer; user-select: none; }
 .day .ad { font-size: 0.65em; color: var(--jhigu-color-muted); line-height: 1; }
+.day .tithi { font-size: 0.55em; color: var(--jhigu-color-muted); line-height: 1.1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .day.weekend .bs { color: var(--jhigu-color-holiday); }
 .day.today { outline: 2px solid var(--jhigu-color-today); outline-offset: -2px; }
 .day.off { opacity: 0.35; cursor: not-allowed; }
@@ -190,7 +201,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .day.range-start { border-top-right-radius: 0; border-bottom-right-radius: 0; }
 .day.range-end { border-top-left-radius: 0; border-bottom-left-radius: 0; }
 .day.preview { background: color-mix(in srgb, var(--jhigu-color-primary) 12%, transparent); border-radius: 0; }
-.day.selected .bs, .day.selected .ad { color: var(--jhigu-color-on-primary); }
+.day.selected .bs, .day.selected .ad, .day.selected .tithi { color: var(--jhigu-color-on-primary); }
 /* The small AD number on the range band: the muted grey is under 4.5:1 on the tinted band. */
 .day.range-middle .ad, .day.preview .ad { color: var(--jhigu-color-text); opacity: 0.8; }
 .day:focus-visible, button:focus-visible { outline: 2px solid var(--jhigu-color-primary); outline-offset: 1px; }
