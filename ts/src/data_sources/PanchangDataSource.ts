@@ -1,45 +1,60 @@
 import type { PanchangJson, PanchangDay, TithiSegment } from '../types.js';
 
 /**
- * Loads a panchang_YYYY.json (e.g. 2081_tithi.json) and exposes
- * O(1) day lookup plus a tithi-at-minute query.
+ * Holds panchang (tithi) data for one or more BS years and gives O(1) day lookup plus a
+ * tithi-at-minute query. Load each year's file (`2081_tithi.json`, `2082_tithi.json`, ...); a year
+ * that is not loaded answers `null`.
  *
  * Usage:
  *   const panchang = new PanchangDataSource();
  *   await panchang.load('./2081_tithi.json');
- *   const tithi = panchang.tithiAt(2081, 1, 3, currentMinute);
+ *   await panchang.load('./2082_tithi.json');
+ *   const tithi = panchang.tithiAt(2082, 1, 3, currentMinute);
+ *
+ * Without fetch (Node, tests, server rendering) hand it the parsed file: `panchang.addYear(json)`.
  */
 export class PanchangDataSource {
-  private _year: number | null = null;
-  // key: "month-bsDay"  e.g. "1-3"
-  private readonly _lookup = new Map<string, PanchangDay>();
+  // year -> ("month-bsDay" e.g. "1-3" -> day)
+  private readonly _years = new Map<number, Map<string, PanchangDay>>();
+  private _last: number | null = null;
 
   async load(jsonUrl: string): Promise<void> {
     const res = await fetch(jsonUrl);
     if (!res.ok) {
       throw new Error(`Failed to load panchang data from ${jsonUrl}: ${res.status} ${res.statusText}`);
     }
-    const data: PanchangJson[] | PanchangJson = await res.json();
+    this.addYear(await res.json());
+  }
 
-    // The file may be a single object OR an array wrapping one year object.
+  /**
+   * Adds one year from the parsed file. The file may be a single object or an array wrapping one year
+   * object. Loading a year again replaces it.
+   */
+  addYear(data: PanchangJson[] | PanchangJson): void {
     const root: PanchangJson = Array.isArray(data) ? data[0] : data;
-    this._year = root.year;
-
+    const lookup = new Map<string, PanchangDay>();
     for (const m of root.months) {
       for (const d of m.days) {
-        this._lookup.set(`${m.month}-${d.bsDay}`, d);
+        lookup.set(`${m.month}-${d.bsDay}`, d);
       }
     }
+    this._years.set(root.year, lookup);
+    this._last = root.year;
   }
 
+  /** The year loaded last, or null when nothing is loaded. */
   get loadedYear(): number | null {
-    return this._year;
+    return this._last;
   }
 
-  /** Returns the PanchangDay for this BS year/month/day, or null if not loaded or year mismatch. */
+  /** Every loaded year, ascending. */
+  get loadedYears(): number[] {
+    return [...this._years.keys()].sort((a, b) => a - b);
+  }
+
+  /** Returns the PanchangDay for this BS year/month/day, or null if that year is not loaded or the day is not in it. */
   getDay(bsYear: number, bsMonth: number, bsDay: number): PanchangDay | null {
-    if (this._year !== bsYear) return null;
-    return this._lookup.get(`${bsMonth}-${bsDay}`) ?? null;
+    return this._years.get(bsYear)?.get(`${bsMonth}-${bsDay}`) ?? null;
   }
 
   /**

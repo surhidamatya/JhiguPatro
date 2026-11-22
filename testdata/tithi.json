@@ -1,0 +1,141 @@
+{
+  "_note": "Tithi lookups from data/*_tithi.json, computed by tools/check-tithi/make_vectors.py (plain Python, no code shared with the TS and Dart readers). `fnv1a64` hashes one line per day: `YYYY-M-D a b c d`, where a..d are the tithi at minutes 0, 375, 720, 1439, each `<number><S|K>` or `-`; each line ends with a newline. `probes` are single lookups: `tithi` is `<number><S|K>`, `-` for a covered day with no tithi at that minute, or null for a year or day that is not loaded. TS and Dart answer the same.",
+  "years": [
+    2081,
+    2082
+  ],
+  "minutes": [
+    0,
+    375,
+    720,
+    1439
+  ],
+  "count": 731,
+  "first": "2081-1-1 5S 5S 5S 6S",
+  "last": "2082-12-30 11K 11K 11K 11K",
+  "fnv1a64": "4e1772baf88fd42d",
+  "checkpoints": [
+    {
+      "index": 0,
+      "line": "2081-1-1 5S 5S 5S 6S"
+    },
+    {
+      "index": 1,
+      "line": "2081-1-2 6S 6S 6S 7S"
+    },
+    {
+      "index": 31,
+      "line": "2081-2-1 6S 7S 7S 7S"
+    },
+    {
+      "index": 59,
+      "line": "2081-2-29 5S 5S 5S 6S"
+    },
+    {
+      "index": 100,
+      "line": "2081-4-7 1K 1K 1K 2K"
+    },
+    {
+      "index": 200,
+      "line": "2081-7-14 13K 13K 13K 14K"
+    },
+    {
+      "index": 364,
+      "line": "2081-12-30 15S 1K 1K 1K"
+    },
+    {
+      "index": 365,
+      "line": "2081-12-31 1K 1K 1K 1K"
+    },
+    {
+      "index": 730,
+      "line": "2082-12-30 11K 11K 11K 11K"
+    }
+  ],
+  "probes": [
+    {
+      "year": 2082,
+      "month": 1,
+      "day": 1,
+      "minute": 0,
+      "tithi": "1K"
+    },
+    {
+      "year": 2082,
+      "month": 1,
+      "day": 1,
+      "minute": 418,
+      "tithi": "1K"
+    },
+    {
+      "year": 2082,
+      "month": 1,
+      "day": 1,
+      "minute": 419,
+      "tithi": "2K"
+    },
+    {
+      "year": 2082,
+      "month": 1,
+      "day": 1,
+      "minute": 1439,
+      "tithi": "2K"
+    },
+    {
+      "year": 2082,
+      "month": 8,
+      "day": 18,
+      "minute": 468,
+      "tithi": "14S"
+    },
+    {
+      "year": 2082,
+      "month": 8,
+      "day": 18,
+      "minute": 469,
+      "tithi": "1S"
+    },
+    {
+      "year": 2081,
+      "month": 4,
+      "day": 12,
+      "minute": 1439,
+      "tithi": "7K"
+    },
+    {
+      "year": 2081,
+      "month": 2,
+      "day": 32,
+      "minute": 375,
+      "tithi": "-"
+    },
+    {
+      "year": 2082,
+      "month": 3,
+      "day": 32,
+      "minute": 0,
+      "tithi": "-"
+    },
+    {
+      "year": 2080,
+      "month": 1,
+      "day": 1,
+      "minute": 375,
+      "tithi": null
+    },
+    {
+      "year": 2083,
+      "month": 1,
+      "day": 1,
+      "minute": 375,
+      "tithi": null
+    },
+    {
+      "year": 2082,
+      "month": 1,
+      "day": 33,
+      "minute": 375,
+      "tithi": null
+    }
+  ]
+}

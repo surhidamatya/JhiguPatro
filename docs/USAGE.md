@@ -33,7 +33,7 @@ initializeCalendar(new InlineCalendarDataSource(
 ));
 ```
 
-When the package is installed from npm, the data file ships with it, so there is no path to adjust: `import data from 'jhigu-patro-utils-ts/nepali_calendar_data.json' with { type: 'json' }` (or read it with `createRequire(import.meta.url).resolve(...)`). The tithi data for BS 2081 is `jhigu-patro-utils-ts/2081_tithi.json`. In a TypeScript project that imports JSON, turn on `resolveJsonModule`.
+When the package is installed from npm, the data file ships with it, so there is no path to adjust: `import data from 'jhigu-patro-utils-ts/nepali_calendar_data.json' with { type: 'json' }` (or read it with `createRequire(import.meta.url).resolve(...)`). The tithi data is `jhigu-patro-utils-ts/2081_tithi.json` and `jhigu-patro-utils-ts/2082_tithi.json`. In a TypeScript project that imports JSON, turn on `resolveJsonModule`.
 
 In a browser, serve the JSON as a static file and use `JsonCalendarDataSource`:
 

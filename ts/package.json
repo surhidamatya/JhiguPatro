@@ -16,6 +16,7 @@
     "dist",
     "nepali_calendar_data.json",
     "2081_tithi.json",
+    "2082_tithi.json",
     "README.md"
   ],
   "exports": {
@@ -92,7 +93,8 @@
       "import": "./dist/elementBindings.js"
     },
     "./nepali_calendar_data.json": "./nepali_calendar_data.json",
-    "./2081_tithi.json": "./2081_tithi.json"
+    "./2081_tithi.json": "./2081_tithi.json",
+    "./2082_tithi.json": "./2082_tithi.json"
   },
   "scripts": {
     "build": "tsc",

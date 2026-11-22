@@ -32,7 +32,8 @@ The tree shows the calendar-era layout. Newer code is in `ts/src/` (dates, money
 jhigu_patro_utils/
 ├── data/                              Shared calendar data (BS 2000–2100)
 │   ├── nepali_calendar_data.json
-│   └── 2081_tithi.json                Panchang / lunar (tithi) data for 2081
+│   ├── 2081_tithi.json                Panchang / lunar (tithi) data for 2081
+│   └── 2082_tithi.json                ... and for 2082
 │
 ├── ts/                                TypeScript / JavaScript library + browser demo
 │   ├── src/
@@ -274,6 +275,9 @@ import { PanchangDataSource } from 'jhigu-patro-utils-ts';
 
 const panchang = new PanchangDataSource();
 await panchang.load('/2081_tithi.json');
+await panchang.load('/2082_tithi.json');   // one call per year; they stay loaded together
+// No fetch (Node, tests, server rendering): panchang.addYear(parsedJson)
+// panchang.loadedYears → [2081, 2082]
 
 // Get all tithi segments for a given BS year/month/day
 // Returns null if data for that year is not loaded
@@ -562,7 +566,9 @@ dart test
 }
 ```
 
-`data/2081_tithi.json` holds Panchang (lunar phase) data for BS 2081, with per-day tithi segments including tithi number, name, paksha (शुक्ल/कृष्ण), and start/end minutes within the Nepal day.
+`data/2081_tithi.json` and `data/2082_tithi.json` hold Panchang (lunar phase) data for BS 2081 and 2082, with per-day tithi segments including tithi number, name, paksha (शुक्ल/कृष्ण), and start/end minutes within the Nepal day.
+
+Checked by `node tools/check-tithi/validate.mjs` (month lengths and AD dates against the calendar, segments contiguous, tithi order and names). Known gaps in the source, not fixed because the right values need a source: no tithi on the 32nd day of 2081 month 2, 2081 month 4 and 2082 month 3; doubtful tithi on 2081-5-17, 2082-2-14, and 2082-8-18/19; some days end with a leftover segment past minute 1440 that the readers ignore. Where the data came from is not recorded in the files ([SOURCE NEEDED]).
 
 ---
 

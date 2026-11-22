@@ -18,6 +18,8 @@ jobs:
         run: node tools/check-strings/check.mjs
       - name: Phone data
         run: node tools/check-phone/validate.mjs
+      - name: Tithi data
+        run: node tools/check-tithi/validate.mjs
       - name: Address data
         run: |
           node tools/check-address/validate.mjs
@@ -29,3 +31,4 @@ jobs:
           cmp data/nepali_calendar_data.json ts/nepali_calendar_data.json
           cmp data/2081_tithi.json ts/2081_tithi.json
           cmp data/2081_tithi.json ts/src/data_sources/2081_tithi.json
+          cmp data/2082_tithi.json ts/2082_tithi.json
