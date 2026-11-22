@@ -1,0 +1,259 @@
+# jhigu_patro_flutter
+
+Flutter widgets for Bikram Sambat dates, built on the headless state machines in
+[`jhigu_patro_utils`](../dart). Not published; it depends on `../dart` by path.
+
+## `JhiguDatePicker`
+
+An inline BS date picker with a month grid, month and year lists, min and max,
+English or Nepali, an optional AD date under each day, keyboard control and
+spoken labels on every day.
+
+```dart
+// Once, at start-up (load the shared JSON however your app likes):
+NepaliCalendar.initialize(InlineCalendarDataSource(
+  years: years, supportedStartYear: 2000, supportedEndYear: 2100, verifiedThrough: 2083,
+));
+
+JhiguDatePicker(
+  value: _date,
+  language: 'ne',
+  min: NepaliDate.checked(2080, 1, 1),
+  onChanged: (d) => setState(() => _date = d),
+)
+```
+
+It is a thin view over the same `DatePicker` state machine the web component
+uses, so both behave the same. Style it with a `JhiguTheme` in
+`ThemeData.extensions`; anything left null falls back to your `ColorScheme`.
+
+## `JhiguCalendar`
+
+A month calendar with marked days and an events list, for showing a schedule or
+holidays. It is a display and navigation widget, not a form field. Marked days
+show a dot and their titles are added to the day's spoken label; the selected
+day's titles are listed under the grid ("No events" when there are none).
+
+```dart
+JhiguCalendar(
+  language: 'ne',
+  events: {
+    '2082-06-03': ['Laxmi Puja'],        // BS date text: YYYY-MM-DD
+    '2082-06-05': ['Bhai Tika', 'Holiday'],
+  },
+  onSelect: (date, titles) => print('$date $titles'),
+  onMonthChanged: (year, month) => load(year, month),
+)
+```
+
+`year` and `month` pick the month to show (a later change moves the view).
+`value` is optional: without it the calendar keeps the user's pick itself. Keys
+that are not `YYYY-MM-DD` and blank titles are ignored. The events list can be
+long, so give the calendar room or put it in a scroll view.
+
+## `JhiguRangePicker`
+
+An inline range picker over the headless `RangePicker`, with the same rules as
+the web `<jhigu-date-range-picker>`: the first tap sets the start, a second tap
+on or after it sets the end, a second tap before the start restarts, and a tap on
+a complete range starts a new one. While choosing the end, days up to the hovered
+(or keyboard-focused) day are previewed. A summary line shows "start – end".
+
+```dart
+JhiguRangePicker(
+  start: _start,
+  end: _end,
+  min: NepaliDate.checked(2082, 1, 1),
+  onChanged: (start, end) => setState(() { _start = start; _end = end; }),
+)
+```
+
+`onChanged` is called with a start and no end after the first tap, with both
+after the second, and with two nulls after Clear. `start` and `end` are optional;
+when the parent changes them the picker follows without calling `onChanged`. An
+end before the start throws `InvalidDataException`. The view opens on the month
+of the end.
+
+## `JhiguMoneyField` and `JhiguPhoneField`
+
+Text fields over the headless `MoneyInput` and `PhoneInput`. They are plain
+`TextField`s with a formatter, so `decoration`, `style`, `focusNode`, `enabled`
+and `autofocus` work as you expect.
+
+```dart
+JhiguMoneyField(
+  decoration: const InputDecoration(labelText: 'Amount', prefixText: 'Rs. '),
+  onChanged: (Npr? amount) => setState(() => _amount = amount),
+)
+
+JhiguPhoneField(
+  language: 'ne',
+  decoration: const InputDecoration(labelText: 'Mobile'),
+  onChanged: (String? e164) => setState(() => _phone = e164), // null unless valid
+)
+```
+
+- **Money:** lakh grouping as you type (`12,34,567.50`), caret kept by counting
+  digits, Devanagari digits accepted (shown as ASCII, or Devanagari with
+  `digits: MoneyDigits.native`), a leading `Rs.`, `NPR` or `रु` dropped, two
+  decimals at most, padded to two when the field loses focus. An amount past the
+  largest safe integer paisa is ignored. `allowNegative` allows a leading minus.
+  The value is `Npr` (integer paisa), never a float.
+- **Phone:** `984-1234567` for mobiles and `01-4123456` for landlines, Devanagari
+  digits and `+977` or `00977` accepted. The carrier shows as helper text and the
+  error as error text (your own `helperText` or `errorText` wins). "Too short" is
+  only reported after the field loses focus; "too long" at once, without cutting
+  digits. `onStateChanged` gives every new `PhoneInputState`. Carrier prefixes are
+  not an official list (see `data/PHONE_NOTES.md`).
+- `value` is optional. When the parent changes it, the field follows without
+  calling the callbacks; a parent that does not pass it keeps what was typed.
+
+## `JhiguAddressPicker`
+
+Four dropdowns (province, district, local level, ward) over the headless
+`AddressPicker`, with the same rules as the web `<jhigu-address-select>`:
+choosing a level clears the ones below it, a dropdown is disabled until the one
+above it has a choice, and the ward list is `1..wards` of the local level.
+
+```dart
+JhiguAddressPicker(
+  language: 'ne',
+  localLevelId: _localLevelId,   // optional: restore a saved address
+  ward: _ward,
+  onChanged: (s) => setState(() { _localLevelId = s.localLevelId; _ward = s.ward; }),
+)
+```
+
+`onChanged` gets the whole `AddressPickerState` (ids, `complete`, `selection`);
+turn a complete one into text with `formatAddress`. `showWard: false` hides the
+ward (it is then never reported). A saved `localLevelId` fills in the district and
+province; an unknown id or a ward outside the local level throws
+`AddressException`. When the parent changes the saved values the picker follows
+without calling `onChanged`; a parent that does not pass them keeps the choice.
+`decoration`, `enabled` and `spacing` style the dropdowns. Names are from the
+shared address data; the Nepali province names are the old numbered form for
+provinces 1 and 2 (see `data/ADDRESS_NOTES.md`).
+
+## Dialogs and `JhiguDateField`
+
+`showJhiguDatePicker` and `showJhiguDateRangePicker` show the pickers in a dialog
+and return what the user chose, or null if they dismiss it (tap outside, Escape,
+back). Picking a day closes the dialog at once, including the day that was already
+selected; the range dialog closes when the second day is chosen. There are no OK
+and Cancel buttons: the string tables have no words for them, and no Clear button
+in the date dialog (a dismissal and a clear would both be null).
+
+```dart
+final date = await showJhiguDatePicker(context: context, initial: _date, language: 'ne');
+final range = await showJhiguDateRangePicker(context: context); // (start: .., end: ..)?
+```
+
+`JhiguDateField` is a read-only text field that shows the date (`format`, default
+`D MMMM YYYY`, in `language`) and opens the dialog on tap, with a clear button.
+Its `onChanged` gets the day, or null when cleared. `value` is optional; when the
+parent changes it, the field follows without calling `onChanged`.
+
+```dart
+JhiguDateField(
+  value: _date,
+  max: today,
+  decoration: const InputDecoration(labelText: 'Date of birth'),
+  onChanged: (d) => setState(() => _date = d),
+)
+```
+
+`JhiguDatePicker` gained `onSelected` (called on every pick, even the day that was
+already selected; `onChanged` only fires for a change) and `showClear`. A
+`suffixIcon` in your `decoration` replaces the clear button.
+
+`JhiguDateRangeField` is the same for a range: it shows "10 Bhadra 2082 – 15 Bhadra
+2082" (`format` and `separator` are yours to change) and opens the range dialog.
+`onChanged(start, end)` gets both together, or two nulls when cleared; `start` and
+`end` are optional and followed from the parent as for the date field. An empty
+field shows the date field's "Select a date" placeholder because the string
+tables have no range wording.
+
+```dart
+JhiguDateRangeField(
+  start: _start,
+  end: _end,
+  decoration: const InputDecoration(labelText: 'Stay'),
+  onChanged: (s, e) => setState(() { _start = s; _end = e; }),
+)
+```
+
+## `FlutterDevanagariRenderer` (PDF receipts)
+
+The `pdf` package cannot shape Devanagari, so `buildReceiptPdf` asks a renderer
+for a picture of each Nepali string. `FlutterDevanagariRenderer` draws them with
+Flutter's own text engine, so it works on every Flutter platform, the web included:
+
+```dart
+import 'package:jhigu_patro_utils/receipt_pdf.dart';
+
+final pdf = await buildReceiptPdf(
+  doc,
+  options: ReceiptPdfOptions(renderer: FlutterDevanagariRenderer()),
+);
+// pdf.bytes, pdf.warnings
+```
+
+It needs a Devanagari font. Without `fontFamily` it uses the platform's own, with
+Noto Sans Devanagari, Kohinoor Devanagari, Devanagari Sangam MN and Mangal as
+fallbacks. To control the look, bundle a font in your app and name it
+(`FlutterDevanagariRenderer(fontFamily: 'NotoSansDevanagari')`). This package ships
+no font. If a platform has no Devanagari font at all, the glyphs come out as empty
+boxes and nothing here can tell, so check a sample receipt on each platform you
+ship. The picture is transparent, 1.6 times the font size tall with the baseline at
+1.0 times (as the command renderer), and ignores the user's text-scale setting.
+Errors are a `DevanagariRenderException` that never contains the text.
+
+## Print and share receipts
+
+A separate entry point, because it needs the `printing` package (which has platform
+plugins; the main library does not):
+
+```dart
+import 'package:jhigu_patro_flutter/receipt_print.dart';
+
+await printReceipt(doc);   // system print dialog; false if cancelled
+await shareReceipt(doc);   // share sheet (a download on the web); false if cancelled
+```
+
+Both build the PDF with `buildReceiptPdf` and draw Nepali text with
+`FlutterDevanagariRenderer` unless you pass `renderer:`. Pass `onWarnings:` to hear
+about text that could not be drawn (it falls back to `[?]` or English) instead of
+printing it by surprise. The print dialog starts with the receipt's own paper (A4,
+A5 or an 80 mm roll) and does not reflow the PDF. `shareReceipt` names the file
+from the receipt number with unsafe characters replaced (`2082/83-001` becomes
+`2082_83-001.pdf`); `filename`, `subject`, `body` and `bounds` (the iPad popover)
+are yours to set. `buildReceiptPdfWithFlutter`, `receiptPageFormat` and
+`receiptFileName` are there if you want the pieces. The entry point re-exports the
+`receipt_pdf.dart` API.
+
+`JhiguReceiptPreview` shows the receipt in the app, as it will print: its pages in
+a scrollable view with the system's print and share buttons (it is `PdfPreview`
+from `printing`, configured for a receipt).
+
+```dart
+SizedBox(height: 600, child: JhiguReceiptPreview(doc: doc))
+```
+
+The PDF is built once for a given `doc` and renderer and reused for the preview,
+printing and sharing, so what you see is what is printed; pass a different `doc`
+and it rebuilds. The paper is the receipt's own size and cannot be changed in the
+preview (no page format, orientation or debug controls, no reflow). It needs a
+bounded height. `renderer`, `onWarnings`, `allowPrinting`, `allowSharing`,
+`maxPageWidth`, `fileName`, `onPrinted`, `onShared` and `errorBuilder` are
+optional. On the web it loads pdf.js from a CDN to draw the pages (the `printing`
+README says how to host it yourself). The preview's buttons use the package's own
+English labels; they are not translated here.
+
+See [`example/`](example) for a working app (web) and
+[`../data/PICKER_NOTES.md`](../data/PICKER_NOTES.md) for what was and was not
+verified.
+
+```
+cd flutter && flutter pub get && flutter analyze && flutter test
+cd example && flutter build web      # then serve build/web
+```

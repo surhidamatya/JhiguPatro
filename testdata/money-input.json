@@ -1,0 +1,791 @@
+{
+ "_note": "Hand-derived from the rules in ts/src/moneyInput.ts docs and guide 15.1 (lakh grouping, caret by counting digits). Amounts are paisa. 'events' is the cumulative number of subscriber notifications. Shared by TS and Dart tests.",
+ "scenarios": [
+  {
+   "name": "empty input changes nothing",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "",
+     "caret": 0,
+     "expect": {
+      "text": "",
+      "caret": 0,
+      "paisa": null,
+      "events": 0
+     }
+    }
+   ]
+  },
+  {
+   "name": "one digit",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "1",
+     "caret": 1,
+     "expect": {
+      "text": "1",
+      "caret": 1,
+      "paisa": 100,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "lakh grouping while typing",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "12345",
+     "caret": 5,
+     "expect": {
+      "text": "12,345",
+      "caret": 6,
+      "paisa": 1234500,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "1234567",
+     "caret": 7,
+     "expect": {
+      "text": "12,34,567",
+      "caret": 9,
+      "paisa": 123456700,
+      "events": 2
+     }
+    },
+    {
+     "action": "input",
+     "text": "12345678",
+     "caret": 8,
+     "expect": {
+      "text": "1,23,45,678",
+      "caret": 11,
+      "paisa": 1234567800,
+      "events": 3
+     }
+    }
+   ]
+  },
+  {
+   "name": "typing a digit at the end of a grouped number",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "1,2345",
+     "caret": 6,
+     "expect": {
+      "text": "12,345",
+      "caret": 6,
+      "paisa": 1234500,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "inserting a digit in the middle keeps the caret after it",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "12,9345",
+     "caret": 4,
+     "expect": {
+      "text": "1,29,345",
+      "caret": 4,
+      "paisa": 12934500,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "deleting a digit",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "1,2,456",
+     "caret": 3,
+     "expect": {
+      "text": "12,456",
+      "caret": 2,
+      "paisa": 1245600,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "backspacing a comma",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "12345",
+     "caret": 2,
+     "expect": {
+      "text": "12,345",
+      "caret": 2,
+      "paisa": 1234500,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "caret-only change is a state change",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "12345",
+     "caret": 5,
+     "expect": {
+      "text": "12,345",
+      "caret": 6,
+      "paisa": 1234500,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "12,345",
+     "caret": 3,
+     "expect": {
+      "text": "12,345",
+      "caret": 2,
+      "paisa": 1234500,
+      "events": 2
+     }
+    },
+    {
+     "action": "input",
+     "text": "12,345",
+     "caret": 3,
+     "expect": {
+      "text": "12,345",
+      "caret": 2,
+      "paisa": 1234500,
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "same input twice is one event",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "12345",
+     "caret": 5,
+     "expect": {
+      "text": "12,345",
+      "caret": 6,
+      "paisa": 1234500,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "12345",
+     "caret": 5,
+     "expect": {
+      "text": "12,345",
+      "caret": 6,
+      "paisa": 1234500,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "Devanagari digits are converted",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "१२३४५",
+     "caret": 5,
+     "expect": {
+      "text": "12,345",
+      "caret": 6,
+      "paisa": 1234500,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "१२.५",
+     "caret": 4,
+     "expect": {
+      "text": "12.5",
+      "caret": 4,
+      "paisa": 1250,
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "native digits option shows Devanagari",
+   "init": {
+    "digits": "native"
+   },
+   "steps": [
+    {
+     "action": "input",
+     "text": "12345",
+     "caret": 5,
+     "expect": {
+      "text": "१२,३४५",
+      "caret": 6,
+      "paisa": 1234500,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "१२३४५६",
+     "caret": 6,
+     "expect": {
+      "text": "१,२३,४५६",
+      "caret": 8,
+      "paisa": 12345600,
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "decimals",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "1234.5",
+     "caret": 6,
+     "expect": {
+      "text": "1,234.5",
+      "caret": 7,
+      "paisa": 123450,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "1234.567",
+     "caret": 8,
+     "expect": {
+      "text": "1,234.56",
+      "caret": 8,
+      "paisa": 123456,
+      "events": 2
+     }
+    },
+    {
+     "action": "input",
+     "text": "12.3.4",
+     "caret": 6,
+     "expect": {
+      "text": "12.34",
+      "caret": 5,
+      "paisa": 1234,
+      "events": 3
+     }
+    }
+   ]
+  },
+  {
+   "name": "a lone dot becomes 0.",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": ".",
+     "caret": 1,
+     "expect": {
+      "text": "0.",
+      "caret": 2,
+      "paisa": 0,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": ".5",
+     "caret": 2,
+     "expect": {
+      "text": "0.5",
+      "caret": 3,
+      "paisa": 50,
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "leading zeros are removed",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "007",
+     "caret": 3,
+     "expect": {
+      "text": "7",
+      "caret": 1,
+      "paisa": 700,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "0",
+     "caret": 1,
+     "expect": {
+      "text": "0",
+      "caret": 1,
+      "paisa": 0,
+      "events": 2
+     }
+    },
+    {
+     "action": "input",
+     "text": "00.5",
+     "caret": 4,
+     "expect": {
+      "text": "0.5",
+      "caret": 3,
+      "paisa": 50,
+      "events": 3
+     }
+    }
+   ]
+  },
+  {
+   "name": "other characters are dropped",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "12a3",
+     "caret": 4,
+     "expect": {
+      "text": "123",
+      "caret": 3,
+      "paisa": 12300,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "a leading currency symbol is ignored",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "Rs. 1,250",
+     "caret": 9,
+     "expect": {
+      "text": "1,250",
+      "caret": 5,
+      "paisa": 125000,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "रु १२५०",
+     "caret": 7,
+     "expect": {
+      "text": "1,250",
+      "caret": 5,
+      "paisa": 125000,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "NPR 99",
+     "caret": 6,
+     "expect": {
+      "text": "99",
+      "caret": 2,
+      "paisa": 9900,
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "pasting a formatted amount",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "1,25,000.50",
+     "caret": 11,
+     "expect": {
+      "text": "1,25,000.50",
+      "caret": 11,
+      "paisa": 12500050,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "largest amount is accepted, one more is ignored",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "90071992547409.91",
+     "caret": 17,
+     "expect": {
+      "text": "9,00,71,99,25,47,409.91",
+      "caret": 23,
+      "paisa": 9007199254740991,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "90071992547409.92",
+     "caret": 17,
+     "expect": {
+      "text": "9,00,71,99,25,47,409.91",
+      "caret": 23,
+      "paisa": 9007199254740991,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "minus is dropped by default",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "-5",
+     "caret": 2,
+     "expect": {
+      "text": "5",
+      "caret": 1,
+      "paisa": 500,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "allowNegative keeps a leading minus",
+   "init": {
+    "allowNegative": true
+   },
+   "steps": [
+    {
+     "action": "input",
+     "text": "-5",
+     "caret": 2,
+     "expect": {
+      "text": "-5",
+      "caret": 2,
+      "paisa": -500,
+      "events": 1
+     }
+    },
+    {
+     "action": "input",
+     "text": "-",
+     "caret": 1,
+     "expect": {
+      "text": "-",
+      "caret": 1,
+      "paisa": null,
+      "events": 2
+     }
+    },
+    {
+     "action": "input",
+     "text": "-1234",
+     "caret": 5,
+     "expect": {
+      "text": "-1,234",
+      "caret": 6,
+      "paisa": -123400,
+      "events": 3
+     }
+    },
+    {
+     "action": "input",
+     "text": "--5",
+     "caret": 3,
+     "expect": {
+      "text": "-5",
+      "caret": 2,
+      "paisa": -500,
+      "events": 4
+     }
+    }
+   ]
+  },
+  {
+   "name": "blur shows two decimals",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "1234.5",
+     "caret": 6,
+     "expect": {
+      "text": "1,234.5",
+      "caret": 7,
+      "paisa": 123450,
+      "events": 1
+     }
+    },
+    {
+     "action": "blur",
+     "arg": null,
+     "expect": {
+      "text": "1,234.50",
+      "caret": 8,
+      "paisa": 123450,
+      "events": 2
+     }
+    },
+    {
+     "action": "blur",
+     "arg": null,
+     "expect": {
+      "text": "1,234.50",
+      "caret": 8,
+      "paisa": 123450,
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "blur after a trailing dot",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "1234.",
+     "caret": 5,
+     "expect": {
+      "text": "1,234.",
+      "caret": 6,
+      "paisa": 123400,
+      "events": 1
+     }
+    },
+    {
+     "action": "blur",
+     "arg": null,
+     "expect": {
+      "text": "1,234.00",
+      "caret": 8,
+      "paisa": 123400,
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "blur on empty and on a lone minus",
+   "init": {
+    "allowNegative": true
+   },
+   "steps": [
+    {
+     "action": "blur",
+     "arg": null,
+     "expect": {
+      "text": "",
+      "caret": 0,
+      "paisa": null,
+      "events": 0
+     }
+    },
+    {
+     "action": "input",
+     "text": "-",
+     "caret": 1,
+     "expect": {
+      "text": "-",
+      "caret": 1,
+      "paisa": null,
+      "events": 1
+     }
+    },
+    {
+     "action": "blur",
+     "arg": null,
+     "expect": {
+      "text": "",
+      "caret": 0,
+      "paisa": null,
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "blur on zero",
+   "init": {},
+   "steps": [
+    {
+     "action": "input",
+     "text": "0",
+     "caret": 1,
+     "expect": {
+      "text": "0",
+      "caret": 1,
+      "paisa": 0,
+      "events": 1
+     }
+    },
+    {
+     "action": "blur",
+     "arg": null,
+     "expect": {
+      "text": "0.00",
+      "caret": 4,
+      "paisa": 0,
+      "events": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "setValue and clear",
+   "init": {},
+   "steps": [
+    {
+     "action": "setValue",
+     "arg": 125050,
+     "expect": {
+      "text": "1,250.50",
+      "caret": 8,
+      "paisa": 125050,
+      "events": 1
+     }
+    },
+    {
+     "action": "setValue",
+     "arg": 125000,
+     "expect": {
+      "text": "1,250",
+      "caret": 5,
+      "paisa": 125000,
+      "events": 2
+     }
+    },
+    {
+     "action": "setValue",
+     "arg": null,
+     "expect": {
+      "text": "",
+      "caret": 0,
+      "paisa": null,
+      "events": 3
+     }
+    },
+    {
+     "action": "setValue",
+     "arg": 125050,
+     "expect": {
+      "text": "1,250.50",
+      "caret": 8,
+      "paisa": 125050,
+      "events": 4
+     }
+    },
+    {
+     "action": "clear",
+     "arg": null,
+     "expect": {
+      "text": "",
+      "caret": 0,
+      "paisa": null,
+      "events": 5
+     }
+    },
+    {
+     "action": "clear",
+     "arg": null,
+     "expect": {
+      "text": "",
+      "caret": 0,
+      "paisa": null,
+      "events": 5
+     }
+    }
+   ]
+  },
+  {
+   "name": "setValue rejects a negative amount unless allowed",
+   "init": {},
+   "steps": [
+    {
+     "action": "setValue",
+     "arg": -100,
+     "expect": {
+      "text": "",
+      "caret": 0,
+      "paisa": null,
+      "events": 0
+     },
+     "error": "INVALID_ARGUMENT"
+    }
+   ]
+  },
+  {
+   "name": "setValue with native digits",
+   "init": {
+    "digits": "native"
+   },
+   "steps": [
+    {
+     "action": "setValue",
+     "arg": 125050,
+     "expect": {
+      "text": "१,२५०.५०",
+      "caret": 8,
+      "paisa": 125050,
+      "events": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "initial value",
+   "init": {
+    "value": 125050
+   },
+   "steps": [],
+   "initExpect": {
+    "text": "1,250.50",
+    "caret": 8,
+    "paisa": 125050,
+    "events": 0
+   }
+  }
+ ]
+}

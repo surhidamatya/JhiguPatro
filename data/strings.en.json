@@ -1,0 +1,139 @@
+{
+  "months": ["Baisakh", "Jestha", "Ashadh", "Shrawan", "Bhadra", "Ashwin", "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"],
+  "monthsShort": ["Bai", "Jes", "Ash", "Shr", "Bha", "Asw", "Kar", "Man", "Pou", "Mag", "Fal", "Cha"],
+  "weekdays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  "weekdaysShort": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  "adMonths": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+  "adMonthsShort": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  "relative": {
+    "justNow": "just now",
+    "secondsAgo": "{n} seconds ago",
+    "minutesAgo": "{n} minutes ago",
+    "hoursAgo": "{n} hours ago",
+    "today": "today",
+    "yesterday": "yesterday",
+    "tomorrow": "tomorrow",
+    "daysAgo": "{n} days ago",
+    "daysLater": "in {n} days",
+    "monthAgo": "a month ago",
+    "monthLater": "in a month",
+    "monthsAgo": "{n} months ago",
+    "monthsLater": "in {n} months",
+    "yearAgo": "a year ago",
+    "yearLater": "in a year",
+    "yearsAgo": "{n} years ago",
+    "yearsLater": "in {n} years"
+  },
+  "accuracy": {
+    "unverifiedYear": "BS {year} is not in the verified range ({through}). Confirm it against the Nepal Panchang Nirnayak Samiti calendar before relying on it."
+  },
+  "picker": {
+    "today": "Today",
+    "clear": "Clear",
+    "selectYear": "Select year",
+    "selectMonth": "Select month",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "required": "Select a date",
+    "placeholder": "Select a date",
+    "noEvents": "No events"
+  },
+  "phone": {
+    "empty": "Enter a phone number",
+    "tooShort": "Phone number is too short",
+    "tooLong": "Phone number is too long",
+    "badPrefix": "Phone number does not start with a valid prefix",
+    "inactivePrefix": "This phone number prefix is not in use",
+    "badCharacters": "Phone number contains invalid characters"
+  },
+  "address": {
+    "ward": "Ward {n}",
+    "unknownProvince": "Unknown province",
+    "unknownDistrict": "Unknown district",
+    "unknownLocalLevel": "Unknown local level",
+    "badWard": "Ward number is not valid for this local level",
+    "province": "Province",
+    "district": "District",
+    "localLevel": "Local level",
+    "wardLabel": "Ward",
+    "choose": "Select",
+    "required": "Select an address"
+  },
+  "money": {
+    "empty": "Enter an amount",
+    "badFormat": "Amount is not a valid number",
+    "tooManyDecimals": "Amount can have at most two decimal places",
+    "outOfRange": "Amount is too large",
+    "invalidArgument": "Invalid amount"
+  },
+  "words": {
+    "rupees": "Rupees",
+    "paisa": "Paisa",
+    "and": "and",
+    "only": "Only",
+    "minus": "Minus"
+  },
+  "date": {
+    "parseError": "Could not read this date"
+  },
+  "format": {
+    "gatePattern": "[BS] YYYY MMMM D",
+    "dualPattern": "{bs} (AD {ad})"
+  },
+  "receipt": {
+    "invoice": "Invoice",
+    "receipt": "Receipt",
+    "quotation": "Quotation",
+    "creditNote": "Credit Note",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "taxable": "Taxable amount",
+    "vat": "VAT",
+    "total": "Total",
+    "paid": "Paid",
+    "balance": "Balance",
+    "dueDate": "Due date",
+    "amountInWords": "Amount in words",
+    "notes": "Notes",
+    "signature": "Signature",
+    "stampPaid": "PAID",
+    "stampCancelled": "CANCELLED",
+    "emptyNumber": "Document number is required.",
+    "noLines": "At least one line is required.",
+    "emptyDescription": "Line description is required.",
+    "badQuantity": "Quantity must be a positive whole number of thousandths.",
+    "badUnitPrice": "Unit price must not be negative.",
+    "badDiscount": "Discount is invalid or larger than the total.",
+    "badVatRate": "VAT rate must be 0 to 10000 basis points.",
+    "badPaid": "Paid amount must not be negative.",
+    "dueBeforeIssue": "Due date is before the issue date.",
+    "pan": "PAN",
+    "vatNo": "VAT No.",
+    "phone": "Phone",
+    "billTo": "Bill to",
+    "number": "No.",
+    "date": "Date",
+    "description": "Description",
+    "quantity": "Qty",
+    "rate": "Rate",
+    "amount": "Amount",
+    "overpaid": "Overpaid"
+  },
+  "sms": {
+    "auth": "The SMS gateway rejected the credentials.",
+    "balance": "The SMS gateway account has insufficient balance.",
+    "badNumber": "The phone number was rejected.",
+    "rateLimit": "The SMS gateway rate limit was reached.",
+    "server": "The SMS gateway had a server error.",
+    "network": "The SMS gateway could not be reached.",
+    "unknown": "The SMS could not be sent.",
+    "badTemplate": "The message template could not be rendered.",
+    "missingValue": "A value for a template placeholder is missing.",
+    "unknownTemplate": "Unknown SMS template."
+  },
+  "smsTemplates": {
+    "rentDue": "Dear {name}, your rent of {amount} for {month} is due on {dueDate}. Please pay on time. - {sender}",
+    "udhaaro": "Dear {name}, you owe {amount}. Please clear the balance by {dueDate}. - {sender}",
+    "appointment": "Dear {name}, reminder: your appointment is on {date} at {time}. - {sender}"
+  }
+}

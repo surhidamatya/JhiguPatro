@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Jhigu Patro calendar data",
+  "type": "object",
+  "required": ["version", "supportedRange", "referencePoint", "years"],
+  "properties": {
+    "version": { "type": "string" },
+    "supportedRange": {
+      "type": "object",
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": "integer" },
+        "end": { "type": "integer" }
+      }
+    },
+    "verifiedThrough": { "type": "integer" },
+    "unverifiedYears": { "type": "string" },
+    "referencePoint": {
+      "type": "object",
+      "required": ["bsYear", "bsMonth", "bsDay", "adYear", "adMonth", "adDay"],
+      "additionalProperties": { "type": "integer" }
+    },
+    "years": {
+      "type": "object",
+      "patternProperties": {
+        "^[0-9]{4}$": {
+          "type": "array",
+          "minItems": 12,
+          "maxItems": 12,
+          "items": { "type": "integer", "minimum": 29, "maximum": 32 }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

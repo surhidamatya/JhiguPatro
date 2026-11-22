@@ -1,0 +1,15 @@
+{
+  "_note": "Alternate month spellings accepted by the date parser (guide 7.6, D-14), added to the canonical names from strings.{en,ne}.json. Keys are BS month numbers 1-12. Latin entries are lower case. Entries beyond the guide's list (asoj/ashwin, poush/paush, ashadh/asar, jestha/jeth, baisakh/baishakh) are common spellings added without a source: review with a native speaker. The generator fails if one spelling maps to two months.",
+  "1": ["baishakh", "baisak", "vaisakh", "बैसाख", "वैशाख"],
+  "2": ["jeth", "jesth", "jyestha", "जेष्ठ", "ज्येष्ठ"],
+  "3": ["asar", "ashar", "asadh", "asad", "ashad", "आषाढ"],
+  "4": ["sawan", "saun", "srawan", "shrawn", "सावन", "श्रावण"],
+  "5": ["bhadau", "bhado", "भाद्र"],
+  "6": ["asoj", "aswin", "ashoj", "आश्विन"],
+  "7": ["kartick", "kattik"],
+  "8": ["mangshir", "mangsher", "margashirsha", "मङ्सिर", "मार्गशीर्ष"],
+  "9": ["paush", "push", "pous", "पुष"],
+  "10": ["mag"],
+  "11": ["phalgun", "fagun", "phagun", "फाल्गुन", "फाल्गुण"],
+  "12": ["chait", "चैत"]
+}

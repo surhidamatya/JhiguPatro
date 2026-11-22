@@ -1,0 +1,32 @@
+name: ci-flutter
+on:
+  pull_request:
+  push:
+    branches: [main, dev]
+jobs:
+  flutter:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter
+    steps:
+      - uses: actions/checkout@v4
+      # Pinned to the version the code is checked against. A newer stable
+      # (3.50) deprecates package:flutter/material.dart in favour of
+      # material_ui, which fails `flutter analyze`; moving to it is a separate,
+      # deliberate change.
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.2'
+          channel: stable
+          cache: true
+      # A real Devanagari font, so the renderer tests check shaping and not only
+      # the picture's size.
+      - run: sudo apt-get update && sudo apt-get install -y fonts-noto-core
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter pub get
+        working-directory: flutter/example
+      - run: flutter analyze
+        working-directory: flutter/example

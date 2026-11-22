@@ -3,15 +3,96 @@
   "version": "1.0.0",
   "description": "TypeScript/JavaScript Bikram Sambat (Nepali) calendar utilities",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/surhidamatya/JhiguPatro.git",
+    "directory": "ts"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "nepali_calendar_data.json",
+    "2081_tithi.json",
+    "README.md"
+  ],
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./address": {
+      "types": "./dist/address.d.ts",
+      "import": "./dist/address.js"
+    },
+    "./address-picker": {
+      "types": "./dist/addressPicker.d.ts",
+      "import": "./dist/addressPicker.js"
+    },
+    "./date-picker": {
+      "types": "./dist/datePicker.d.ts",
+      "import": "./dist/datePicker.js"
+    },
+    "./range-picker": {
+      "types": "./dist/rangePicker.d.ts",
+      "import": "./dist/rangePicker.js"
+    },
+    "./money-input": {
+      "types": "./dist/moneyInput.d.ts",
+      "import": "./dist/moneyInput.js"
+    },
+    "./phone-input": {
+      "types": "./dist/phoneInput.d.ts",
+      "import": "./dist/phoneInput.js"
+    },
+    "./receipt": {
+      "types": "./dist/receipt.d.ts",
+      "import": "./dist/receipt.js"
+    },
+    "./sms": {
+      "types": "./dist/sms.d.ts",
+      "import": "./dist/sms.js"
+    },
+    "./receipt-html": {
+      "types": "./dist/receiptHtml.d.ts",
+      "import": "./dist/receiptHtml.js"
+    },
+    "./date-picker-element": {
+      "types": "./dist/elements/datePickerElement.d.ts",
+      "import": "./dist/elements/datePickerElement.js"
+    },
+    "./field-elements": {
+      "types": "./dist/elements/fieldElements.d.ts",
+      "import": "./dist/elements/fieldElements.js"
+    },
+    "./address-element": {
+      "types": "./dist/elements/addressElement.d.ts",
+      "import": "./dist/elements/addressElement.js"
+    },
+    "./range-picker-element": {
+      "types": "./dist/elements/rangePickerElement.d.ts",
+      "import": "./dist/elements/rangePickerElement.js"
+    },
+    "./calendar-element": {
+      "types": "./dist/elements/calendarElement.d.ts",
+      "import": "./dist/elements/calendarElement.js"
+    },
+    "./sms-file-store": {
+      "types": "./dist/smsFileStore.d.ts",
+      "import": "./dist/smsFileStore.js"
+    },
+    "./element-binding": {
+      "types": "./dist/elementBinding.d.ts",
+      "import": "./dist/elementBinding.js"
+    },
+    "./element-bindings": {
+      "types": "./dist/elementBindings.d.ts",
+      "import": "./dist/elementBindings.js"
+    },
+    "./nepali_calendar_data.json": "./nepali_calendar_data.json",
+    "./2081_tithi.json": "./2081_tithi.json"
   },
   "scripts": {
     "build": "tsc",
@@ -20,6 +101,7 @@
     "serve": "npx serve ."
   },
   "devDependencies": {
+    "@types/node": "^26.6.6",
     "typescript": "^5.0.0",
     "vitest": "^2.0.0"
   }

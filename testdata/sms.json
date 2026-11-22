@@ -1,0 +1,1355 @@
+{
+ "_comment": "SMS templates, renderer, segments and scheduler (guide section 13). Expected values from an independent Python model (own GSM table, regex renderer) or derived by hand; not from a carrier or provider. Scheduler times are minutes after baseUtcMs, the UTC instant of BS 2082-05-10 09:00 Nepal time (UTC+05:45); baseUtcMs was computed from data/nepali_calendar_data.json. Scheduler defaults: back-off [1,5,30] min, maxAttempts 4, BAD_NUMBER is permanent. failures maps a reminder id to the error codes of its successive gateway attempts.",
+ "baseUtcMs": 1756178100000,
+ "render": [
+  {
+   "name": "simple",
+   "text": "Hello {name}",
+   "values": {
+    "name": "Ram"
+   },
+   "strict": true,
+   "expect": {
+    "text": "Hello Ram"
+   }
+  },
+  {
+   "name": "repeated key",
+   "text": "{a}-{a}-{b}",
+   "values": {
+    "a": "x",
+    "b": 2
+   },
+   "strict": true,
+   "expect": {
+    "text": "x-x-2"
+   }
+  },
+  {
+   "name": "number value",
+   "text": "Rs {n}",
+   "values": {
+    "n": 1500
+   },
+   "strict": true,
+   "expect": {
+    "text": "Rs 1500"
+   }
+  },
+  {
+   "name": "zero number is a value",
+   "text": "n={n}",
+   "values": {
+    "n": 0
+   },
+   "strict": true,
+   "expect": {
+    "text": "n=0"
+   }
+  },
+  {
+   "name": "empty string is a value",
+   "text": "[{a}]",
+   "values": {
+    "a": ""
+   },
+   "strict": true,
+   "expect": {
+    "text": "[]"
+   }
+  },
+  {
+   "name": "missing strict",
+   "text": "Hi {name}, {x}",
+   "values": {
+    "name": "A"
+   },
+   "strict": true,
+   "expect": {
+    "error": "MISSING_VALUE",
+    "key": "x"
+   }
+  },
+  {
+   "name": "missing lenient",
+   "text": "Hi {name}, {x}!",
+   "values": {
+    "name": "A"
+   },
+   "strict": false,
+   "expect": {
+    "text": "Hi A, !"
+   }
+  },
+  {
+   "name": "null is missing",
+   "text": "Hi {a}",
+   "values": {
+    "a": null
+   },
+   "strict": true,
+   "expect": {
+    "error": "MISSING_VALUE",
+    "key": "a"
+   }
+  },
+  {
+   "name": "extra values ignored",
+   "text": "Hi {a}",
+   "values": {
+    "a": "1",
+    "b": "2"
+   },
+   "strict": true,
+   "expect": {
+    "text": "Hi 1"
+   }
+  },
+  {
+   "name": "value not re-expanded",
+   "text": "{a} {b}",
+   "values": {
+    "a": "{b}",
+    "b": "B"
+   },
+   "strict": true,
+   "expect": {
+    "text": "{b} B"
+   }
+  },
+  {
+   "name": "lone braces kept",
+   "text": "{ } {} {a b} {a}",
+   "values": {
+    "a": "1"
+   },
+   "strict": true,
+   "expect": {
+    "text": "{ } {} {a b} 1"
+   }
+  },
+  {
+   "name": "no placeholders",
+   "text": "plain text",
+   "values": {},
+   "strict": true,
+   "expect": {
+    "text": "plain text"
+   }
+  },
+  {
+   "name": "devanagari value",
+   "text": "नाम: {n}",
+   "values": {
+    "n": "राम"
+   },
+   "strict": true,
+   "expect": {
+    "text": "नाम: राम"
+   }
+  },
+  {
+   "name": "adjacent",
+   "text": "{a}{b}",
+   "values": {
+    "a": "1",
+    "b": "2"
+   },
+   "strict": true,
+   "expect": {
+    "text": "12"
+   }
+  },
+  {
+   "name": "underscore and digits",
+   "text": "{a_1}",
+   "values": {
+    "a_1": "v"
+   },
+   "strict": true,
+   "expect": {
+    "text": "v"
+   }
+  },
+  {
+   "name": "non ascii key not a placeholder",
+   "text": "{नाम}",
+   "values": {},
+   "strict": true,
+   "expect": {
+    "text": "{नाम}"
+   }
+  }
+ ],
+ "templates": [
+  {
+   "key": "rentDue",
+   "language": "en",
+   "placeholders": [
+    "name",
+    "amount",
+    "month",
+    "dueDate",
+    "sender"
+   ],
+   "values": {
+    "name": "राम",
+    "amount": "Rs. 15,000",
+    "month": "Baisakh",
+    "dueDate": "2082-01-05",
+    "sender": "Shop",
+    "date": "2082-05-10",
+    "time": "9:30"
+   },
+   "expect": "Dear राम, your rent of Rs. 15,000 for Baisakh is due on 2082-01-05. Please pay on time. - Shop"
+  },
+  {
+   "key": "rentDue",
+   "language": "ne",
+   "placeholders": [
+    "name",
+    "month",
+    "amount",
+    "dueDate",
+    "sender"
+   ],
+   "values": {
+    "name": "राम",
+    "amount": "Rs. 15,000",
+    "month": "Baisakh",
+    "dueDate": "2082-01-05",
+    "sender": "Shop",
+    "date": "2082-05-10",
+    "time": "9:30"
+   },
+   "expect": "आदरणीय राम, Baisakh को तपाईंको कोठा भाडा Rs. 15,000 2082-01-05 सम्म तिर्न बाँकी छ। कृपया समयमै तिर्नुहोला। - Shop"
+  },
+  {
+   "key": "udhaaro",
+   "language": "en",
+   "placeholders": [
+    "name",
+    "amount",
+    "dueDate",
+    "sender"
+   ],
+   "values": {
+    "name": "राम",
+    "amount": "Rs. 15,000",
+    "month": "Baisakh",
+    "dueDate": "2082-01-05",
+    "sender": "Shop",
+    "date": "2082-05-10",
+    "time": "9:30"
+   },
+   "expect": "Dear राम, you owe Rs. 15,000. Please clear the balance by 2082-01-05. - Shop"
+  },
+  {
+   "key": "udhaaro",
+   "language": "ne",
+   "placeholders": [
+    "name",
+    "amount",
+    "dueDate",
+    "sender"
+   ],
+   "values": {
+    "name": "राम",
+    "amount": "Rs. 15,000",
+    "month": "Baisakh",
+    "dueDate": "2082-01-05",
+    "sender": "Shop",
+    "date": "2082-05-10",
+    "time": "9:30"
+   },
+   "expect": "आदरणीय राम, तपाईंले Rs. 15,000 उधारो तिर्न बाँकी छ। कृपया 2082-01-05 सम्म चुक्ता गर्नुहोला। - Shop"
+  },
+  {
+   "key": "appointment",
+   "language": "en",
+   "placeholders": [
+    "name",
+    "date",
+    "time",
+    "sender"
+   ],
+   "values": {
+    "name": "राम",
+    "amount": "Rs. 15,000",
+    "month": "Baisakh",
+    "dueDate": "2082-01-05",
+    "sender": "Shop",
+    "date": "2082-05-10",
+    "time": "9:30"
+   },
+   "expect": "Dear राम, reminder: your appointment is on 2082-05-10 at 9:30. - Shop"
+  },
+  {
+   "key": "appointment",
+   "language": "ne",
+   "placeholders": [
+    "name",
+    "date",
+    "time",
+    "sender"
+   ],
+   "values": {
+    "name": "राम",
+    "amount": "Rs. 15,000",
+    "month": "Baisakh",
+    "dueDate": "2082-01-05",
+    "sender": "Shop",
+    "date": "2082-05-10",
+    "time": "9:30"
+   },
+   "expect": "आदरणीय राम, सम्झना: तपाईंको अपोइन्टमेन्ट 2082-05-10 मा 9:30 बजे छ। - Shop"
+  }
+ ],
+ "segments": [
+  {
+   "text": "",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 0,
+    "segments": 0
+   }
+  },
+  {
+   "text": "a",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 1,
+    "segments": 1
+   }
+  },
+  {
+   "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 160,
+    "segments": 1
+   }
+  },
+  {
+   "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 161,
+    "segments": 2
+   }
+  },
+  {
+   "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 306,
+    "segments": 2
+   }
+  },
+  {
+   "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 307,
+    "segments": 3
+   }
+  },
+  {
+   "text": "€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 160,
+    "segments": 1
+   }
+  },
+  {
+   "text": "€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 162,
+    "segments": 2
+   }
+  },
+  {
+   "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa€",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 161,
+    "segments": 2
+   }
+  },
+  {
+   "text": "{",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 2,
+    "segments": 1
+   }
+  },
+  {
+   "text": "\n",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 1,
+    "segments": 1
+   }
+  },
+  {
+   "text": "\f",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 2,
+    "segments": 1
+   }
+  },
+  {
+   "text": "@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 127,
+    "segments": 1
+   }
+  },
+  {
+   "text": "ç",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 1,
+    "segments": 1
+   }
+  },
+  {
+   "text": "á",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 1,
+    "segments": 1
+   }
+  },
+  {
+   "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaç",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 160,
+    "segments": 3
+   }
+  },
+  {
+   "text": "नमस्ते",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 6,
+    "segments": 1
+   }
+  },
+  {
+   "text": "नननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननन",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 70,
+    "segments": 1
+   }
+  },
+  {
+   "text": "ननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननन",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 71,
+    "segments": 2
+   }
+  },
+  {
+   "text": "नननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननन",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 134,
+    "segments": 2
+   }
+  },
+  {
+   "text": "ननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननननन",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 135,
+    "segments": 3
+   }
+  },
+  {
+   "text": "😀",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 2,
+    "segments": 1
+   }
+  },
+  {
+   "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 71,
+    "segments": 2
+   }
+  },
+  {
+   "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 70,
+    "segments": 1
+   }
+  },
+  {
+   "text": "Hi नमस्ते",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 9,
+    "segments": 1
+   }
+  },
+  {
+   "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaन",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 101,
+    "segments": 2
+   }
+  },
+  {
+   "text": "Rs. 1,500 due on 2082-05-10",
+   "expect": {
+    "encoding": "gsm7",
+    "units": 27,
+    "segments": 1
+   }
+  },
+  {
+   "text": "आदरणीय राम, भाडा बाँकी छ।",
+   "expect": {
+    "encoding": "ucs2",
+    "units": 25,
+    "segments": 1
+   }
+  }
+ ],
+ "scheduler": [
+  {
+   "name": "not due one minute early, due at the exact minute",
+   "reminders": [
+    {
+     "id": "r1",
+     "to": "+9779841234567",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 9,
+     "minute": 0
+    }
+   ],
+   "failures": {},
+   "steps": [
+    {
+     "at": -1,
+     "expect": {
+      "summary": {
+       "due": 0,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "pending",
+        "attempts": 0
+       }
+      },
+      "calls": 0
+     }
+    },
+    {
+     "at": 0,
+     "expect": {
+      "summary": {
+       "due": 1,
+       "sent": 1,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "sent",
+        "attempts": 1
+       }
+      },
+      "calls": 1
+     }
+    },
+    {
+     "at": 5,
+     "expect": {
+      "summary": {
+       "due": 0,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "sent",
+        "attempts": 1
+       }
+      },
+      "calls": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "midnight Nepal time is the previous day in UTC",
+   "reminders": [
+    {
+     "id": "r1",
+     "to": "+9779841234567",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 0,
+     "minute": 0
+    }
+   ],
+   "failures": {},
+   "steps": [
+    {
+     "at": -541,
+     "expect": {
+      "summary": {
+       "due": 0,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "pending",
+        "attempts": 0
+       }
+      }
+     }
+    },
+    {
+     "at": -540,
+     "expect": {
+      "summary": {
+       "due": 1,
+       "sent": 1,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "sent",
+        "attempts": 1
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "retry after one minute then succeed",
+   "reminders": [
+    {
+     "id": "r1",
+     "to": "+9779841234567",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 9,
+     "minute": 0
+    }
+   ],
+   "failures": {
+    "r1": [
+     "NETWORK"
+    ]
+   },
+   "steps": [
+    {
+     "at": 0,
+     "expect": {
+      "summary": {
+       "due": 1,
+       "sent": 0,
+       "retrying": 1,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "pending",
+        "attempts": 1,
+        "retryAt": 1,
+        "lastError": "NETWORK"
+       }
+      },
+      "calls": 1
+     }
+    },
+    {
+     "at": 0,
+     "expect": {
+      "summary": {
+       "due": 0,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "pending",
+        "attempts": 1,
+        "retryAt": 1,
+        "lastError": "NETWORK"
+       }
+      },
+      "calls": 1
+     }
+    },
+    {
+     "at": 1,
+     "expect": {
+      "summary": {
+       "due": 1,
+       "sent": 1,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "sent",
+        "attempts": 2
+       }
+      },
+      "calls": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "back-off 1, 5, 30 minutes then failed",
+   "reminders": [
+    {
+     "id": "r1",
+     "to": "+9779841234567",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 9,
+     "minute": 0
+    }
+   ],
+   "failures": {
+    "r1": [
+     "SERVER",
+     "RATE_LIMIT",
+     "SERVER",
+     "AUTH"
+    ]
+   },
+   "steps": [
+    {
+     "at": 0,
+     "expect": {
+      "summary": {
+       "due": 1,
+       "sent": 0,
+       "retrying": 1,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "pending",
+        "attempts": 1,
+        "retryAt": 1,
+        "lastError": "SERVER"
+       }
+      }
+     }
+    },
+    {
+     "at": 1,
+     "expect": {
+      "summary": {
+       "due": 1,
+       "sent": 0,
+       "retrying": 1,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "pending",
+        "attempts": 2,
+        "retryAt": 6,
+        "lastError": "RATE_LIMIT"
+       }
+      }
+     }
+    },
+    {
+     "at": 5,
+     "expect": {
+      "summary": {
+       "due": 0,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "pending",
+        "attempts": 2,
+        "retryAt": 6,
+        "lastError": "RATE_LIMIT"
+       }
+      }
+     }
+    },
+    {
+     "at": 6,
+     "expect": {
+      "summary": {
+       "due": 1,
+       "sent": 0,
+       "retrying": 1,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "pending",
+        "attempts": 3,
+        "retryAt": 36,
+        "lastError": "SERVER"
+       }
+      }
+     }
+    },
+    {
+     "at": 36,
+     "expect": {
+      "summary": {
+       "due": 1,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 1
+      },
+      "reminders": {
+       "r1": {
+        "status": "failed",
+        "attempts": 4,
+        "lastError": "AUTH"
+       }
+      }
+     }
+    },
+    {
+     "at": 100,
+     "expect": {
+      "summary": {
+       "due": 0,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "failed",
+        "attempts": 4,
+        "lastError": "AUTH"
+       }
+      },
+      "calls": 4
+     }
+    }
+   ]
+  },
+  {
+   "name": "bad number from gateway fails at once",
+   "reminders": [
+    {
+     "id": "r1",
+     "to": "+9779841234567",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 9,
+     "minute": 0
+    }
+   ],
+   "failures": {
+    "r1": [
+     "BAD_NUMBER"
+    ]
+   },
+   "steps": [
+    {
+     "at": 0,
+     "expect": {
+      "summary": {
+       "due": 1,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 1
+      },
+      "reminders": {
+       "r1": {
+        "status": "failed",
+        "attempts": 1,
+        "lastError": "BAD_NUMBER"
+       }
+      },
+      "calls": 1
+     }
+    },
+    {
+     "at": 10,
+     "expect": {
+      "summary": {
+       "due": 0,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "failed",
+        "attempts": 1,
+        "lastError": "BAD_NUMBER"
+       }
+      },
+      "calls": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "number not in E.164 fails without calling the gateway",
+   "reminders": [
+    {
+     "id": "r1",
+     "to": "9841234567",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 9,
+     "minute": 0
+    },
+    {
+     "id": "r2",
+     "to": "+977",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 9,
+     "minute": 0
+    }
+   ],
+   "failures": {},
+   "steps": [
+    {
+     "at": 0,
+     "expect": {
+      "summary": {
+       "due": 2,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 2
+      },
+      "reminders": {
+       "r1": {
+        "status": "failed",
+        "attempts": 1,
+        "lastError": "BAD_NUMBER"
+       },
+       "r2": {
+        "status": "failed",
+        "attempts": 1,
+        "lastError": "BAD_NUMBER"
+       }
+      },
+      "calls": 0
+     }
+    }
+   ]
+  },
+  {
+   "name": "missing placeholder fails with BAD_TEMPLATE, no gateway call",
+   "reminders": [
+    {
+     "id": "r1",
+     "to": "+9779841234567",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 9,
+     "minute": 0
+    }
+   ],
+   "failures": {},
+   "steps": [
+    {
+     "at": 0,
+     "expect": {
+      "summary": {
+       "due": 1,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 1
+      },
+      "reminders": {
+       "r1": {
+        "status": "failed",
+        "attempts": 1,
+        "lastError": "BAD_TEMPLATE"
+       }
+      },
+      "calls": 0
+     }
+    }
+   ]
+  },
+  {
+   "name": "unknown template key fails with BAD_TEMPLATE",
+   "reminders": [
+    {
+     "id": "r1",
+     "to": "+9779841234567",
+     "templateKey": "nope",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 9,
+     "minute": 0
+    }
+   ],
+   "failures": {},
+   "steps": [
+    {
+     "at": 0,
+     "expect": {
+      "summary": {
+       "due": 1,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 1
+      },
+      "reminders": {
+       "r1": {
+        "status": "failed",
+        "attempts": 1,
+        "lastError": "BAD_TEMPLATE"
+       }
+      },
+      "calls": 0
+     }
+    }
+   ]
+  },
+  {
+   "name": "several due, oldest first; one fails, one not yet due",
+   "reminders": [
+    {
+     "id": "b",
+     "to": "+9779841234567",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 9,
+     "minute": 0
+    },
+    {
+     "id": "a",
+     "to": "+9779841234567",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 9,
+     "minute": 0
+    },
+    {
+     "id": "c",
+     "to": "+9779841234567",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 8,
+     "minute": 0
+    },
+    {
+     "id": "late",
+     "to": "+9779841234567",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      10
+     ],
+     "hour": 9,
+     "minute": 1
+    }
+   ],
+   "failures": {
+    "a": [
+     "SERVER"
+    ]
+   },
+   "steps": [
+    {
+     "at": 0,
+     "expect": {
+      "summary": {
+       "due": 3,
+       "sent": 2,
+       "retrying": 1,
+       "failed": 0
+      },
+      "reminders": {
+       "a": {
+        "status": "pending",
+        "attempts": 1,
+        "retryAt": 1,
+        "lastError": "SERVER"
+       },
+       "b": {
+        "status": "sent",
+        "attempts": 1
+       },
+       "c": {
+        "status": "sent",
+        "attempts": 1
+       },
+       "late": {
+        "status": "pending",
+        "attempts": 0
+       }
+      },
+      "calls": 3,
+      "sentOrder": [
+       "c",
+       "b"
+      ]
+     }
+    },
+    {
+     "at": 1,
+     "expect": {
+      "summary": {
+       "due": 2,
+       "sent": 2,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "a": {
+        "status": "sent",
+        "attempts": 2
+       },
+       "late": {
+        "status": "sent",
+        "attempts": 1
+       }
+      },
+      "sentOrder": [
+       "c",
+       "b",
+       "a",
+       "late"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "a later date is not due",
+   "reminders": [
+    {
+     "id": "r1",
+     "to": "+9779841234567",
+     "templateKey": "appointment",
+     "language": "en",
+     "values": {
+      "name": "Ram",
+      "date": "2082-05-10",
+      "time": "9:00",
+      "sender": "S"
+     },
+     "sendDate": [
+      2082,
+      5,
+      11
+     ],
+     "hour": 0,
+     "minute": 0
+    }
+   ],
+   "failures": {},
+   "steps": [
+    {
+     "at": 0,
+     "expect": {
+      "summary": {
+       "due": 0,
+       "sent": 0,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "pending",
+        "attempts": 0
+       }
+      },
+      "calls": 0
+     }
+    },
+    {
+     "at": 900,
+     "expect": {
+      "summary": {
+       "due": 1,
+       "sent": 1,
+       "retrying": 0,
+       "failed": 0
+      },
+      "reminders": {
+       "r1": {
+        "status": "sent",
+        "attempts": 1
+       }
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

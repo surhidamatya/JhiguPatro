@@ -1,0 +1,40 @@
+{
+  "name": "jhigu-patro-vue",
+  "version": "0.1.0",
+  "description": "Vue 3 components for the Jhigu Patro web components (Bikram Sambat date pickers, calendar, address, money and phone fields)",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": true,
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "vue": ">=3.3",
+    "jhigu-patro-utils-ts": ">=1.0.0 <2"
+  },
+  "devDependencies": {
+    "jhigu-patro-utils-ts": "file:../ts",
+    "jsdom": "^25.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0",
+    "vue": "^3.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/surhidamatya/JhiguPatro.git",
+    "directory": "vue"
+  }
+}

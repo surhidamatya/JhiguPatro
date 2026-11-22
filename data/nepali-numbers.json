@@ -1,0 +1,375 @@
+{
+  "_note": "Nepali number words 0-99 and scale words, for amount in words (guide 9.5, M-8). NOT NATIVE-SPEAKER REVIEWED. The 100 words are taken from lohanidamodar/nepal-kit (packages/nepal_kit/lib/src/number/amount_words.dart, read 2026-11-21), which says it lifted its tables from another package, so they are one source. Each word was compared with three web tables: Wikipedia 'Numbers in Nepali language' (0-22, 30, 40, 100), nepalilanguage.org/numbers (all of 0-99) and a third full 0-100 table pasted by the project owner (see comparedWith). 'review' says how far each word is backed: 'two-sources' = nepal-kit and at least one table agree and no table differs; 'single-source' = only nepal-kit has it (none now); 'disputed' = a table spells it differently (the other spellings are in 'variants'). The web tables are not a dictionary or printed reference, and they disagree with each other in places (34, 59 and 91-98). Do not change a word here without a reference.",
+  "source": "https://github.com/lohanidamodar/nepal-kit",
+  "comparedWith": [
+    "https://en.wikipedia.org/wiki/Numbers_in_Nepali_language",
+    "https://nepalilanguage.org/numbers/",
+    "a full 0-100 table with scales, pasted by the project owner on 2026-11-21 (it appears to be a third web page; its address was not given)"
+  ],
+  "reviewed": false,
+  "words": [
+    "शून्य",
+    "एक",
+    "दुई",
+    "तीन",
+    "चार",
+    "पाँच",
+    "छ",
+    "सात",
+    "आठ",
+    "नौ",
+    "दश",
+    "एघार",
+    "बाह्र",
+    "तेह्र",
+    "चौध",
+    "पन्ध्र",
+    "सोह्र",
+    "सत्र",
+    "अठार",
+    "उन्नाइस",
+    "बीस",
+    "एक्काइस",
+    "बाइस",
+    "तेइस",
+    "चौबीस",
+    "पच्चीस",
+    "छब्बीस",
+    "सत्ताइस",
+    "अठ्ठाइस",
+    "उनन्तीस",
+    "तीस",
+    "एकतीस",
+    "बत्तीस",
+    "तेत्तीस",
+    "चौँतीस",
+    "पैँतीस",
+    "छत्तीस",
+    "सैँतीस",
+    "अठतीस",
+    "उनन्चालीस",
+    "चालीस",
+    "एकचालीस",
+    "बयालीस",
+    "त्रिचालीस",
+    "चवालीस",
+    "पैँतालीस",
+    "छयालीस",
+    "सतचालीस",
+    "अठचालीस",
+    "उनन्चास",
+    "पचास",
+    "एकाउन्न",
+    "बाउन्न",
+    "त्रिपन्न",
+    "चउन्न",
+    "पचपन्न",
+    "छपन्न",
+    "सन्ताउन्न",
+    "अन्ठाउन्न",
+    "उनन्साठी",
+    "साठी",
+    "एकसट्ठी",
+    "बयसट्ठी",
+    "त्रिसट्ठी",
+    "चौसट्ठी",
+    "पैँसट्ठी",
+    "छयसट्ठी",
+    "सतसट्ठी",
+    "अठसट्ठी",
+    "उनन्सत्तरी",
+    "सत्तरी",
+    "एकहत्तर",
+    "बहत्तर",
+    "त्रिहत्तर",
+    "चौहत्तर",
+    "पचहत्तर",
+    "छयहत्तर",
+    "सतहत्तर",
+    "अठहत्तर",
+    "उनासी",
+    "असी",
+    "एकासी",
+    "बयासी",
+    "त्रियासी",
+    "चौरासी",
+    "पचासी",
+    "छयासी",
+    "सतासी",
+    "अठासी",
+    "उनान्नब्बे",
+    "नब्बे",
+    "एकानब्बे",
+    "बयानब्बे",
+    "त्रियानब्बे",
+    "चौरानब्बे",
+    "पन्चानब्बे",
+    "छयानब्बे",
+    "सन्तानब्बे",
+    "अन्ठानब्बे",
+    "उनान्सय"
+  ],
+  "review": [
+    "disputed",
+    "two-sources",
+    "two-sources",
+    "disputed",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "disputed",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "disputed",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "disputed",
+    "disputed",
+    "disputed",
+    "two-sources",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "disputed",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "disputed",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "two-sources",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "disputed",
+    "two-sources"
+  ],
+  "variants": {
+    "0": [
+      "शुन्य/सुन्ना",
+      "सुन्ना"
+    ],
+    "3": [
+      "तिन"
+    ],
+    "10": [
+      "दस"
+    ],
+    "20": [
+      "बिस"
+    ],
+    "24": [
+      "चौबिस"
+    ],
+    "25": [
+      "पच्चिस"
+    ],
+    "26": [
+      "छब्बिस"
+    ],
+    "28": [
+      "अट्ठाइस"
+    ],
+    "29": [
+      "उनन्तिस"
+    ],
+    "30": [
+      "तिस"
+    ],
+    "31": [
+      "एकतिस"
+    ],
+    "32": [
+      "बत्तिस"
+    ],
+    "33": [
+      "तेत्तिस"
+    ],
+    "34": [
+      "चौँतिस",
+      "चौतिस"
+    ],
+    "35": [
+      "पैँतिस"
+    ],
+    "36": [
+      "छत्तिस"
+    ],
+    "37": [
+      "सैँतिस"
+    ],
+    "38": [
+      "अठतिस"
+    ],
+    "39": [
+      "उनन्चालिस"
+    ],
+    "40": [
+      "चालिस"
+    ],
+    "41": [
+      "एकचालिस"
+    ],
+    "42": [
+      "बयालिस"
+    ],
+    "43": [
+      "त्रिचालिस"
+    ],
+    "44": [
+      "चवालिस"
+    ],
+    "45": [
+      "पैँतालिस"
+    ],
+    "46": [
+      "छयालिस"
+    ],
+    "47": [
+      "सतचालिस"
+    ],
+    "48": [
+      "अठचालिस"
+    ],
+    "54": [
+      "चवन्न"
+    ],
+    "59": [
+      "उनसट्ठी"
+    ],
+    "91": [
+      "एकान्नब्बे"
+    ],
+    "92": [
+      "बयान्नब्बे"
+    ],
+    "93": [
+      "त्रियान्नब्बे"
+    ],
+    "94": [
+      "चौरान्नब्बे"
+    ],
+    "95": [
+      "पन्चान्नब्बे"
+    ],
+    "96": [
+      "छयान्नब्बे"
+    ],
+    "97": [
+      "सन्तान्नब्बे"
+    ],
+    "98": [
+      "अन्ठान्नब्बे"
+    ]
+  },
+  "scales": {
+    "hundred": "सय",
+    "thousand": "हजार",
+    "lakh": "लाख",
+    "crore": "करोड",
+    "arba": "अर्ब",
+    "kharba": "खर्ब"
+  },
+  "scalesSource": "docs/IMPLEMENTATION_GUIDE.md 9.5 and nepal-kit. सय, हजार, लाख and करोड also appear in the pasted tables; अर्ब and खर्ब appear in the guide and nepal-kit, and one pasted table spells them अरब and खरब (see fourthTable). Not native-speaker reviewed",
+  "fourthTable": {
+    "note": "A fourth table (a number-converter page, pasted by the project owner on 2026-11-21, address not given). Kept apart from 'review' because it is the least reliable: 54 contains a Cyrillic letter, 97 has a stray joiner, and on 11 words (listed in 'differsAlone') it disagrees with nepal-kit and both other web tables, which agree with each other. It is not used for 'review' or 'variants'.",
+    "agreesWithNepalKitOnDisputed": [
+      3,
+      20,
+      24,
+      26,
+      28,
+      29,
+      30,
+      38,
+      39,
+      40,
+      41,
+      43
+    ],
+    "differsAlone": {
+      "55": "पच्पन्न",
+      "58": "अन्ठाउँन्न",
+      "62": "बैसट्ठी",
+      "64": "चौंसट्ठी",
+      "65": "पैंसट्ठी",
+      "66": "छैसट्ठी",
+      "76": "छहत्तर",
+      "78": "अठ्हत्तर",
+      "79": "उनास्सी",
+      "80": "अस्सी",
+      "83": "त्रीयासी"
+    },
+    "scaleSpelling": {
+      "arba": "अरब",
+      "kharba": "खरब"
+    }
+  }
+}

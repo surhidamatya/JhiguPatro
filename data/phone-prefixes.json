@@ -1,0 +1,483 @@
+{
+ "schemaVersion": 1,
+ "bestEffort": true,
+ "note": "Best effort. Not an official NTA publication. See data/PHONE_NOTES.md.",
+ "country": {
+  "callingCode": "977",
+  "trunkPrefix": "0"
+ },
+ "mobile": [
+  {
+   "prefix": "970",
+   "carrier": "Ncell",
+   "active": true
+  },
+  {
+   "prefix": "971",
+   "carrier": "Ncell",
+   "active": true
+  },
+  {
+   "prefix": "980",
+   "carrier": "Ncell",
+   "active": true
+  },
+  {
+   "prefix": "981",
+   "carrier": "Ncell",
+   "active": true
+  },
+  {
+   "prefix": "982",
+   "carrier": "Ncell",
+   "active": true
+  },
+  {
+   "prefix": "974",
+   "carrier": "NTC",
+   "active": true
+  },
+  {
+   "prefix": "975",
+   "carrier": "NTC",
+   "active": true
+  },
+  {
+   "prefix": "976",
+   "carrier": "NTC",
+   "active": true
+  },
+  {
+   "prefix": "984",
+   "carrier": "NTC",
+   "active": true
+  },
+  {
+   "prefix": "985",
+   "carrier": "NTC",
+   "active": true
+  },
+  {
+   "prefix": "986",
+   "carrier": "NTC",
+   "active": true
+  },
+  {
+   "prefix": "961",
+   "carrier": "Smart Telecom",
+   "active": false
+  },
+  {
+   "prefix": "962",
+   "carrier": "Smart Telecom",
+   "active": false
+  },
+  {
+   "prefix": "988",
+   "carrier": "Smart Telecom",
+   "active": false
+  },
+  {
+   "prefix": "972",
+   "carrier": "UTL",
+   "active": false
+  },
+  {
+   "prefix": "963",
+   "carrier": "Hello Mobile",
+   "active": false
+  },
+  {
+   "prefix": "900",
+   "carrier": null,
+   "active": false
+  },
+  {
+   "prefix": "960",
+   "carrier": null,
+   "active": false
+  }
+ ],
+ "mobileLength": 10,
+ "landlineLength": 8,
+ "landlineAreaCodes": [
+  {
+   "code": "1",
+   "places": [
+    "Bhaktapur",
+    "Kathmandu",
+    "Lalitpur",
+    "Patan"
+   ]
+  },
+  {
+   "code": "10",
+   "places": [
+    "Bidur",
+    "Dhading",
+    "Rasuwa",
+    "Trishuli"
+   ]
+  },
+  {
+   "code": "11",
+   "places": [
+    "Banepa"
+   ]
+  },
+  {
+   "code": "21",
+   "places": [
+    "Biratnagar",
+    "Itahari",
+    "Morang",
+    "Rangeli"
+   ]
+  },
+  {
+   "code": "23",
+   "places": [
+    "Bhadrapur",
+    "Birtamod",
+    "Damak"
+   ]
+  },
+  {
+   "code": "24",
+   "places": [
+    "Panchthar",
+    "Phidim",
+    "Taplejung"
+   ]
+  },
+  {
+   "code": "25",
+   "places": [
+    "Dharan",
+    "Duhabi",
+    "Inaruwa"
+   ]
+  },
+  {
+   "code": "26",
+   "places": [
+    "Dhankuta",
+    "Terathum"
+   ]
+  },
+  {
+   "code": "27",
+   "places": [
+    "Ilam"
+   ]
+  },
+  {
+   "code": "29",
+   "places": [
+    "Bhojpur",
+    "Khadbari",
+    "Sankhuwasava"
+   ]
+  },
+  {
+   "code": "31",
+   "places": [
+    "Rajbiraj"
+   ]
+  },
+  {
+   "code": "33",
+   "places": [
+    "Lahan",
+    "Siraha"
+   ]
+  },
+  {
+   "code": "35",
+   "places": [
+    "Gaighat",
+    "Katari",
+    "Udaipur"
+   ]
+  },
+  {
+   "code": "36",
+   "places": [
+    "Khotang"
+   ]
+  },
+  {
+   "code": "37",
+   "places": [
+    "Okhaldhunga"
+   ]
+  },
+  {
+   "code": "38",
+   "places": []
+  },
+  {
+   "code": "41",
+   "places": [
+    "Janakpur"
+   ]
+  },
+  {
+   "code": "44",
+   "places": [
+    "Jaleshwar"
+   ]
+  },
+  {
+   "code": "46",
+   "places": [
+    "Malangawa"
+   ]
+  },
+  {
+   "code": "47",
+   "places": [
+    "Sindhuli"
+   ]
+  },
+  {
+   "code": "48",
+   "places": [
+    "Ramechap"
+   ]
+  },
+  {
+   "code": "49",
+   "places": [
+    "Charikot"
+   ]
+  },
+  {
+   "code": "51",
+   "places": [
+    "Birgung"
+   ]
+  },
+  {
+   "code": "53",
+   "places": [
+    "Kalaiya",
+    "Simra"
+   ]
+  },
+  {
+   "code": "55",
+   "places": [
+    "Gaur"
+   ]
+  },
+  {
+   "code": "56",
+   "places": [
+    "Bharatpur",
+    "Chitwan",
+    "Tandi"
+   ]
+  },
+  {
+   "code": "57",
+   "places": [
+    "Bhimphedi",
+    "Hetauda"
+   ]
+  },
+  {
+   "code": "61",
+   "places": [
+    "Pokhara"
+   ]
+  },
+  {
+   "code": "63",
+   "places": [
+    "Syanja"
+   ]
+  },
+  {
+   "code": "64",
+   "places": [
+    "Gorkha"
+   ]
+  },
+  {
+   "code": "65",
+   "places": [
+    "Damauli"
+   ]
+  },
+  {
+   "code": "66",
+   "places": [
+    "Besisahar",
+    "Lumjung"
+   ]
+  },
+  {
+   "code": "67",
+   "places": [
+    "Khusma"
+   ]
+  },
+  {
+   "code": "68",
+   "places": [
+    "Baglung"
+   ]
+  },
+  {
+   "code": "69",
+   "places": [
+    "Beni",
+    "Myagdi"
+   ]
+  },
+  {
+   "code": "71",
+   "places": [
+    "Bhairawaha",
+    "Bhairahawa",
+    "Butwal",
+    "Chhotkram Nager",
+    "Lumbini"
+   ]
+  },
+  {
+   "code": "75",
+   "places": [
+    "Palpa",
+    "Tansen"
+   ]
+  },
+  {
+   "code": "76",
+   "places": [
+    "Krishnanagar",
+    "Taulihawa"
+   ]
+  },
+  {
+   "code": "77",
+   "places": [
+    "Arghakhanchi",
+    "Sandikharka"
+   ]
+  },
+  {
+   "code": "78",
+   "places": [
+    "Bairghat",
+    "Nawalparasi",
+    "Parasi",
+    "Tribeni"
+   ]
+  },
+  {
+   "code": "79",
+   "places": [
+    "Gulmi"
+   ]
+  },
+  {
+   "code": "81",
+   "places": [
+    "Nepalgunj"
+   ]
+  },
+  {
+   "code": "82",
+   "places": [
+    "Dang",
+    "Ghorahi",
+    "Tulsipur"
+   ]
+  },
+  {
+   "code": "83",
+   "places": [
+    "Surkhet"
+   ]
+  },
+  {
+   "code": "84",
+   "places": [
+    "Bardiya",
+    "Guleria",
+    "Rajpur"
+   ]
+  },
+  {
+   "code": "86",
+   "places": []
+  },
+  {
+   "code": "87",
+   "places": []
+  },
+  {
+   "code": "88",
+   "places": []
+  },
+  {
+   "code": "89",
+   "places": []
+  },
+  {
+   "code": "91",
+   "places": [
+    "Bhajani",
+    "Dhangadi",
+    "Tikapur"
+   ]
+  },
+  {
+   "code": "92",
+   "places": []
+  },
+  {
+   "code": "93",
+   "places": [
+    "Darchula"
+   ]
+  },
+  {
+   "code": "94",
+   "places": [
+    "Dipayal",
+    "Doti"
+   ]
+  },
+  {
+   "code": "95",
+   "places": []
+  },
+  {
+   "code": "96",
+   "places": [
+    "Dadheldhura"
+   ]
+  },
+  {
+   "code": "97",
+   "places": [
+    "Achham"
+   ]
+  },
+  {
+   "code": "99",
+   "places": [
+    "Dodharachadani",
+    "Mahendranagar"
+   ]
+  }
+ ],
+ "formats": {
+  "mobile": "ddd-ddddddd",
+  "landlineKathmandu": "d-ddddddd",
+  "landlineOther": "dd-dddddd"
+ }
+}

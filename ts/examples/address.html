@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jhigu-address-select example</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 24px; max-width: 640px; }
+  section { margin: 0 0 22px; }
+  h2 { font-size: 15px; margin: 0 0 8px; }
+  pre { background: #f3f4f6; padding: 8px; border-radius: 6px; min-height: 2em; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>jhigu-address-select</h1>
+<form id="f">
+  <section><h2>English, required</h2>
+    <jhigu-address-select id="a1" name="home" required></jhigu-address-select></section>
+  <section style="background:#111827; color:#e5e7eb; padding:8px 12px; border-radius:8px"><h2>Nepali, no ward, theme dark (on a dark panel)</h2>
+    <jhigu-address-select id="a2" name="office" language="ne" show-ward="false" theme="dark"></jhigu-address-select></section>
+  <button type="submit">Submit</button> <button type="reset">Reset</button>
+</form>
+<h2>Events and form data</h2>
+<pre id="log"></pre>
+<script type="module">
+  import { defineJhiguAddressSelect } from '../dist/elements/addressElement.js';
+  defineJhiguAddressSelect();
+  const log = document.getElementById('log');
+  document.addEventListener('jhiguChange', e => { const { selection, ...rest } = e.detail; log.textContent += `change ${e.target.id}: ${JSON.stringify(rest)}\n`; });
+  document.getElementById('f').addEventListener('submit', e => {
+    e.preventDefault();
+    log.textContent += 'submit ' + JSON.stringify([...new FormData(e.target).entries()]) + '\n';
+  });
+  window.ready = true;
+</script>
+</body>
+</html>

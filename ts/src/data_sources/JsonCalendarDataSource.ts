@@ -20,6 +20,7 @@ export class JsonCalendarDataSource implements NepaliCalendarDataSource {
   private _startYear = 0;
   private _endYear = 0;
   private _initialized = false;
+  verifiedThrough?: number;
 
   async initialize(jsonUrl: string): Promise<void> {
     if (this._initialized) return;
@@ -35,6 +36,7 @@ export class JsonCalendarDataSource implements NepaliCalendarDataSource {
 
     this._startYear = data.supportedRange.start;
     this._endYear = data.supportedRange.end;
+    this.verifiedThrough = data.verifiedThrough;
 
     for (const [key, months] of Object.entries(data.years)) {
       this._yearData.set(Number(key), months);

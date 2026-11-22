@@ -4,6 +4,8 @@
     "start": 2000,
     "end": 2100
   },
+  "verifiedThrough": 2083,
+  "unverifiedYears": "2084-2100: sources disagree; confirm against the Nepal Panchang Nirnayak Samiti calendar. See data/CALENDAR_NOTES.md",
   "referencePoint": {
     "bsYear": 2000,
     "bsMonth": 1,

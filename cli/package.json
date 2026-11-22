@@ -10,14 +10,28 @@
   "scripts": {
     "build": "tsc",
     "dev": "node --import tsx/esm src/index.ts",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test": "node --test tests/cli.test.mjs tests/legacy.test.mjs"
   },
   "dependencies": {
     "chalk": "^5.3.0"
   },
   "devDependencies": {
     "@types/node": "^25.3.0",
+    "jhigu-patro-utils-ts": "file:../ts",
     "tsx": "^4.7.0",
     "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/surhidamatya/JhiguPatro.git",
+    "directory": "cli"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "jhigu-patro-utils-ts": ">=1.0.0 <2"
   }
 }

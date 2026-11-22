@@ -1,0 +1,1053 @@
+{
+ "_note": "Hand-derived from docs/IMPLEMENTATION_GUIDE.md section 9 (round half away from zero, integer paisa). Not from an official source. Shared by TS and Dart tests. Amounts are paisa. MAX is 2^53-1.",
+ "max": 9007199254740991,
+ "groupLakh": [
+  {
+   "in": "0",
+   "out": "0"
+  },
+  {
+   "in": "12",
+   "out": "12"
+  },
+  {
+   "in": "123",
+   "out": "123"
+  },
+  {
+   "in": "1234",
+   "out": "1,234"
+  },
+  {
+   "in": "12345",
+   "out": "12,345"
+  },
+  {
+   "in": "123456",
+   "out": "1,23,456"
+  },
+  {
+   "in": "1234567",
+   "out": "12,34,567"
+  },
+  {
+   "in": "12345678",
+   "out": "1,23,45,678"
+  },
+  {
+   "in": "123456789",
+   "out": "12,34,56,789"
+  },
+  {
+   "in": "1234567890",
+   "out": "1,23,45,67,890"
+  }
+ ],
+ "format": [
+  {
+   "paisa": 125050,
+   "options": {},
+   "out": "1,250.50"
+  },
+  {
+   "paisa": 125000,
+   "options": {},
+   "out": "1,250"
+  },
+  {
+   "paisa": 125000,
+   "options": {
+    "decimals": "always"
+   },
+   "out": "1,250.00"
+  },
+  {
+   "paisa": 125050,
+   "options": {
+    "decimals": "never"
+   },
+   "out": "1,251"
+  },
+  {
+   "paisa": 125049,
+   "options": {
+    "decimals": "never"
+   },
+   "out": "1,250"
+  },
+  {
+   "paisa": 125050,
+   "options": {
+    "symbol": "Rs."
+   },
+   "out": "Rs. 1,250.50"
+  },
+  {
+   "paisa": 125050,
+   "options": {
+    "symbol": "none"
+   },
+   "out": "1,250.50"
+  },
+  {
+   "paisa": 125050,
+   "options": {
+    "symbol": "रु",
+    "devanagari": true
+   },
+   "out": "रु १,२५०.५०"
+  },
+  {
+   "paisa": -125050,
+   "options": {
+    "symbol": "Rs."
+   },
+   "out": "-Rs. 1,250.50"
+  },
+  {
+   "paisa": -125050,
+   "options": {},
+   "out": "-1,250.50"
+  },
+  {
+   "paisa": 0,
+   "options": {},
+   "out": "0"
+  },
+  {
+   "paisa": 0,
+   "options": {
+    "decimals": "always"
+   },
+   "out": "0.00"
+  },
+  {
+   "paisa": 5,
+   "options": {},
+   "out": "0.05"
+  },
+  {
+   "paisa": -5,
+   "options": {
+    "decimals": "never"
+   },
+   "out": "0"
+  },
+  {
+   "paisa": -50,
+   "options": {
+    "decimals": "never"
+   },
+   "out": "-1"
+  },
+  {
+   "paisa": 100,
+   "options": {
+    "symbol": "Rs."
+   },
+   "out": "Rs. 1"
+  },
+  {
+   "paisa": 12345678,
+   "options": {},
+   "out": "1,23,456.78"
+  },
+  {
+   "paisa": 123456789012,
+   "options": {},
+   "out": "1,23,45,67,890.12"
+  },
+  {
+   "paisa": 9007199254740991,
+   "options": {},
+   "out": "9,00,71,99,25,47,409.91"
+  }
+ ],
+ "parse": {
+  "valid": [
+   {
+    "in": "1250.5",
+    "paisa": 125050
+   },
+   {
+    "in": "1,250.50",
+    "paisa": 125050
+   },
+   {
+    "in": "Rs. 1,250.50",
+    "paisa": 125050
+   },
+   {
+    "in": "Rs1250",
+    "paisa": 125000
+   },
+   {
+    "in": "NPR 1250",
+    "paisa": 125000
+   },
+   {
+    "in": "npr 1250",
+    "paisa": 125000
+   },
+   {
+    "in": "रु १,२५०.५०",
+    "paisa": 125050
+   },
+   {
+    "in": "रू 1250",
+    "paisa": 125000
+   },
+   {
+    "in": "-Rs. 5",
+    "paisa": -500
+   },
+   {
+    "in": "Rs. -5",
+    "paisa": -500
+   },
+   {
+    "in": "-5.5",
+    "paisa": -550
+   },
+   {
+    "in": "1,23,456.78",
+    "paisa": 12345678
+   },
+   {
+    "in": "0",
+    "paisa": 0
+   },
+   {
+    "in": "0.05",
+    "paisa": 5
+   },
+   {
+    "in": "  42  ",
+    "paisa": 4200
+   },
+   {
+    "in": "1250 Rs.",
+    "paisa": 125000
+   },
+   {
+    "in": "1250 रु",
+    "paisa": 125000
+   },
+   {
+    "in": "-0",
+    "paisa": 0
+   },
+   {
+    "in": "90071992547409.91",
+    "paisa": 9007199254740991
+   }
+  ],
+  "invalid": [
+   {
+    "in": "",
+    "code": "EMPTY"
+   },
+   {
+    "in": "   ",
+    "code": "EMPTY"
+   },
+   {
+    "in": "Rs.",
+    "code": "EMPTY"
+   },
+   {
+    "in": "abc",
+    "code": "BAD_FORMAT"
+   },
+   {
+    "in": "12.345",
+    "code": "TOO_MANY_DECIMALS"
+   },
+   {
+    "in": "12.",
+    "code": "BAD_FORMAT"
+   },
+   {
+    "in": ".5",
+    "code": "BAD_FORMAT"
+   },
+   {
+    "in": "1e5",
+    "code": "BAD_FORMAT"
+   },
+   {
+    "in": "--5",
+    "code": "BAD_FORMAT"
+   },
+   {
+    "in": "-Rs. -5",
+    "code": "BAD_FORMAT"
+   },
+   {
+    "in": "1Rs2",
+    "code": "BAD_FORMAT"
+   },
+   {
+    "in": "90071992547409.92",
+    "code": "OUT_OF_RANGE"
+   }
+  ]
+ },
+ "fromRupees": {
+  "valid": [
+   {
+    "in": 1250.5,
+    "paisa": 125050
+   },
+   {
+    "in": 0.285,
+    "paisa": 29
+   },
+   {
+    "in": 1.005,
+    "paisa": 101
+   },
+   {
+    "in": -1.005,
+    "paisa": -101
+   },
+   {
+    "in": 0.30000000000000004,
+    "paisa": 30
+   },
+   {
+    "in": 0,
+    "paisa": 0
+   },
+   {
+    "in": 1e-07,
+    "paisa": 0
+   },
+   {
+    "in": 19.99,
+    "paisa": 1999
+   },
+   {
+    "in": 0.005,
+    "paisa": 1
+   },
+   {
+    "in": 0.004,
+    "paisa": 0
+   },
+   {
+    "in": -0.005,
+    "paisa": -1
+   }
+  ],
+  "invalid": [
+   {
+    "in": 1e+21,
+    "code": "OUT_OF_RANGE"
+   }
+  ]
+ },
+ "fromPaisa": {
+  "invalid": [
+   {
+    "in": 1.5,
+    "code": "INVALID_ARGUMENT"
+   },
+   {
+    "in": 9007199254740992,
+    "code": "OUT_OF_RANGE"
+   },
+   {
+    "in": -9007199254740992,
+    "code": "OUT_OF_RANGE"
+   }
+  ]
+ },
+ "percent": [
+  {
+   "paisa": 100000,
+   "bp": 1300,
+   "out": 13000
+  },
+  {
+   "paisa": 1,
+   "bp": 1300,
+   "out": 0
+  },
+  {
+   "paisa": 4,
+   "bp": 1300,
+   "out": 1
+  },
+  {
+   "paisa": 3,
+   "bp": 1300,
+   "out": 0
+  },
+  {
+   "paisa": 50,
+   "bp": 1000,
+   "out": 5
+  },
+  {
+   "paisa": 5,
+   "bp": 1000,
+   "out": 1
+  },
+  {
+   "paisa": -5,
+   "bp": 1000,
+   "out": -1
+  },
+  {
+   "paisa": -4,
+   "bp": 1000,
+   "out": 0
+  },
+  {
+   "paisa": 100000,
+   "bp": 0,
+   "out": 0
+  },
+  {
+   "paisa": 12345,
+   "bp": 1300,
+   "out": 1605
+  }
+ ],
+ "timesDecimal": {
+  "valid": [
+   {
+    "paisa": 100000,
+    "by": "1.5",
+    "out": 150000
+   },
+   {
+    "paisa": 333,
+    "by": "0.5",
+    "out": 167
+   },
+   {
+    "paisa": -333,
+    "by": "0.5",
+    "out": -167
+   },
+   {
+    "paisa": 100,
+    "by": "0.125",
+    "out": 13
+   },
+   {
+    "paisa": 100,
+    "by": "2",
+    "out": 200
+   },
+   {
+    "paisa": 7,
+    "by": "0.0",
+    "out": 0
+   },
+   {
+    "paisa": 1000,
+    "by": "1.005",
+    "out": 1005
+   },
+   {
+    "paisa": 100,
+    "by": "-1.5",
+    "out": -150
+   }
+  ],
+  "invalid": [
+   "abc",
+   "1e3",
+   ".5",
+   "1.",
+   "",
+   "-"
+  ]
+ },
+ "times": {
+  "valid": [
+   {
+    "paisa": 125,
+    "by": 3,
+    "out": 375
+   },
+   {
+    "paisa": 125,
+    "by": -2,
+    "out": -250
+   },
+   {
+    "paisa": 125,
+    "by": 0,
+    "out": 0
+   }
+  ],
+  "invalid": [
+   {
+    "paisa": 125,
+    "by": 1.5,
+    "code": "INVALID_ARGUMENT"
+   },
+   {
+    "paisa": 5000000000000000,
+    "by": 2,
+    "code": "OUT_OF_RANGE"
+   }
+  ]
+ },
+ "dividedBy": {
+  "valid": [
+   {
+    "paisa": 10,
+    "divisor": 3,
+    "times": 1,
+    "out": 3
+   },
+   {
+    "paisa": 10,
+    "divisor": 3,
+    "times": 2,
+    "out": 7
+   },
+   {
+    "paisa": -10,
+    "divisor": 3,
+    "times": 1,
+    "out": -3
+   },
+   {
+    "paisa": -10,
+    "divisor": 3,
+    "times": 2,
+    "out": -7
+   }
+  ],
+  "invalid": [
+   {
+    "paisa": 10,
+    "divisor": 0,
+    "times": 1,
+    "code": "INVALID_ARGUMENT"
+   },
+   {
+    "paisa": 10,
+    "divisor": -1,
+    "times": 1,
+    "code": "INVALID_ARGUMENT"
+   }
+  ]
+ },
+ "allocate": {
+  "valid": [
+   {
+    "paisa": 100,
+    "ratios": [
+     1,
+     1,
+     1
+    ],
+    "out": [
+     34,
+     33,
+     33
+    ]
+   },
+   {
+    "paisa": 100,
+    "ratios": [
+     1,
+     2
+    ],
+    "out": [
+     33,
+     67
+    ]
+   },
+   {
+    "paisa": 5,
+    "ratios": [
+     1,
+     1
+    ],
+    "out": [
+     3,
+     2
+    ]
+   },
+   {
+    "paisa": 1,
+    "ratios": [
+     1,
+     1,
+     1
+    ],
+    "out": [
+     1,
+     0,
+     0
+    ]
+   },
+   {
+    "paisa": 0,
+    "ratios": [
+     1,
+     1
+    ],
+    "out": [
+     0,
+     0
+    ]
+   },
+   {
+    "paisa": -100,
+    "ratios": [
+     1,
+     1,
+     1
+    ],
+    "out": [
+     -34,
+     -33,
+     -33
+    ]
+   },
+   {
+    "paisa": 10,
+    "ratios": [
+     0,
+     1
+    ],
+    "out": [
+     0,
+     10
+    ]
+   },
+   {
+    "paisa": 100,
+    "ratios": [
+     70,
+     30
+    ],
+    "out": [
+     70,
+     30
+    ]
+   },
+   {
+    "paisa": 100,
+    "ratios": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "out": [
+     15,
+     15,
+     14,
+     14,
+     14,
+     14,
+     14
+    ]
+   }
+  ],
+  "invalid": [
+   [],
+   [
+    0,
+    0
+   ],
+   [
+    -1,
+    1
+   ],
+   [
+    1.5
+   ]
+  ]
+ },
+ "split": {
+  "valid": [
+   {
+    "paisa": 100,
+    "n": 3,
+    "out": [
+     34,
+     33,
+     33
+    ]
+   },
+   {
+    "paisa": 1,
+    "n": 3,
+    "out": [
+     1,
+     0,
+     0
+    ]
+   },
+   {
+    "paisa": 10,
+    "n": 4,
+    "out": [
+     3,
+     3,
+     2,
+     2
+    ]
+   },
+   {
+    "paisa": 7,
+    "n": 1,
+    "out": [
+     7
+    ]
+   }
+  ],
+  "invalid": [
+   0,
+   -1,
+   1.5
+  ]
+ },
+ "vatExclusive": [
+  {
+   "paisa": 100000,
+   "bp": 1300,
+   "subtotal": 100000,
+   "vat": 13000,
+   "total": 113000
+  },
+  {
+   "paisa": 99,
+   "bp": 1300,
+   "subtotal": 99,
+   "vat": 13,
+   "total": 112
+  },
+  {
+   "paisa": 1,
+   "bp": 1300,
+   "subtotal": 1,
+   "vat": 0,
+   "total": 1
+  },
+  {
+   "paisa": 100000,
+   "bp": 0,
+   "subtotal": 100000,
+   "vat": 0,
+   "total": 100000
+  },
+  {
+   "paisa": 100000,
+   "bp": 1500,
+   "subtotal": 100000,
+   "vat": 15000,
+   "total": 115000
+  }
+ ],
+ "vatInclusive": [
+  {
+   "paisa": 113000,
+   "bp": 1300,
+   "subtotal": 100000,
+   "vat": 13000,
+   "total": 113000
+  },
+  {
+   "paisa": 100000,
+   "bp": 1300,
+   "subtotal": 88496,
+   "vat": 11504,
+   "total": 100000
+  },
+  {
+   "paisa": 1,
+   "bp": 1300,
+   "subtotal": 1,
+   "vat": 0,
+   "total": 1
+  },
+  {
+   "paisa": 5,
+   "bp": 1300,
+   "subtotal": 4,
+   "vat": 1,
+   "total": 5
+  },
+  {
+   "paisa": 115000,
+   "bp": 1500,
+   "subtotal": 100000,
+   "vat": 15000,
+   "total": 115000
+  }
+ ],
+ "range": [
+  {
+   "op": "plus",
+   "a": 9007199254740991,
+   "b": 1,
+   "code": "OUT_OF_RANGE"
+  },
+  {
+   "op": "minus",
+   "a": -9007199254740991,
+   "b": 1,
+   "code": "OUT_OF_RANGE"
+  },
+  {
+   "op": "plus",
+   "a": 9007199254740991,
+   "b": -9007199254740991,
+   "out": 0
+  }
+ ],
+ "words": {
+  "numbers": [
+   {
+    "in": 0,
+    "out": "zero"
+   },
+   {
+    "in": 1,
+    "out": "one"
+   },
+   {
+    "in": 10,
+    "out": "ten"
+   },
+   {
+    "in": 11,
+    "out": "eleven"
+   },
+   {
+    "in": 13,
+    "out": "thirteen"
+   },
+   {
+    "in": 19,
+    "out": "nineteen"
+   },
+   {
+    "in": 20,
+    "out": "twenty"
+   },
+   {
+    "in": 21,
+    "out": "twenty-one"
+   },
+   {
+    "in": 40,
+    "out": "forty"
+   },
+   {
+    "in": 99,
+    "out": "ninety-nine"
+   },
+   {
+    "in": 100,
+    "out": "one hundred"
+   },
+   {
+    "in": 101,
+    "out": "one hundred one"
+   },
+   {
+    "in": 110,
+    "out": "one hundred ten"
+   },
+   {
+    "in": 999,
+    "out": "nine hundred ninety-nine"
+   },
+   {
+    "in": 1000,
+    "out": "one thousand"
+   },
+   {
+    "in": 1001,
+    "out": "one thousand one"
+   },
+   {
+    "in": 10000,
+    "out": "ten thousand"
+   },
+   {
+    "in": 99999,
+    "out": "ninety-nine thousand nine hundred ninety-nine"
+   },
+   {
+    "in": 100000,
+    "out": "one lakh"
+   },
+   {
+    "in": 100001,
+    "out": "one lakh one"
+   },
+   {
+    "in": 123456,
+    "out": "one lakh twenty-three thousand four hundred fifty-six"
+   },
+   {
+    "in": 9999999,
+    "out": "ninety-nine lakh ninety-nine thousand nine hundred ninety-nine"
+   },
+   {
+    "in": 10000000,
+    "out": "one crore"
+   },
+   {
+    "in": 12345678,
+    "out": "one crore twenty-three lakh forty-five thousand six hundred seventy-eight"
+   },
+   {
+    "in": 100000000,
+    "out": "ten crore"
+   },
+   {
+    "in": 990000000,
+    "out": "ninety-nine crore"
+   },
+   {
+    "in": 1000000000,
+    "out": "one hundred crore"
+   },
+   {
+    "in": 1230000000,
+    "out": "one hundred twenty-three crore"
+   },
+   {
+    "in": 10000000000,
+    "out": "one thousand crore"
+   },
+   {
+    "in": 100000000000,
+    "out": "ten thousand crore"
+   },
+   {
+    "in": 1000000000000,
+    "out": "one lakh crore"
+   },
+   {
+    "in": 12345678901234,
+    "out": "twelve lakh thirty-four thousand five hundred sixty-seven crore eighty-nine lakh one thousand two hundred thirty-four"
+   },
+   {
+    "in": 90071992547409,
+    "out": "ninety lakh seven thousand one hundred ninety-nine crore twenty-five lakh forty-seven thousand four hundred nine"
+   }
+  ],
+  "numberInvalid": [
+   -1,
+   1.5
+  ],
+  "amount": [
+   {
+    "paisa": 0,
+    "options": {},
+    "out": "Rupees Zero Only"
+   },
+   {
+    "paisa": 100,
+    "options": {},
+    "out": "Rupees One Only"
+   },
+   {
+    "paisa": 12345,
+    "options": {},
+    "out": "Rupees One Hundred Twenty-Three and Forty-Five Paisa Only"
+   },
+   {
+    "paisa": 50,
+    "options": {},
+    "out": "Fifty Paisa Only"
+   },
+   {
+    "paisa": 1,
+    "options": {},
+    "out": "One Paisa Only"
+   },
+   {
+    "paisa": 125000,
+    "options": {},
+    "out": "Rupees One Thousand Two Hundred Fifty Only"
+   },
+   {
+    "paisa": -12345,
+    "options": {},
+    "out": "Minus Rupees One Hundred Twenty-Three and Forty-Five Paisa Only"
+   },
+   {
+    "paisa": -50,
+    "options": {},
+    "out": "Minus Fifty Paisa Only"
+   },
+   {
+    "paisa": -100,
+    "options": {},
+    "out": "Minus Rupees One Only"
+   },
+   {
+    "paisa": 1000000000,
+    "options": {},
+    "out": "Rupees One Crore Only"
+   },
+   {
+    "paisa": 100000000000,
+    "options": {},
+    "out": "Rupees One Hundred Crore Only"
+   },
+   {
+    "paisa": 12345,
+    "options": {
+     "letterCase": "lower"
+    },
+    "out": "rupees one hundred twenty-three and forty-five paisa only"
+   },
+   {
+    "paisa": 12345,
+    "options": {
+     "letterCase": "title"
+    },
+    "out": "Rupees One Hundred Twenty-Three and Forty-Five Paisa Only"
+   },
+   {
+    "paisa": 12345,
+    "options": {
+     "prefix": "NPR",
+     "suffix": "Only.",
+     "paisaLabel": "Paise",
+     "joiner": "&"
+    },
+    "out": "NPR One Hundred Twenty-Three & Forty-Five Paise Only."
+   },
+   {
+    "paisa": -100,
+    "options": {
+     "minus": "Negative"
+    },
+    "out": "Negative Rupees One Only"
+   },
+   {
+    "paisa": 9007199254740991,
+    "options": {},
+    "out": "Rupees Ninety Lakh Seven Thousand One Hundred Ninety-Nine Crore Twenty-Five Lakh Forty-Seven Thousand Four Hundred Nine and Ninety-One Paisa Only"
+   },
+   {
+    "paisa": 10000000000,
+    "options": {},
+    "out": "Rupees Ten Crore Only"
+   }
+  ],
+  "unsupportedLanguage": "fr"
+ }
+}

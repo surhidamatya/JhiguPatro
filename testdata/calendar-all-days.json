@@ -1,0 +1,74 @@
+{
+  "_note": "Every day of the calendar data (BS 2000/1/1 to 2100/12/31), computed by an independent Python model from data/nepali_calendar_data.json by counting days from the anchor AD 1943-04-14. One line per day: `AD-ISO BS-ISO weekday(0=Sunday) days-since-1970-UTC`, each line ending with a newline (the last one too), hashed with 64-bit FNV-1a over the UTF-8 bytes. TS and Dart rebuild the same text from their own converters and must give the same hash.",
+  "count": 36891,
+  "first": "1943-04-14 2000-01-01 3 -9759",
+  "last": "2044-04-13 2100-12-31 3 27131",
+  "lastAd": "2044-04-13",
+  "fnv1a64": "ea1f4d9ca8105bee",
+  "checkpoints": [
+    {
+      "index": 0,
+      "line": "1943-04-14 2000-01-01 3 -9759"
+    },
+    {
+      "index": 2500,
+      "line": "1950-02-16 2006-11-05 4 -7259"
+    },
+    {
+      "index": 5000,
+      "line": "1956-12-21 2013-09-07 5 -4759"
+    },
+    {
+      "index": 7500,
+      "line": "1963-10-26 2020-07-09 6 -2259"
+    },
+    {
+      "index": 10000,
+      "line": "1970-08-30 2027-05-14 0 241"
+    },
+    {
+      "index": 12500,
+      "line": "1977-07-04 2034-03-20 1 2741"
+    },
+    {
+      "index": 15000,
+      "line": "1984-05-08 2041-01-26 2 5241"
+    },
+    {
+      "index": 17500,
+      "line": "1991-03-13 2047-11-29 3 7741"
+    },
+    {
+      "index": 20000,
+      "line": "1998-01-15 2054-10-02 4 10241"
+    },
+    {
+      "index": 22500,
+      "line": "2004-11-19 2061-08-04 5 12741"
+    },
+    {
+      "index": 25000,
+      "line": "2011-09-24 2068-06-07 6 15241"
+    },
+    {
+      "index": 27500,
+      "line": "2018-07-29 2075-04-13 0 17741"
+    },
+    {
+      "index": 30000,
+      "line": "2025-06-02 2082-02-19 1 20241"
+    },
+    {
+      "index": 32500,
+      "line": "2032-04-06 2088-12-24 2 22741"
+    },
+    {
+      "index": 35000,
+      "line": "2039-02-09 2095-10-26 3 25241"
+    },
+    {
+      "index": 36890,
+      "line": "2044-04-13 2100-12-31 3 27131"
+    }
+  ]
+}

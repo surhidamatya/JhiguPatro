@@ -1,0 +1,961 @@
+{
+  "_comment": "Shared by TS and Dart (guide 12.x). The file text is produced by an independent Python model (json.dumps indent=2, ensure_ascii=False), not by either library. PHONE is in every reminder: no error message may contain it.",
+  "phone": "+9779800000000",
+  "valid": {
+    "reminders": [
+      {
+        "id": "r-c",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {},
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 2,
+        "retryAt": 1789000000000,
+        "lastError": "NETWORK"
+      },
+      {
+        "id": "r-b",
+        "to": "+9779800000000",
+        "templateKey": "udhaaro",
+        "language": "ne",
+        "values": {
+          "zeta": "z",
+          "name": "राम श्रेष्ठ",
+          "amount": 12500,
+          "note": null
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 12,
+          "day": 30
+        },
+        "hour": 0,
+        "minute": 0,
+        "status": "pending",
+        "attempts": 0,
+        "futureField": "dropped"
+      },
+      {
+        "id": "r-d",
+        "to": "12345",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "failed",
+        "attempts": 4,
+        "lastError": "BAD_NUMBER"
+      },
+      {
+        "id": "r-a",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "sent",
+        "attempts": 1,
+        "providerId": "prov-123"
+      }
+    ],
+    "file": "{\n  \"version\": 1,\n  \"reminders\": [\n    {\n      \"id\": \"r-a\",\n      \"to\": \"+9779800000000\",\n      \"templateKey\": \"rentDue\",\n      \"language\": \"en\",\n      \"values\": {\n        \"amount\": 5000,\n        \"name\": \"Ram\"\n      },\n      \"sendDate\": {\n        \"year\": 2082,\n        \"month\": 5,\n        \"day\": 10\n      },\n      \"hour\": 9,\n      \"minute\": 30,\n      \"status\": \"sent\",\n      \"attempts\": 1,\n      \"providerId\": \"prov-123\"\n    },\n    {\n      \"id\": \"r-b\",\n      \"to\": \"+9779800000000\",\n      \"templateKey\": \"udhaaro\",\n      \"language\": \"ne\",\n      \"values\": {\n        \"amount\": 12500,\n        \"name\": \"राम श्रेष्ठ\",\n        \"note\": null,\n        \"zeta\": \"z\"\n      },\n      \"sendDate\": {\n        \"year\": 2082,\n        \"month\": 12,\n        \"day\": 30\n      },\n      \"hour\": 0,\n      \"minute\": 0,\n      \"status\": \"pending\",\n      \"attempts\": 0\n    },\n    {\n      \"id\": \"r-c\",\n      \"to\": \"+9779800000000\",\n      \"templateKey\": \"rentDue\",\n      \"language\": \"en\",\n      \"values\": {},\n      \"sendDate\": {\n        \"year\": 2082,\n        \"month\": 5,\n        \"day\": 10\n      },\n      \"hour\": 9,\n      \"minute\": 30,\n      \"status\": \"pending\",\n      \"attempts\": 2,\n      \"retryAt\": 1789000000000,\n      \"lastError\": \"NETWORK\"\n    },\n    {\n      \"id\": \"r-d\",\n      \"to\": \"12345\",\n      \"templateKey\": \"rentDue\",\n      \"language\": \"en\",\n      \"values\": {\n        \"amount\": 5000,\n        \"name\": \"Ram\"\n      },\n      \"sendDate\": {\n        \"year\": 2082,\n        \"month\": 5,\n        \"day\": 10\n      },\n      \"hour\": 9,\n      \"minute\": 30,\n      \"status\": \"failed\",\n      \"attempts\": 4,\n      \"lastError\": \"BAD_NUMBER\"\n    }\n  ]\n}\n"
+  },
+  "invalidReminders": [
+    {
+      "name": "missing id",
+      "reminder": {
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "id"
+    },
+    {
+      "name": "empty id",
+      "reminder": {
+        "id": "",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "id"
+    },
+    {
+      "name": "numeric id",
+      "reminder": {
+        "id": 5,
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "id"
+    },
+    {
+      "name": "missing to",
+      "reminder": {
+        "id": "r1",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "to"
+    },
+    {
+      "name": "missing templateKey",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "templateKey"
+    },
+    {
+      "name": "language fr",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "fr",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "language"
+    },
+    {
+      "name": "values is a list",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": [],
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "values"
+    },
+    {
+      "name": "a value is an object",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "a": {
+            "b": 1
+          }
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "values"
+    },
+    {
+      "name": "a value is a boolean",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "a": true
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "values"
+    },
+    {
+      "name": "sendDate missing",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "sendDate"
+    },
+    {
+      "name": "year 1999",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 1999,
+          "month": 1,
+          "day": 1
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "sendDate"
+    },
+    {
+      "name": "year 2101",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2101,
+          "month": 1,
+          "day": 1
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "sendDate"
+    },
+    {
+      "name": "month 13",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 13,
+          "day": 1
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "sendDate"
+    },
+    {
+      "name": "month 0",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 0,
+          "day": 1
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "sendDate"
+    },
+    {
+      "name": "day 0",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 1,
+          "day": 0
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "sendDate"
+    },
+    {
+      "name": "day 33",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 1,
+          "day": 33
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "sendDate"
+    },
+    {
+      "name": "year is text",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": "2082",
+          "month": 1,
+          "day": 1
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "sendDate"
+    },
+    {
+      "name": "hour 24",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 24,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "hour"
+    },
+    {
+      "name": "hour -1",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": -1,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "hour"
+    },
+    {
+      "name": "minute 60",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 60,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "minute"
+    },
+    {
+      "name": "minute 1.5",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 1.5,
+        "status": "pending",
+        "attempts": 0
+      },
+      "field": "minute"
+    },
+    {
+      "name": "status done",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "done",
+        "attempts": 0
+      },
+      "field": "status"
+    },
+    {
+      "name": "attempts -1",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": -1
+      },
+      "field": "attempts"
+    },
+    {
+      "name": "attempts 1.5",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 1.5
+      },
+      "field": "attempts"
+    },
+    {
+      "name": "retryAt text",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0,
+        "retryAt": "soon"
+      },
+      "field": "retryAt"
+    },
+    {
+      "name": "retryAt negative",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0,
+        "retryAt": -5
+      },
+      "field": "retryAt"
+    },
+    {
+      "name": "providerId number",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0,
+        "providerId": 7
+      },
+      "field": "providerId"
+    },
+    {
+      "name": "lastError unknown",
+      "reminder": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "name": "Ram",
+          "amount": 5000
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0,
+        "lastError": "NOPE"
+      },
+      "field": "lastError"
+    }
+  ],
+  "invalidFiles": [
+    {
+      "name": "empty file",
+      "text": "",
+      "code": "CORRUPT_FILE"
+    },
+    {
+      "name": "not json",
+      "text": "{",
+      "code": "CORRUPT_FILE"
+    },
+    {
+      "name": "a list",
+      "text": "[]",
+      "code": "CORRUPT_FILE"
+    },
+    {
+      "name": "a string",
+      "text": "\"x\"",
+      "code": "CORRUPT_FILE"
+    },
+    {
+      "name": "no reminders list",
+      "text": "{\"version\": 1}",
+      "code": "CORRUPT_FILE"
+    },
+    {
+      "name": "reminders is an object",
+      "text": "{\"version\": 1, \"reminders\": {}}",
+      "code": "CORRUPT_FILE"
+    },
+    {
+      "name": "version 2",
+      "text": "{\"version\": 2, \"reminders\": []}",
+      "code": "UNSUPPORTED_VERSION"
+    },
+    {
+      "name": "no version",
+      "text": "{\"reminders\": []}",
+      "code": "UNSUPPORTED_VERSION"
+    },
+    {
+      "name": "version as text",
+      "text": "{\"version\": \"1\", \"reminders\": []}",
+      "code": "UNSUPPORTED_VERSION"
+    },
+    {
+      "name": "reminder is a string",
+      "text": "{\"version\": 1, \"reminders\": [\"x\"]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "reminder is a list",
+      "text": "{\"version\": 1, \"reminders\": [[]]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "duplicate id",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}, {\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: missing id",
+      "text": "{\"version\": 1, \"reminders\": [{\"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: empty id",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: numeric id",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": 5, \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: missing to",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: missing templateKey",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: language fr",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"fr\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: values is a list",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": [], \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: a value is an object",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"a\": {\"b\": 1}}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: a value is a boolean",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"a\": true}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: sendDate missing",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: year 1999",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 1999, \"month\": 1, \"day\": 1}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: year 2101",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2101, \"month\": 1, \"day\": 1}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: month 13",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 13, \"day\": 1}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: month 0",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 0, \"day\": 1}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: day 0",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 1, \"day\": 0}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: day 33",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 1, \"day\": 33}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: year is text",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": \"2082\", \"month\": 1, \"day\": 1}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: hour 24",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 24, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: hour -1",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": -1, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: minute 60",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 60, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: minute 1.5",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 1.5, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: status done",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"done\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: attempts -1",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": -1}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: attempts 1.5",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 1.5}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: retryAt text",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0, \"retryAt\": \"soon\"}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: retryAt negative",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0, \"retryAt\": -5}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: providerId number",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0, \"providerId\": 7}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "file with reminder: lastError unknown",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"name\": \"Ram\", \"amount\": 5000}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0, \"lastError\": \"NOPE\"}]}",
+      "code": "INVALID_REMINDER"
+    },
+    {
+      "name": "a non-whole number where an integer is needed",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"amount\": 5000, \"name\": \"Ram\"}, \"sendDate\": {\"year\": 2082, \"month\": 5, \"day\": 10}, \"hour\": 9.5, \"minute\": 30, \"status\": \"pending\", \"attempts\": 0}]}",
+      "code": "INVALID_REMINDER"
+    }
+  ],
+  "lenientFiles": [
+    {
+      "name": "whole numbers written with a decimal point are accepted as integers",
+      "text": "{\"version\": 1, \"reminders\": [{\"id\": \"r1\", \"to\": \"+9779800000000\", \"templateKey\": \"rentDue\", \"language\": \"en\", \"values\": {\"amount\": 5000, \"name\": \"Ram\"}, \"sendDate\": {\"year\": 2082.0, \"month\": 5.0, \"day\": 10.0}, \"hour\": 9.0, \"minute\": 30.0, \"status\": \"pending\", \"attempts\": 0.0, \"retryAt\": 1789000000000.0}]}",
+      "expect": {
+        "id": "r1",
+        "to": "+9779800000000",
+        "templateKey": "rentDue",
+        "language": "en",
+        "values": {
+          "amount": 5000,
+          "name": "Ram"
+        },
+        "sendDate": {
+          "year": 2082,
+          "month": 5,
+          "day": 10
+        },
+        "hour": 9,
+        "minute": 30,
+        "status": "pending",
+        "attempts": 0,
+        "retryAt": 1789000000000
+      }
+    }
+  ]
+}

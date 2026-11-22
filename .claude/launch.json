@@ -1,0 +1,73 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ts-static",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5174",
+        "--directory",
+        "ts"
+      ],
+      "port": 5174
+    },
+    {
+      "name": "flutter-web",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5175",
+        "--directory",
+        "flutter/example/build/web"
+      ],
+      "port": 5175
+    },
+    {
+      "name": "react-example",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "react/example",
+        "run",
+        "dev"
+      ],
+      "port": 5176
+    },
+    {
+      "name": "vue-example",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "vue/example",
+        "run",
+        "dev"
+      ],
+      "port": 5177
+    },
+    {
+      "name": "react-next-example",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "react/example-next",
+        "run",
+        "dev"
+      ],
+      "port": 5178
+    },
+    {
+      "name": "vue-nuxt-example",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "vue/example-nuxt",
+        "run",
+        "dev"
+      ],
+      "port": 5179
+    }
+  ]
+}
