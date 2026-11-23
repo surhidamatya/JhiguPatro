@@ -92,7 +92,10 @@ jobs:
         working-directory: ts
       - run: npm install
         working-directory: examples/node-script
-      - run: npm start | tee out.txt && grep -q 'rejected: TOO_SHORT' out.txt && grep -q 'प्रतिपदा' out.txt
+      - run: |
+          npm start | tee out.txt
+          grep -q 'rejected: TOO_SHORT' out.txt
+          grep -q 'प्रतिपदा' out.txt
         working-directory: examples/node-script
       - run: npm install && npm run build
         working-directory: examples/web-vite
