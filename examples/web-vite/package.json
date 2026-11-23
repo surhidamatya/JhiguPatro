@@ -1,0 +1,18 @@
+{
+  "name": "jhigu-patro-example-web-vite",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A plain Vite page that uses the Jhigu Patro web components: date picker, money, phone, address and a calendar with tithi.",
+  "scripts": {
+    "dev": "vite --port 5190",
+    "build": "vite build",
+    "preview": "vite preview --port 5190"
+  },
+  "dependencies": {
+    "jhigu-patro-utils-ts": "file:../../ts"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0"
+  }
+}

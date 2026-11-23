@@ -162,7 +162,7 @@ describe('docs/features guides', () => {
 });
 
 describe('Markdown links', () => {
-  const docs = ['README.md', 'docs/USAGE.md', 'ts/README.md', 'cli/README.md', 'react/README.md', 'vue/README.md', 'flutter/README.md', ...featureFiles];
+  const docs = ['README.md', 'examples/README.md', 'examples/node-script/README.md', 'examples/web-vite/README.md', 'examples/dart-console/README.md', 'docs/USAGE.md', 'ts/README.md', 'cli/README.md', 'react/README.md', 'vue/README.md', 'flutter/README.md', ...featureFiles];
   for (const file of docs) {
     it(`${file}: relative links point at files that exist`, () => {
       const md = readFileSync(join(root, file), 'utf8').replace(/^```[\s\S]*?^```$/gm, '');

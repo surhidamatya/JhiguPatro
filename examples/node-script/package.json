@@ -1,0 +1,13 @@
+{
+  "name": "jhigu-patro-example-node-script",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Uses jhigu-patro-utils-ts from plain Node: dates, money, phone, address, SMS, receipt, tithi.",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "jhigu-patro-utils-ts": "file:../../ts"
+  }
+}

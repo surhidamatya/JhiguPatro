@@ -21,3 +21,6 @@ jobs:
       # generated files are written by tools/gen-data and are not dart-formatted
       - run: dart format --set-exit-if-changed lib/jhigu_patro_utils.dart lib/src/types.dart lib/src/nepali_calendar.dart lib/src/phone.dart lib/src/address.dart lib/src/address_picker.dart lib/src/money.dart lib/src/errors.dart lib/src/date_parser.dart lib/src/fiscal.dart lib/src/date_format.dart lib/src/month_grid.dart lib/src/date_picker.dart lib/src/range_picker.dart lib/src/input_caret.dart lib/src/money_input.dart lib/src/phone_input.dart lib/src/receipt.dart lib/src/sms.dart lib/receipt_pdf.dart lib/devanagari_command_renderer.dart lib/src/data_sources test
       - run: dart test
+      # The Dart example the integration guide points to must keep running.
+      - run: dart pub get && dart run bin/main.dart | grep -q 'rejected: TOO_SHORT'
+        working-directory: examples/dart-console

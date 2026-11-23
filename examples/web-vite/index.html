@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jhigu Patro: web example</title>
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <main>
+    <h1>Jhigu Patro web components</h1>
+    <p>A booking form with BS fields, and a calendar that shows the tithi.
+      <button type="button" id="lang">नेपाली</button></p>
+
+    <!-- The elements are plain tags. `name` puts the value in the form. -->
+    <form id="booking">
+      <label>Date of visit
+        <jhigu-date-picker name="visit" popup required></jhigu-date-picker></label>
+      <label>Amount
+        <jhigu-money-input name="amount" symbol="Rs." required></jhigu-money-input></label>
+      <label>Mobile
+        <jhigu-phone-input name="phone" required></jhigu-phone-input></label>
+      <label>Address
+        <jhigu-address-select name="home" required></jhigu-address-select></label>
+      <button type="submit">Book</button>
+      <button type="reset">Reset</button>
+    </form>
+
+    <h2>Submitted</h2>
+    <pre id="out" data-testid="out">(not submitted)</pre>
+
+    <h2>Calendar with tithi (BS 2082)</h2>
+    <jhigu-calendar id="cal" year="2082" month="1"></jhigu-calendar>
+  </main>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

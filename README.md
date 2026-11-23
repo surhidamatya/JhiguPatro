@@ -150,6 +150,8 @@ work.
 
 For one long page that covers the JavaScript API in order, see [docs/USAGE.md](docs/USAGE.md).
 
+To add the library to your own project, follow the [integration guide](examples/README.md) and run the examples in `examples/`.
+
 ## Packages in this repository
 
 | Directory | Package | What it is |
@@ -246,6 +248,7 @@ file for its feature.
 ## Documentation map
 
 - Feature guides: [docs/features/](docs/features/calendar-data/README.md) (list above)
+- Runnable examples and a step-by-step integration guide: [examples/](examples/README.md)
 - Usage guide, one page: [docs/USAGE.md](docs/USAGE.md)
 - Design notes and known gaps per feature: `data/CALENDAR_NOTES.md`, `DATES_NOTES.md`, `MONEY_NOTES.md`,
   `PHONE_NOTES.md`, `ADDRESS_NOTES.md`, `RECEIPT_NOTES.md`, `SMS_NOTES.md`, `PICKER_NOTES.md`, `STRINGS_NOTES.md`

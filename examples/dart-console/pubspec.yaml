@@ -1,0 +1,10 @@
+name: jhigu_patro_example_dart_console
+description: A plain Dart program that uses jhigu_patro_utils (dates, money, phone, address, SMS, tithi).
+publish_to: none
+
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  jhigu_patro_utils:
+    path: ../../dart
