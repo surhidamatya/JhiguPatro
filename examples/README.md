@@ -202,7 +202,7 @@ Working code: [`web-vite/`](web-vite/README.md).
 
 ### C. React
 
-Working code: [`react/example/`](../react/example), reference: [`react/README.md`](../react/README.md).
+Working code: [`react/example/`](../react/example). Full reference: the [React guide](../docs/features/react/README.md) and [`react/README.md`](../react/README.md).
 
 1. Install the library, the wrapper and React (Step 1). The utils package is a peer dependency of the wrapper:
    ```bash
@@ -230,7 +230,7 @@ Working code: [`react/example/`](../react/example), reference: [`react/README.md
 
 ### D. Vue 3
 
-Working code: [`vue/example/`](../vue/example), reference: [`vue/README.md`](../vue/README.md).
+Working code: [`vue/example/`](../vue/example). Full reference: the [Vue guide](../docs/features/vue/README.md) and [`vue/README.md`](../vue/README.md).
 
 1. Install the library, the wrapper and Vue (Step 1):
    ```bash
@@ -308,19 +308,57 @@ Working code: [`dart-console/bin/main.dart`](dart-console/bin/main.dart).
 
 ### H. Flutter
 
-Working code: [`flutter/example/`](../flutter/example), reference: [`flutter/README.md`](../flutter/README.md).
+Working code: [`flutter/example/`](../flutter/example) (see its [README](../flutter/example/README.md)). Full
+reference: the [Flutter guide](../docs/features/flutter/README.md) and [`flutter/README.md`](../flutter/README.md).
 
-1. Add `jhigu_patro_flutter` as a path dependency in `pubspec.yaml` (it depends on `../dart` by path).
-2. Add `nepali_calendar_data.json` as an asset, and load it before the first widget:
-   ```dart
-   NepaliCalendar.initialize(InlineCalendarDataSource(years: years, supportedStartYear: 2000,
-       supportedEndYear: 2100, verifiedThrough: 2083));
+1. Add both packages as path dependencies in `pubspec.yaml`. Your code imports `jhigu_patro_utils` for
+   `NepaliDate`, `Npr` and `NepaliCalendar`, so it needs its own line:
+   ```yaml
+   dependencies:
+     flutter:
+       sdk: flutter
+     jhigu_patro_flutter:
+       path: ../JhiguPatro/flutter
+     jhigu_patro_utils:
+       path: ../JhiguPatro/dart
    ```
-3. Use the widgets:
+2. Copy `data/nepali_calendar_data.json` into your app (for example `assets/`) and declare it. Copy the file;
+   the example only symlinks it:
+   ```yaml
+   flutter:
+     assets:
+       - assets/nepali_calendar_data.json
+   ```
+3. Read it and initialise **before `runApp`**. This is the same code the example uses:
+   ```dart
+   Future<void> main() async {
+     WidgetsFlutterBinding.ensureInitialized();
+     final cal = jsonDecode(await rootBundle.loadString('assets/nepali_calendar_data.json'))
+         as Map<String, dynamic>;
+     NepaliCalendar.initialize(InlineCalendarDataSource(
+       years: (cal['years'] as Map<String, dynamic>)
+           .map((k, v) => MapEntry(int.parse(k), List<int>.from(v as List))),
+       supportedStartYear: cal['supportedRange']['start'] as int,
+       supportedEndYear: cal['supportedRange']['end'] as int,
+       verifiedThrough: cal['verifiedThrough'] as int,
+     ));
+     runApp(const MyApp());
+   }
+   ```
+   Skipping this makes the first widget throw a `StateError` ("calendar not initialized").
+4. Use the widgets:
    ```dart
    JhiguDatePicker(value: _date, language: 'ne', onChanged: (d) => setState(() => _date = d))
+   JhiguMoneyField(onChanged: (Npr? amount) => setState(() => _amount = amount))   // an Npr, in paisa
+   JhiguPhoneField(onChanged: (String? e164) => setState(() => _phone = e164))      // E.164 when valid, else null
    ```
-4. Style them with a `JhiguTheme` in `ThemeData.extensions`.
+   The fields are plain `TextField`s, not `FormField`s: `Form.validate()` does not check them, so read their
+   values when the user submits.
+5. Pop-up pickers: `showJhiguDatePicker(context: ...)` and `showJhiguDateRangePicker(...)` return the chosen
+   date (or range), or null when dismissed.
+6. Style with a `JhiguTheme` in `ThemeData.extensions`; anything left unset falls back to your `ColorScheme`.
+7. Verified so far: `flutter analyze` and `flutter test` in `flutter/`, and a web build of the example. Not
+   verified: running on a phone, desktop, or in a browser by hand, touch, and screen readers.
 
 ### I. Command line
 

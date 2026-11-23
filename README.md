@@ -37,9 +37,9 @@ used just by the optional receipt PDF output.
 | SMS | Gateway interface (bring your own provider), templates, segment counter, retrying reminder scheduler | [sms](docs/features/sms/README.md) |
 | Headless widgets | Framework-free state machines for date, range, address, money and phone inputs | [headless-widgets](docs/features/headless-widgets/README.md) |
 | Web components | `<jhigu-date-picker>`, `<jhigu-date-range-picker>`, `<jhigu-calendar>`, `<jhigu-address-select>`, `<jhigu-money-input>`, `<jhigu-phone-input>` | [web-components](docs/features/web-components/README.md) |
-| React | One component per web component | [react](react/README.md) |
-| Vue 3 | One component per web component | [vue](vue/README.md) |
-| Flutter | Date picker, range picker, calendar and more, on the Dart state machines | [flutter](flutter/README.md) |
+| React | One component per web component | [react guide](docs/features/react/README.md), [package README](react/README.md) |
+| Vue 3 | One component per web component | [vue guide](docs/features/vue/README.md), [package README](vue/README.md) |
+| Flutter | Date picker, range picker, calendar and more, on the Dart state machines | [flutter guide](docs/features/flutter/README.md), [package README](flutter/README.md) |
 | CLI | `jhigu-patro`: dates, money, phone, address, SMS from the terminal | [cli](cli/README.md) |
 
 ## Install
@@ -133,9 +133,10 @@ React and Vue wrap the same elements: [react](react/README.md), [vue](vue/README
 
 ## Feature guides
 
-Each guide has an overview, setup, TypeScript and Dart quick starts, an API table, recipes, errors, known gaps
-and how the feature is tested. The JavaScript samples in them are run by the test suite, so they are known to
-work.
+Each guide has an overview, setup, quick starts, an API or prop table, recipes, known gaps and how the feature is
+tested. The JavaScript samples in guides 1 to 10 are run by the test suite. The React, Vue and Flutter guides
+(11 to 13) use JSX, Vue templates and Dart, which that test cannot run; their samples were checked by hand
+against the package tests, and each guide says what was and was not run.
 
 1. [Calendar data](docs/features/calendar-data/README.md)
 2. [Dates](docs/features/dates/README.md)
@@ -147,6 +148,9 @@ work.
 8. [SMS](docs/features/sms/README.md)
 9. [Headless widgets](docs/features/headless-widgets/README.md)
 10. [Web components](docs/features/web-components/README.md)
+11. [React](docs/features/react/README.md)
+12. [Vue 3](docs/features/vue/README.md)
+13. [Flutter](docs/features/flutter/README.md)
 
 For one long page that covers the JavaScript API in order, see [docs/USAGE.md](docs/USAGE.md).
 

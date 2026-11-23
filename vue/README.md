@@ -9,7 +9,9 @@ development. Vue 3.3 and later.
 
 ```bash
 npm install jhigu-patro-vue jhigu-patro-utils-ts vue
-``` Built on the same framework-neutral core as `jhigu-patro-react`
+```
+
+Built on the same framework-neutral core as `jhigu-patro-react`
 (`ElementBinding` and the prop tables in `jhigu-patro-utils-ts`).
 
 ```vue
@@ -78,7 +80,7 @@ headers under `ts/src/elements/`.
 
 ## Checked and not checked
 
-- 74 tests (`npm test`) with stub elements in jsdom: attribute kinds, writing only what
+- 75 tests (`npm test`) with stub elements in jsdom: attribute kinds, writing only what
   changed, attributes set before connecting, events (including `month-change` reaching
   `onMonthChange`), the latest handler, the ref, class/style/id/data/aria going to the
   element (and changing after mount), the Boolean-casting trap, no Vue warnings for the
@@ -101,7 +103,7 @@ headers under `ts/src/elements/`.
   hydration warnings, from the production build (`node .output/server/index.mjs`) and from
   `nuxt dev`. The calendar data is imported from `jhigu-patro-utils-ts/nepali_calendar_data.json`
   and initialised in the page's setup, so the same code runs on the server and in the browser.
-- All 74 tests pass, and `tsc --noEmit` is clean, on Vue 3.3.13 and 3.4.38 as well as 3.5.46 (the
+- All 75 tests pass, and `tsc --noEmit` is clean, on Vue 3.3.13 and 3.4.38 as well as 3.5.46 (the
   peer range is `>=3.3`). The example apps were run on 3.5 only.
 - **Not checked:** the example apps on Vue 3.3 and 3.4, other frameworks (Quasar, Astro),
   Vue 2, Safari, Firefox, touch and screen readers (the same limits as the web components

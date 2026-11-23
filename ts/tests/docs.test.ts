@@ -126,8 +126,8 @@ const featureFiles = existsSync(featureDir)
   ? readdirSync(featureDir, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => `docs/features/${d.name}/README.md`).filter(f => existsSync(join(root, f)))
   : [];
 
-/** Features that are about markup or another language and so have no runnable JavaScript. */
-const NO_JS_REQUIRED = new Set(['docs/features/web-components/README.md', 'docs/features/flutter/README.md']);
+/** Features that are about markup, JSX, Vue templates or another language and so have no runnable plain JavaScript. */
+const NO_JS_REQUIRED = new Set(['docs/features/web-components/README.md', 'docs/features/flutter/README.md', 'docs/features/react/README.md', 'docs/features/vue/README.md']);
 
 describe('docs/features guides', () => {
   it('has a guide for every feature', () => {
